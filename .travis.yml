@@ -48,4 +48,4 @@ jobs:
       script: ./run_tests_on_firebase_test_lab.sh
 
 before_install:
-  openssl aes-256-cbc -K $encrypted_292693e08117_key -iv $encrypted_292693e08117_iv -in gcloud-service-key.json.enc -out gcloud-service-key.json -d
+  - openssl aes-256-cbc -K $encrypted_292693e08117_key -iv $encrypted_292693e08117_iv -in gcloud-service-key.json.enc -out gcloud-service-key.json -d
