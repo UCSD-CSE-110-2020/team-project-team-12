@@ -91,4 +91,13 @@
         tools:layout_editor_absoluteX="78dp"
         tools:layout_editor_absoluteY="449dp"></Button>
 
+    <Button
+        android:id="@+id/debug_btn_start_walk"
+        android:layout_width="272dp"
+        android:layout_height="89dp"
+        android:text="DEBUG Start"
+        android:textSize="30dp"
+        tools:layout_editor_absoluteX="78dp"
+        tools:layout_editor_absoluteY="551dp"></Button>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
