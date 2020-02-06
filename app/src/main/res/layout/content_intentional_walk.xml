@@ -12,19 +12,23 @@
         android:id="@+id/text_route_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="56dp"
         android:text="NEW ROUTE"
         android:textSize="45dp"
-        tools:layout_editor_absoluteX="78dp"
-        tools:layout_editor_absoluteY="56dp"></TextView>
+        app:layout_constraintStart_toStartOf="@+id/text_current_stats_title"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
 
     <TextView
         android:id="@+id/text_time_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="9dp"
+        android:layout_marginTop="23dp"
         android:text="00:25:36"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="157dp"
-        tools:layout_editor_absoluteY="230dp"></TextView>
+        app:layout_constraintStart_toEndOf="@+id/text_time_title"
+        app:layout_constraintTop_toBottomOf="@+id/text_current_stats_title"></TextView>
 
     <TextView
         android:id="@+id/text_steps_title"
@@ -32,8 +36,8 @@
         android:layout_height="wrap_content"
         android:text="@string/intentional_walk_steps"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="292dp"></TextView>
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_steps_value"
+        app:layout_constraintStart_toStartOf="@+id/text_time_title"></TextView>
 
     <TextView
         android:id="@+id/text_distance_title"
@@ -41,8 +45,8 @@
         android:layout_height="wrap_content"
         android:text="@string/intentional_walk_distance"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="356dp"></TextView>
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_distance_value"
+        app:layout_constraintStart_toStartOf="@+id/text_steps_title"></TextView>
 
     <!--    TODO: Current is still hardcoded rn -->
 
@@ -50,45 +54,66 @@
         android:id="@+id/text_current_stats_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="36dp"
         android:text="CURRENT STATS:"
         android:textSize="40dp"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="153dp"></TextView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_route_name"></TextView>
 
     <TextView
         android:id="@+id/text_distance_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="23dp"
         android:text="13.81 mi"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="212dp"
-        tools:layout_editor_absoluteY="356dp"></TextView>
+        app:layout_constraintStart_toEndOf="@+id/text_distance_title"
+        app:layout_constraintTop_toBottomOf="@+id/text_steps_value"></TextView>
 
     <TextView
         android:id="@+id/text_steps_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="21dp"
         android:text="5000"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="166dp"
-        tools:layout_editor_absoluteY="292dp"></TextView>
+        app:layout_constraintEnd_toEndOf="@+id/text_distance_title"
+        app:layout_constraintStart_toEndOf="@+id/text_distance_title"
+        app:layout_constraintTop_toBottomOf="@+id/text_time_value"></TextView>
 
     <TextView
         android:id="@+id/text_time_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
         android:text="@string/intentional_walk_time"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="74dp"
-        tools:layout_editor_absoluteY="230dp"></TextView>
+        app:layout_constraintBaseline_toBaselineOf="@+id/text_time_value"
+        app:layout_constraintStart_toStartOf="@+id/text_current_stats_title"></TextView>
+
+<!--    <Button-->
+<!--        android:id="@+id/btn_stop_walk"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="89dp"-->
+<!--        android:text="STOP"-->
+<!--        android:textSize="45dp"-->
+<!--        app:layout_constraintBaseline_toBaselineOf="@+id/btn_stop_walk"-->
+<!--        app:layout_constraintEnd_toEndOf="@+id/btn_stop_walk"-->
+<!--        app:layout_constraintStart_toStartOf="@+id/btn_stop_walk"></Button>-->
 
     <Button
         android:id="@+id/btn_stop_walk"
-        android:layout_width="272dp"
+        android:layout_width="0dp"
         android:layout_height="89dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="61dp"
         android:text="STOP"
         android:textSize="45dp"
-        tools:layout_editor_absoluteX="78dp"
-        tools:layout_editor_absoluteY="449dp"></Button>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_distance_title"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
