@@ -46,7 +46,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 handler.removeCallbacks(runnable);
             }
         });
-
     }
 
     public Runnable runnable = new Runnable() {
