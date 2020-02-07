@@ -15,6 +15,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private AsyncTaskRunner runner;
     long timeWhenPaused, timeElapsed;
     // TODO inject dependency on CLOCK
+    // TODO should buttons be disabled or be hidden?
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,7 +23,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intentional_walk);
 
         Button debugStartButton = findViewById(R.id.debug_btn_start_walk);
-        Button stopButton = findViewById(R.id.btn_stop_walk);
+        final Button pauseButton = findViewById(R.id.btn_pause_walk);
+        final Button continueButton = findViewById(R.id.btn_continue_walk);
+        final Button stopButton = findViewById(R.id.btn_stop_walk);
         stopwatchText = findViewById(R.id.text_time_value);
 
         debugStartButton.setOnClickListener(new View.OnClickListener(){
@@ -31,19 +34,43 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 if (runner != null) {
                     runner.cancel(true);
                 }
-                
+
                 runner = new AsyncTaskRunner();
                 runner.execute();
+
+                continueButton.setEnabled(false);
+                stopButton.setEnabled(false);
+                pauseButton.setEnabled(true);
             }
         });
 
-        stopButton.setOnClickListener(new View.OnClickListener() {
+        pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 timeWhenPaused += timeElapsed;
                 if (runner != null) {
                     runner.cancel(true);
                 }
+
+                continueButton.setEnabled(true);
+                stopButton.setEnabled(true);
+                pauseButton.setEnabled(false);
+            }
+        });
+
+        continueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (runner != null) {
+                    runner.cancel(true);
+                }
+
+                runner = new AsyncTaskRunner();
+                runner.execute();
+
+                continueButton.setEnabled(false);
+                stopButton.setEnabled(false);
+                pauseButton.setEnabled(true);
             }
         });
     }

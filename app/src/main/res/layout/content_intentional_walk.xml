@@ -93,26 +93,43 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/text_time_value"
         app:layout_constraintStart_toStartOf="@+id/text_current_stats_title"></TextView>
 
-<!--    <Button-->
-<!--        android:id="@+id/btn_stop_walk"-->
-<!--        android:layout_width="0dp"-->
-<!--        android:layout_height="89dp"-->
-<!--        android:text="STOP"-->
-<!--        android:textSize="45dp"-->
-<!--        app:layout_constraintBaseline_toBaselineOf="@+id/btn_stop_walk"-->
-<!--        app:layout_constraintEnd_toEndOf="@+id/btn_stop_walk"-->
-<!--        app:layout_constraintStart_toStartOf="@+id/btn_stop_walk"></Button>-->
+    <Button
+        android:id="@+id/btn_pause_walk"
+        android:layout_width="0dp"
+        android:layout_height="89dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="61dp"
+        android:text="PAUSE"
+        android:textSize="45dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_distance_title"></Button>
+
+    <Button
+        android:id="@+id/btn_continue_walk"
+        android:layout_width="0dp"
+        android:layout_height="89dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="61dp"
+        android:text="CONTINUE"
+        android:textSize="45dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_distance_title"></Button>
 
     <Button
         android:id="@+id/btn_stop_walk"
         android:layout_width="0dp"
         android:layout_height="89dp"
         android:layout_marginStart="61dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="152dp"
         android:layout_marginEnd="61dp"
         android:text="STOP"
         android:textSize="45dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_distance_title"></Button>
 
@@ -122,7 +139,7 @@
         android:layout_height="89dp"
         android:text="DEBUG Start"
         android:textSize="30dp"
-        tools:layout_editor_absoluteX="78dp"
-        tools:layout_editor_absoluteY="551dp"></Button>
+        tools:layout_editor_absoluteX="75dp"
+        tools:layout_editor_absoluteY="-43dp"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
