@@ -16,6 +16,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     long timeWhenPaused, timeElapsed;
     // TODO inject dependency on CLOCK
     // TODO should buttons be disabled or be hidden?
+    boolean isVisibility = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +39,15 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 runner = new AsyncTaskRunner();
                 runner.execute();
 
-                continueButton.setEnabled(false);
-                stopButton.setEnabled(false);
-                pauseButton.setEnabled(true);
+                if (isVisibility) {
+                    continueButton.setVisibility(View.GONE);
+                    stopButton.setVisibility(View.GONE);
+                    pauseButton.setVisibility(View.VISIBLE);
+                } else {
+                    continueButton.setEnabled(false);
+                    stopButton.setEnabled(false);
+                    pauseButton.setEnabled(true);
+                }
             }
         });
 
@@ -52,9 +59,15 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                     runner.cancel(true);
                 }
 
-                continueButton.setEnabled(true);
-                stopButton.setEnabled(true);
-                pauseButton.setEnabled(false);
+                if (isVisibility) {
+                    continueButton.setVisibility(View.VISIBLE);
+                    stopButton.setVisibility(View.VISIBLE);
+                    pauseButton.setVisibility(View.GONE);
+                } else {
+                    continueButton.setEnabled(true);
+                    stopButton.setEnabled(true);
+                    pauseButton.setEnabled(false);
+                }
             }
         });
 
@@ -68,9 +81,15 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 runner = new AsyncTaskRunner();
                 runner.execute();
 
-                continueButton.setEnabled(false);
-                stopButton.setEnabled(false);
-                pauseButton.setEnabled(true);
+                if (isVisibility) {
+                    continueButton.setVisibility(View.GONE);
+                    stopButton.setVisibility(View.GONE);
+                    pauseButton.setVisibility(View.VISIBLE);
+                } else {
+                    continueButton.setEnabled(false);
+                    stopButton.setEnabled(false);
+                    pauseButton.setEnabled(true);
+                }
             }
         });
     }
