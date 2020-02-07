@@ -9,6 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.View;
+import android.widget.NumberPicker;
+import android.widget.Toast;
+
+import java.text.NumberFormat;
 
 public class StartPage extends AppCompatActivity {
 
@@ -16,17 +20,21 @@ public class StartPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_page);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        NumberPicker np = findViewById(R.id.numberPicker);
+
+        np.setMinValue(0);
+        np.setMaxValue(96);
+
+        //np.setOnValueChangedListener(onValueChangeListener);
+        np.setFormatter(formatter);
     }
+
+    NumberPicker.Formatter formatter = new NumberPicker.Formatter() {
+        @Override
+        public String format(int i) {
+            return i + " inches";
+        }
+    };
 
 }
