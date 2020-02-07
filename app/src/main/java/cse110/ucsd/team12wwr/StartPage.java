@@ -62,16 +62,14 @@ public class StartPage extends AppCompatActivity {
                     editor.putInt("inches", inchValue);
                     editor.apply();
 
-                    launchMainActivity(sharedPreferences);
+                    launchMainActivity();
                 }
             }
         });
     }
 
-    public void launchMainActivity(SharedPreferences spf) {
+    public void launchMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
-        //intent.putExtra("feet", spf.getString("feet", "0"));
-        //intent.putExtra("inches", spf.getString("inches", "0"));
         startActivity(intent);
     }
 

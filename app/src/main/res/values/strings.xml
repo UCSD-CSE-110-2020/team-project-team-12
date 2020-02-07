@@ -2,4 +2,9 @@
     <string name="app_name">Team 12 WWR</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_start_page">StartPage</string>
+    <string name="mile_name">miles</string>
+    <string name="home_text">Home</string>
+    <string name="dist">Distance</string>
+    <string name="stepsTaken">Steps Taken</string>
+    <string name="step">Steps</string>
 </resources>
