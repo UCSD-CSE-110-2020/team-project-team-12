@@ -30,10 +30,6 @@ public class ExampleUnitTest {
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
     }
-//    @Test
-//    public void addition_isCorrect() {
-//        assertEquals(4, 2 + 2);
-//    }
 
     @Test
     public void testNoHeight() {
