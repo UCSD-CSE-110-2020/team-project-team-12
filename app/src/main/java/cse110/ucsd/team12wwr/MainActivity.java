@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        
         dist = (TextView) findViewById(R.id.num_miles);
         step = (TextView) findViewById(R.id.num_steps);
         Button takeSteps = (Button) findViewById(R.id.button);
@@ -52,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
-
-        //System.out.println("YOU'RE " + totalHeight + " INCHES TALL WOWOWOWOWOWOWWOWOWO");
-
         strideLength = totalHeight * STRIDE_CONVERSION;
 
         steps = 0;
@@ -68,8 +66,6 @@ public class MainActivity extends AppCompatActivity {
 
         });
 
-       // System.out.println("YOUR AVERAGE STRIDE LENGTH IS " + df.format(strideLength) + "QIWIWIWIWIQWIWIWHJRUAEISBFIUAEB");
-        //System.out.println(df.format(MILE_FACTOR/strideLength));
 
     }
 
