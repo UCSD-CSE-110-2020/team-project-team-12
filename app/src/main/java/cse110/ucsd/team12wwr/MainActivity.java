@@ -8,40 +8,35 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
-    TextView steps;
-
-    SensorManager sensorManager;
-
-    boolean running = false;
-
-    SharedPreferences spf;
-    int totalHeight;
+    /* constants */
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
-    double strideLength;
-    int steps;
 
-    TextView dist;
-    TextView step;
+    SharedPreferences spf;
+
+    /* steps */
+    SensorManager sensorManager;
+    boolean running = false;
+    TextView textStep;
+    int numSteps;
+
+    /* distance */
+    TextView textDist;
+    int totalHeight;
+    double strideLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +44,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-        steps = (TextView) findViewById(R.id.text_steps);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         
-        dist = (TextView) findViewById(R.id.num_miles);
-        step = (TextView) findViewById(R.id.num_steps);
-        Button takeSteps = (Button) findViewById(R.id.button);
+        textDist = findViewById(R.id.num_miles);
+        textStep = findViewById(R.id.num_steps);
+
+        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -68,18 +63,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        steps = 0;
+        numSteps = 0;
         DecimalFormat df = new DecimalFormat("#.##");
-        dist.setText(df.format((strideLength / MILE_FACTOR) * steps));
+        textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
 
-        takeSteps.setOnClickListener((view) -> {
-            steps += 100;
-            dist.setText(df.format((strideLength / MILE_FACTOR) * steps));
-            step.setText(""+steps);
-
+        btnDebugIncSteps.setOnClickListener((view) -> {
+            numSteps += 100;
+            textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
+            textStep.setText(""+numSteps);
         });
-
-
     }
 
     @Override
@@ -105,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(running) {
-            steps.setText(String.valueOf(event.values[0]));
+            textStep.setText(String.valueOf(event.values[0]));
         }
     }
 

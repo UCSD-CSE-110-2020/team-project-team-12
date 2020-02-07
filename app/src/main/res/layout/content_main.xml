@@ -8,16 +8,6 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-<TextView
-        android:id="@+id/text_steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/steps_word"
         android:layout_width="wrap_content"
@@ -97,7 +87,7 @@
         app:layout_constraintVertical_bias="0.12" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btn_debug_increment_steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Take 100 Steps"
