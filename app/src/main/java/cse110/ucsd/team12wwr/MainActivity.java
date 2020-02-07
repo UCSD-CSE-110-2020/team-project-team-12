@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Collect the height from the previous page
         spf = getSharedPreferences("height", MODE_PRIVATE);
         int feet = spf.getInt("feet", 0);
         int inches = spf.getInt("inches", 0);
@@ -40,25 +41,14 @@ public class MainActivity extends AppCompatActivity {
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
 
-        System.out.println("YOU'RE " + totalHeight + " INCHES TALL WOWOWOWOWOWOWWOWOWO");
+        //System.out.println("YOU'RE " + totalHeight + " INCHES TALL WOWOWOWOWOWOWWOWOWO");
 
         strideLength = totalHeight * STRIDE_CONVERSION;
 
         DecimalFormat df = new DecimalFormat("#.##");
-        System.out.println("YOUR AVERAGE STRIDE LENGTH IS " + df.format(strideLength) + "QIWIWIWIWIQWIWIWHJRUAEISBFIUAEB");
+       // System.out.println("YOUR AVERAGE STRIDE LENGTH IS " + df.format(strideLength) + "QIWIWIWIWIQWIWIWHJRUAEISBFIUAEB");
+        //System.out.println(df.format(MILE_FACTOR/strideLength));
 
-        System.out.println(df.format(MILE_FACTOR/strideLength));
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        //Toast.makeText(MainActivity.this, )
     }
 
     @Override
