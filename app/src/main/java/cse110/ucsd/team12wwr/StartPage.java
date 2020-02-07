@@ -66,10 +66,6 @@ public class StartPage extends AppCompatActivity {
                 }
             }
         });
-<<<<<<< HEAD
-=======
-
->>>>>>> 026e936214f676dc5ecb87bb9d97ad009b26c4e1
     }
 
     public void launchMainActivity(SharedPreferences spf) {
