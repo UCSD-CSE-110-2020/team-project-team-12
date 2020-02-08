@@ -1,9 +1,14 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.google.android.apps.common.testing.accessibility.framework.AccessibilityInfoCheck;
+
+import org.apache.tools.ant.Main;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +17,7 @@ import org.robolectric.shadows.ShadowToast;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
 
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.*;
@@ -23,12 +29,17 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleUnitTest {
-
-    private Intent intent;
+    
+    private Intent intent, mainIntent;
+    private ActivityTestRule<MainActivity> mainActivityTestRule;
 
     @Before
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        intent.putExtras(mainIntent);
+        mainActivityTestRule =
+                new ActivityTestRule<>(MainActivity.class);
     }
 
     @Test
@@ -72,9 +83,80 @@ public class ExampleUnitTest {
             assertNull(toastMessage);
         });
     }
+
+    @Test
+    public void testValidStrideLength() {
+        mainActivityTestRule.launchActivity(mainIntent);
+        SharedPreferences spf = mainActivityTestRule.getActivity().spf;
+        SharedPreferences.Editor editor = spf.edit();
+
+        editor.putInt("feet", 5);
+        editor.putInt("inches", 4);
+        editor.apply();
+
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
+        scenario.onActivity(activity -> {
+
+            Button takeStep = activity.findViewById(R.id.button);
+            TextView dist = (TextView) activity.findViewById(R.id.num_miles);
+            TextView step = (TextView) activity.findViewById(R.id.num_steps);
+
+            assertEquals(spf.getInt("feet", 0), 5);
+            assertEquals(spf.getInt("inches", 0), 4);
+
+            System.out.print(spf.getInt("inches", 0));
+            assertNotNull(takeStep);
+
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "100");
+            assertEquals(dist.getText().toString(), "0.04");
+
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "200");
+            assertEquals(dist.getText().toString(), "0.08");
+
+        });
+    }
+
+    @Test
+    public void testValidStrideLengthTestTwo() {
+        mainActivityTestRule.launchActivity(mainIntent);
+        SharedPreferences spf = mainActivityTestRule.getActivity().spf;
+        SharedPreferences.Editor editor = spf.edit();
+
+        editor.putInt("feet", 6);
+        editor.putInt("inches", 11);
+        editor.apply();
+
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
+        scenario.onActivity(activity -> {
+
+            Button takeStep = activity.findViewById(R.id.button);
+            TextView dist = (TextView) activity.findViewById(R.id.num_miles);
+            TextView step = (TextView) activity.findViewById(R.id.num_steps);
+
+            assertEquals(spf.getInt("feet", 0), 6);
+            assertEquals(spf.getInt("inches", 0), 11);
+
+            System.out.print(spf.getInt("inches", 0));
+            assertNotNull(takeStep);
+
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "100");
+            assertEquals(dist.getText().toString(), "0.05");
+
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "200");
+            assertEquals(dist.getText().toString(), "0.11");
+
+        });
+    }
 }
 
 /**
+
+ public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+
 
  private Intent intent;
  private long nextStepCount;
@@ -100,5 +182,28 @@ public class ExampleUnitTest {
  assertThat(textSteps.getText().toString()).isEqualTo(String.valueOf(nextStepCount));
  //assertThat()
  });
+ }
+ */
+
+/**
+ @RunWith(AndroidJUnit4.class)
+ public class NextActivityTest {
+
+ @Rule
+ public ActivityTestRule<NextActivity> activityRule
+ = new ActivityTestRule<>(
+ NextActivity.class,
+ true,     // initialTouchMode
+ false);   // launchActivity. False to customize the intent
+
+ @Test
+ public void intent() {
+ Intent intent = new Intent();
+ intent.putExtra("your_key", "your_value");
+
+ activityRule.launchActivity(intent);
+
+ // Continue with your test
+ }
  }
  */
