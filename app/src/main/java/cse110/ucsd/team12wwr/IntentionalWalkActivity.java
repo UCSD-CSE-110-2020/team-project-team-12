@@ -15,8 +15,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private AsyncTaskRunner runner;
     long timeWhenPaused, timeElapsed;
     // TODO inject dependency on CLOCK
-    // TODO should buttons be disabled or be hidden?
-    boolean isVisibility = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +37,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 runner = new AsyncTaskRunner();
                 runner.execute();
 
-                if (isVisibility) {
-                    continueButton.setVisibility(View.GONE);
-                    stopButton.setVisibility(View.GONE);
-                    pauseButton.setVisibility(View.VISIBLE);
-                } else {
-                    continueButton.setEnabled(false);
-                    stopButton.setEnabled(false);
-                    pauseButton.setEnabled(true);
-                }
+                continueButton.setVisibility(View.GONE);
+                stopButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
             }
         });
 
@@ -59,15 +51,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                     runner.cancel(true);
                 }
 
-                if (isVisibility) {
-                    continueButton.setVisibility(View.VISIBLE);
-                    stopButton.setVisibility(View.VISIBLE);
-                    pauseButton.setVisibility(View.GONE);
-                } else {
-                    continueButton.setEnabled(true);
-                    stopButton.setEnabled(true);
-                    pauseButton.setEnabled(false);
-                }
+                continueButton.setVisibility(View.VISIBLE);
+                stopButton.setVisibility(View.VISIBLE);
+                pauseButton.setVisibility(View.GONE);
             }
         });
 
@@ -81,15 +67,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 runner = new AsyncTaskRunner();
                 runner.execute();
 
-                if (isVisibility) {
-                    continueButton.setVisibility(View.GONE);
-                    stopButton.setVisibility(View.GONE);
-                    pauseButton.setVisibility(View.VISIBLE);
-                } else {
-                    continueButton.setEnabled(false);
-                    stopButton.setEnabled(false);
-                    pauseButton.setEnabled(true);
-                }
+                continueButton.setVisibility(View.GONE);
+                stopButton.setVisibility(View.GONE);
+                pauseButton.setVisibility(View.VISIBLE);
             }
         });
     }
