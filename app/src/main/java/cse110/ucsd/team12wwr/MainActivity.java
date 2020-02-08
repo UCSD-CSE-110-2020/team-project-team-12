@@ -20,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     /* constants */
@@ -82,6 +84,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             numSteps += 100;
             textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
             textStep.setText(""+numSteps);
+
+            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+            databaseWriteExecutor.execute(() -> {
+                WalkDatabase walkDb = WalkDatabase.getInstance(this);
+                WalkDao dao = walkDb.walkDao();
+
+                Walk newestWalk = dao.findNewestEntry();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
+                        TextView distWalkText = findViewById(R.id.text_distance_value);
+                        TextView timeWalkText = findViewById(R.id.text_time_value);
+
+                        stepsWalkText.setText(newestWalk.steps);
+                        distWalkText.setText(newestWalk.distance);
+                        timeWalkText.setText(newestWalk.duration);
+                    }
+                });
+            });
         });
     }
 
