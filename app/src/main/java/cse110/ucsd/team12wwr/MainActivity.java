@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        
+
         dist = (TextView) findViewById(R.id.num_miles);
         step = (TextView) findViewById(R.id.num_steps);
         Button takeSteps = (Button) findViewById(R.id.button);
