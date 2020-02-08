@@ -97,7 +97,7 @@ public class ExampleUnitTest {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.button);
+            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
@@ -131,7 +131,7 @@ public class ExampleUnitTest {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.button);
+            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
