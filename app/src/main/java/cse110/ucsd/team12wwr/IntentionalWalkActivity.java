@@ -16,7 +16,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     long timeWhenPaused, timeElapsed;
     // TODO inject dependency on CLOCK
     // TODO should buttons be disabled or be hidden?
-    boolean isVisibility = false;
+    boolean isVisibility = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
