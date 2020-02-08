@@ -11,15 +11,18 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
-    TextView stopwatchText;
+    private TextView stopwatchText;
     private AsyncTaskRunner runner;
-    long timeWhenPaused, timeElapsed;
+    private int timeWhenPaused, timeElapsed;
+
+    private iClock clock;
     // TODO inject dependency on CLOCK
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intentional_walk);
+        clock = new DeviceClock();
 
         Button debugStartButton = findViewById(R.id.debug_btn_start_walk);
         final Button pauseButton = findViewById(R.id.btn_pause_walk);
@@ -74,24 +77,27 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
     }
 
+    protected void setClock(iClock clock) {
+        this.clock = clock;
+    }
+
     private class AsyncTaskRunner extends AsyncTask<String, String, String> {
-        private long startTime;
+        private int startTime;
 
         @Override
         protected void onPreExecute() {
-            startTime = SystemClock.uptimeMillis();
+            startTime = clock.getCurrentClock();
         }
 
         @Override
         protected String doInBackground(String... params) {
             while (true){
-                timeElapsed = SystemClock.uptimeMillis() - startTime;
-                long updateTime = timeWhenPaused + timeElapsed;
+                timeElapsed = clock.getCurrentClock() - startTime;
+                int updateTime = timeWhenPaused + timeElapsed;
 
-                int seconds = (int) (updateTime / 1000);
-                int minutes = (seconds / 60)  % 60;
-                int hours = (seconds / 3600)  % 60;
-                seconds %= 60;
+                int hours = (updateTime / 3600)  % 60;
+                int minutes = (updateTime / 60)  % 60;
+                int seconds = updateTime % 60;
 
                 publishProgress(String.format("%02d:%02d:%02d", hours, minutes, seconds));
                 try {
