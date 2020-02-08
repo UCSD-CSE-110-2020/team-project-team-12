@@ -49,6 +49,18 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         stepsText = findViewById(R.id.text_steps_value);
         distanceText = findViewById(R.id.text_distance_value);
 
+        /* starts the stopwatch */
+        if (runner != null) {
+            runner.cancel(true);
+        }
+
+        runner = new AsyncTaskRunner();
+        runner.execute();
+
+        continueButton.setVisibility(View.GONE);
+        stopButton.setVisibility(View.GONE);
+        pauseButton.setVisibility(View.VISIBLE);
+
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
