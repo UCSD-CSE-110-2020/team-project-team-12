@@ -6,10 +6,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
     // TODO code repetition
@@ -76,6 +78,24 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 stopButton.setVisibility(View.GONE);
                 pauseButton.setVisibility(View.VISIBLE);
             }
+        });
+
+        stopButton.setOnClickListener((view) -> {
+            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+            databaseWriteExecutor.execute(() -> {
+                WalkDatabase walkDb = WalkDatabase.getInstance(this);
+                WalkDao dao = walkDb.walkDao();
+
+                Walk newEntry = new Walk();
+                newEntry.time = System.currentTimeMillis();
+                newEntry.duration = stopwatchText.getText().toString();
+                newEntry.steps = stepsText.getText().toString();
+                newEntry.distance = distanceText.getText().toString();
+
+                dao.insertAll(newEntry);
+            });
+
+            finish();
         });
     }
 
