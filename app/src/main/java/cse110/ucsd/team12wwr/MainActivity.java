@@ -1,20 +1,43 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+import java.text.DecimalFormat;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+    /* constants */
+    final int HEIGHT_FACTOR = 12;
+    final double STRIDE_CONVERSION = 0.413;
+    final int MILE_FACTOR = 63360;
+
+    SharedPreferences spf;
+
+    /* steps */
+    SensorManager sensorManager;
+    boolean running = false;
+    TextView textStep;
+    int numSteps;
+
+    /* distance */
+    TextView textDist;
+    int totalHeight;
+    double strideLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,11 +52,79 @@ public class MainActivity extends AppCompatActivity {
                 launchActivity();
             }
         });
+        Toolbar toolbar = findViewById(R.id.toolbar);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        
+        textDist = findViewById(R.id.num_miles);
+        textStep = findViewById(R.id.num_steps);
+
+        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
+        setSupportActionBar(toolbar);
+        closeOptionsMenu();
+
+        // Collect the height from the previous page
+        spf = getSharedPreferences("height", MODE_PRIVATE);
+        int feet = spf.getInt("feet", 0);
+        int inches = spf.getInt("inches", 0);
+
+        System.out.println("feet: " + feet + " inches: "  + inches);
+
+        totalHeight = inches + ( HEIGHT_FACTOR * feet );
+        strideLength = totalHeight * STRIDE_CONVERSION;
+
+        numSteps = 0;
+        DecimalFormat df = new DecimalFormat("#.##");
+        textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
+
+        btnDebugIncSteps.setOnClickListener((view) -> {
+            numSteps += 100;
+            textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
+            textStep.setText(""+numSteps);
+        });
     }
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        running = true;
+        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if(countSensor != null) {
+            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        running = false;
+        // if you unregister the hardware will stop detecting steps
+        // sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if(running) {
+            textStep.setText(String.valueOf(event.values[0]));
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
     }
 
     @Override
