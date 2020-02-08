@@ -24,27 +24,10 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intentional_walk);
         clock = new DeviceClock();
 
-        Button debugStartButton = findViewById(R.id.debug_btn_start_walk);
         final Button pauseButton = findViewById(R.id.btn_pause_walk);
         final Button continueButton = findViewById(R.id.btn_continue_walk);
         final Button stopButton = findViewById(R.id.btn_stop_walk);
         stopwatchText = findViewById(R.id.text_time_value);
-
-        debugStartButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if (runner != null) {
-                    runner.cancel(true);
-                }
-
-                runner = new AsyncTaskRunner();
-                runner.execute();
-
-                continueButton.setVisibility(View.GONE);
-                stopButton.setVisibility(View.GONE);
-                pauseButton.setVisibility(View.VISIBLE);
-            }
-        });
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
