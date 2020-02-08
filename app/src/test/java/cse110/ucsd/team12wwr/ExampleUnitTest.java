@@ -29,17 +29,18 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleUnitTest {
-
-    private Intent intent, intent2;
     
+    private Intent intent, mainIntent;
+    private ActivityTestRule<MainActivity> mainActivityTestRule;
 
     @Before
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
-        intent2 = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
-
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        intent.putExtras(mainIntent);
+        mainActivityTestRule =
+                new ActivityTestRule<>(MainActivity.class);
     }
-
 
     @Test
     public void testNoHeight() {
