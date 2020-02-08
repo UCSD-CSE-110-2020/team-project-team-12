@@ -109,18 +109,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             WalkDao dao = walkDb.walkDao();
 
             Walk newestWalk = dao.findNewestEntry();
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    TextView stepsWalkText = findViewById(R.id.text_steps_value);
-                    TextView distWalkText = findViewById(R.id.text_distance_value);
-                    TextView timeWalkText = findViewById(R.id.text_time_value);
+            if (newestWalk != null) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
+                        TextView distWalkText = findViewById(R.id.text_distance_value);
+                        TextView timeWalkText = findViewById(R.id.text_time_value);
 
-                    stepsWalkText.setText(newestWalk.steps);
-                    distWalkText.setText(newestWalk.distance);
-                    timeWalkText.setText(newestWalk.duration);
-                }
-            });
+                        stepsWalkText.setText(newestWalk.steps);
+                        distWalkText.setText(newestWalk.distance);
+                        timeWalkText.setText(newestWalk.duration);
+                    }
+                });
+            }
         });
     }
 
