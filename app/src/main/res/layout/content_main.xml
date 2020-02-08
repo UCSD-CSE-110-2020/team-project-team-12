@@ -80,6 +80,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
+        android:id="@+id/text_distance_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0 mi"
+        android:textSize="27dp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/dist"
+        app:layout_constraintStart_toStartOf="@+id/text_steps_value"></TextView>
+
+    <TextView
         android:id="@+id/num_miles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -127,6 +136,17 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
+        android:id="@+id/text_time_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:text="00:00:00"
+        android:textSize="27dp"
+        app:layout_constraintEnd_toEndOf="@+id/text_distance_value"
+        app:layout_constraintStart_toEndOf="@+id/text_distance_value"
+        app:layout_constraintTop_toBottomOf="@+id/text_distance_value"></TextView>
+
+    <TextView
         android:id="@+id/steps_word"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -148,6 +168,17 @@
         android:textSize="27dp"
         app:layout_constraintBottom_toTopOf="@+id/dist"
         app:layout_constraintStart_toStartOf="@+id/previous_walk" />
+
+    <TextView
+        android:id="@+id/text_steps_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_marginBottom="7dp"
+        android:text="0"
+        android:textSize="27dp"
+        app:layout_constraintBottom_toTopOf="@+id/text_distance_value"
+        app:layout_constraintStart_toEndOf="@+id/dist"></TextView>
 
     <Button
         android:id="@+id/btn_start_walk"
