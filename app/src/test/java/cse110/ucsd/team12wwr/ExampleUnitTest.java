@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.google.android.apps.common.testing.accessibility.framework.AccessibilityInfoCheck;
 
@@ -30,12 +31,15 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
 
     private Intent intent, intent2;
+    
 
     @Before
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
         intent2 = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+
     }
+
 
     @Test
     public void testNoHeight() {
@@ -79,42 +83,79 @@ public class ExampleUnitTest {
         });
     }
 
-    // Test going into main activity
     @Test
-    public void testValidHeightMainPage() {
-        ActivityScenario<StartPage> scenario = ActivityScenario.launch(intent);
+    public void testValidStrideLength() {
+        mainActivityTestRule.launchActivity(mainIntent);
+        SharedPreferences spf = mainActivityTestRule.getActivity().spf;
+        SharedPreferences.Editor editor = spf.edit();
+
+        editor.putInt("feet", 5);
+        editor.putInt("inches", 4);
+        editor.apply();
+
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
-            Spinner feetSpin = activity.findViewById(R.id.feet_spinner);
-            Spinner inchSpin = activity.findViewById(R.id.inch_spinner);
-            Button enterBtn = activity.findViewById(R.id.enter_button);
 
-            feetSpin.setSelection(5); // Sets to 5 feet
-            inchSpin.setSelection(5); // Sets to 5 inches
+            Button takeStep = activity.findViewById(R.id.button);
+            TextView dist = (TextView) activity.findViewById(R.id.num_miles);
+            TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
-            assertEquals(feetSpin.getSelectedItem(), 5);
-            assertEquals(inchSpin.getSelectedItem(), 5);
+            assertEquals(spf.getInt("feet", 0), 5);
+            assertEquals(spf.getInt("inches", 0), 4);
 
-            enterBtn.performClick();
+            System.out.print(spf.getInt("inches", 0));
+            assertNotNull(takeStep);
 
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "100");
+            assertEquals(dist.getText().toString(), "0.04");
 
-//            ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
-//            int totalHeight = mainActivityTestRule.getActivity().totalHeight;
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "200");
+            assertEquals(dist.getText().toString(), "0.08");
 
-//            assertEquals(totalHeight, 65);
-
-           //ActivityScenario<MainActivity> scenario1 = AccessibilityInfoCheck
         });
+    }
 
-//
-//        ActivityScenario<MainActivity> scenario2 = ActivityScenario.launch(intent2);
-//        scenario2.onActivity(activity ->{
+    @Test
+    public void testValidStrideLengthTestTwo() {
+        mainActivityTestRule.launchActivity(mainIntent);
+        SharedPreferences spf = mainActivityTestRule.getActivity().spf;
+        SharedPreferences.Editor editor = spf.edit();
 
-//            int totalHeight = activity
-//        });
+        editor.putInt("feet", 6);
+        editor.putInt("inches", 11);
+        editor.apply();
+
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
+        scenario.onActivity(activity -> {
+
+            Button takeStep = activity.findViewById(R.id.button);
+            TextView dist = (TextView) activity.findViewById(R.id.num_miles);
+            TextView step = (TextView) activity.findViewById(R.id.num_steps);
+
+            assertEquals(spf.getInt("feet", 0), 6);
+            assertEquals(spf.getInt("inches", 0), 11);
+
+            System.out.print(spf.getInt("inches", 0));
+            assertNotNull(takeStep);
+
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "100");
+            assertEquals(dist.getText().toString(), "0.05");
+
+            takeStep.performClick();
+            assertEquals(step.getText().toString(), "200");
+            assertEquals(dist.getText().toString(), "0.11");
+
+        });
     }
 }
 
 /**
+
+ public ActivityTestRule<MainActivity> mainActivityTestRule = new ActivityTestRule<MainActivity>(MainActivity.class);
+
 
  private Intent intent;
  private long nextStepCount;
@@ -140,5 +181,28 @@ public class ExampleUnitTest {
  assertThat(textSteps.getText().toString()).isEqualTo(String.valueOf(nextStepCount));
  //assertThat()
  });
+ }
+ */
+
+/**
+ @RunWith(AndroidJUnit4.class)
+ public class NextActivityTest {
+
+ @Rule
+ public ActivityTestRule<NextActivity> activityRule
+ = new ActivityTestRule<>(
+ NextActivity.class,
+ true,     // initialTouchMode
+ false);   // launchActivity. False to customize the intent
+
+ @Test
+ public void intent() {
+ Intent intent = new Intent();
+ intent.putExtra("your_key", "your_value");
+
+ activityRule.launchActivity(intent);
+
+ // Continue with your test
+ }
  }
  */
