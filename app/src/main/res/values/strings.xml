@@ -1,10 +1,25 @@
+
 <resources>
     <string name="app_name">Team 12 WWR</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_intentional_walk">IntentionalWalkActivity</string>
+    <string name="intentional_walk_time">Time: </string>
+    <string name="intentional_walk_steps">Steps: </string>
+    <string name="intentional_walk_distance">Distance: </string>    
+
     <string name="title_activity_start_page">StartPage</string>
     <string name="mile_name">miles</string>
     <string name="home_text">Home</string>
-    <string name="dist">Distance</string>
-    <string name="stepsTaken">Steps Taken</string>
+    <string name="dist">Distance:</string>
+    <string name="totalStepsTaken">Total Steps Taken:</string>
+    <string name="totalDist">Total Distance:</string>
     <string name="step">Steps</string>
+    <string name="steps">Steps:</string>
+    <string name="time">Time:</string>
+    <string name="today">Today</string>
+    <string name="prev_Walk">Previous Walk</string>
+
+
+
 </resources>
+

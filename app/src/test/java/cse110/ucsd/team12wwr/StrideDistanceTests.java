@@ -28,7 +28,7 @@ import static org.junit.Assert.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class ExampleUnitTest {
+public class StrideDistanceTests {
     
     private Intent intent, mainIntent;
     private ActivityTestRule<MainActivity> mainActivityTestRule;
@@ -38,8 +38,8 @@ public class ExampleUnitTest {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
         mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtras(mainIntent);
-        mainActivityTestRule =
-                new ActivityTestRule<>(MainActivity.class);
+        mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
     }
 
     @Test
@@ -97,7 +97,7 @@ public class ExampleUnitTest {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.button);
+            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
@@ -131,7 +131,7 @@ public class ExampleUnitTest {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.button);
+            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
