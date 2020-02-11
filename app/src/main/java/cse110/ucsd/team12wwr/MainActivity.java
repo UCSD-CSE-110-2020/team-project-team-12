@@ -1,5 +1,7 @@
 package cse110.ucsd.team12wwr;
-
+//Comments with ACF are things I removed from hopefully the older implementation
+//that, hopefully don't blow up the whole program but lets find out
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.Context;
@@ -7,11 +9,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +27,11 @@ import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+import cse110.ucsd.team12wwr.fitness.FitnessService;
+import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
+import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
+
+public class MainActivity extends AppCompatActivity {
     /* constants */
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
@@ -32,15 +40,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     SharedPreferences spf;
 
     /* steps */
-    SensorManager sensorManager;
-    boolean running = false;
+    /*SensorManager sensorManager;
+    boolean running = false; ACF */
     TextView textStep;
-    int numSteps;
+    long numSteps;
+
+    /*GoogleFit Nonsense     */
+    public static final String FITNESS_SERVICE_KEY = "FITNESS_SERVICE_KEY";
+    private static final String TAG = "MainActivity";
+    private FitnessService fitnessService;
+    private String fitnessServiceKey = "GOOGLE_FIT";
+
+    /*Async Nonsense */
+    AsyncStepUpdate asyncStepsUpdater;
 
     /* distance */
     TextView textDist;
     int totalHeight;
     double strideLength;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +77,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
         Toolbar toolbar = findViewById(R.id.toolbar);
 
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE); ACF
+        //ACF Added for GoogleFit reasons
+        ///////////////////////////////////////
+        //This happens in Main Activity, the next 2 lines are in stepCountActivity
+        /*FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(MainActivity mainActivity) {
+                return new GoogleFitAdapter(mainActivity);
+            }
+        });*/
+        String fitnessServiceKey = getIntent().getStringExtra(FITNESS_SERVICE_KEY);
+        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
         
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
@@ -85,6 +116,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
             textStep.setText(""+numSteps);
         });
+
+        //ACF begins fitnessService and gets the initial pedometer data
+        /*NOTE: There might eventually be a reason where this shouldn't be near the bottom of onCreate
+        If onCreate ever gets massively unwieldy, */
+        fitnessService.setup();
+        fitnessService.updateStepCount();
+        asyncStepsUpdater = new AsyncStepUpdate();
+        asyncStepsUpdater.execute();
     }
 
     public void launchActivity() {
@@ -95,13 +134,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onResume() {
         super.onResume();
-        running = true;
+        /*running = true;
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if(countSensor != null) {
             sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
         } else {
             Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
-        }
+        }ACF*/
 
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
@@ -129,22 +168,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause() {
         super.onPause();
-        running = false;
+        //running = false; ACF
         // if you unregister the hardware will stop detecting steps
         // sensorManager.unregisterListener(this);
     }
-
+    /*
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(running) {
             textStep.setText(String.valueOf(event.values[0]));
         }
-    }
+    }ACF
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-    }
+    }ACF*/
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
@@ -173,4 +212,66 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         return super.onOptionsItemSelected(item);
     }
+
+    // ACF - method to update textStep and numSteps
+    public void setStepCount(long stepCount) {
+        textStep.setText(String.valueOf(stepCount));
+        numSteps = stepCount;
+    }
+    //ACF - Added as part of GoogleFit functionality 2/10
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+//       If authentication was required during google fit setup, this will be called after the user authenticates
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == fitnessService.getRequestCode()) {
+                fitnessService.updateStepCount();
+            }
+        } else {
+            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
+        }
+    }
+    //ACF - Added to use Async to update info from pedometer
+    private class AsyncStepUpdate extends AsyncTask<String, String, String> {
+        private String resp;
+
+        @Override
+        protected String doInBackground(String... params){
+            for (int i=-1; i<0; i--){
+                try {
+                    Thread.sleep(5000);
+                    System.out.println("CURRENT VALUE OF I: " + i);
+                    publishProgress(resp);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return resp;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            //textResult.setText(result);
+            System.out.println("onPostExecute successful");
+        }
+        @Override
+        protected void onPreExecute() {
+            //textResult.setText("Counter starting");
+            System.out.println("onPreExecute successful");
+        }
+        @Override
+        protected void onProgressUpdate(String...text){
+            //textResult.setText(text[0]);
+            fitnessService.updateStepCount();
+            //System.out.println("onProgressUpdate successful");
+        }
+
+
+
+    }
+
+
+
 }
