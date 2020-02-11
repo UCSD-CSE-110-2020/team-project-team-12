@@ -60,8 +60,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             launchHeightActivity();
         }
 
-        launchRouteInfoActivity();
-
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
 
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
@@ -114,10 +112,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
-    public void launchRouteInfoActivity() {
-        Intent intent = new Intent(this, RouteInformationPage.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onResume() {
