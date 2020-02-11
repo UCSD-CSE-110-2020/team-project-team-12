@@ -62,15 +62,16 @@ public class StartPage extends AppCompatActivity {
                     editor.putInt("inches", inchValue);
                     editor.apply();
 
-                    launchMainActivity();
+                    finish();
+                    //launchMainActivity();
                 }
             }
         });
     }
 
-    public void launchMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
+//    public void launchMainActivity() {
+//        Intent intent = new Intent(this, MainActivity.class);
+//        startActivity(intent);
+//    }
 
 }

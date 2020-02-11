@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +48,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean("HAVE_HEIGHT", false);
+
+        //launchHeightActivity();
+        if(!previouslyStarted) {
+            System.out.println("Never started!");
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean("HAVE_HEIGHT", Boolean.TRUE);
+            edit.commit();
+            launchHeightActivity();
+        }
+
+        launchRouteInfoActivity();
+
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
 
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
@@ -71,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int feet = spf.getInt("feet", 0);
         int inches = spf.getInt("inches", 0);
 
+        System.out.println("FEET: " + feet + " iNCHES: " + inches);
+
         System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
@@ -89,6 +106,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        startActivity(intent);
+    }
+
+    public void launchHeightActivity() {
+        Intent intent = new Intent( this, StartPage.class );
+        startActivity(intent);
+    }
+
+    public void launchRouteInfoActivity() {
+        Intent intent = new Intent(this, RouteInformationPage.class);
         startActivity(intent);
     }
 
@@ -174,3 +201,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return super.onOptionsItemSelected(item);
     }
 }
+
+/*
+
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+    boolean previouslyStarted = prefs.getBoolean(getString(R.string.pref_previously_started), false);
+    if(!previouslyStarted) {
+        SharedPreferences.Editor edit = prefs.edit();
+        edit.putBoolean(getString(R.string.pref_previously_started), Boolean.TRUE);
+        edit.commit();
+        showHelp();
+    }
+ */
