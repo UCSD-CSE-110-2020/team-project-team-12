@@ -38,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
     TextView textStep;
     long numSteps;
 
-    /*GoogleFit     */
+    /* GoogleFit */
     private static final String TAG = "MainActivity";
     private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
-    /*Async */
+    /* Async */
     AsyncStepUpdate asyncStepsUpdater;
 
     /* distance */
@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         });
         Toolbar toolbar = findViewById(R.id.toolbar);
 
+
+        // Create and adapt the FitnessService
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
             @Override
             public FitnessService create(MainActivity mainActivity) {
@@ -93,13 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
         numSteps = 0;
 
-//        btnDebugIncSteps.setOnClickListener((view) -> {
-//            numSteps += 100;
-//            textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
-//            textStep.setText(""+numSteps);
-//        });
 
-        /*PEDOMETER START / ASYNC */
+        /* PEDOMETER START / ASYNC */
         fitnessService.setup();
         fitnessService.updateStepCount();
         asyncStepsUpdater = new AsyncStepUpdate();
@@ -160,10 +157,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //Updates numSteps with pedometer data, sets textDist and textStep
     public void setStepCount(long stepCount) {
-        textStep.setText(String.valueOf(stepCount));
         numSteps = stepCount;
-
         DecimalFormat df = new DecimalFormat("#.##");
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
         textStep.setText(""+numSteps);
@@ -172,7 +168,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
 //       If authentication was required during google fit setup, this will be called after the user authenticates
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == fitnessService.getRequestCode()) {
@@ -182,9 +177,9 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "ERROR, google fit result code: " + resultCode);
         }
     }
-    //Async Class
+    //Async Class, updates step count every 5 seconds
     private class AsyncStepUpdate extends AsyncTask<String, String, String> {
-        private String resp;
+        private String resp = "";
 
         @Override
         protected String doInBackground(String... params){
@@ -196,27 +191,23 @@ public class MainActivity extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-            }g
+            }
             return resp;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            System.out.println("onPostExecute successful");
+            //Nothing needed here yet
         }
         @Override
         protected void onPreExecute() {
-            System.out.println("onPreExecute successful");
+            //Nothing needed here yet
         }
         @Override
         protected void onProgressUpdate(String...text){
             fitnessService.updateStepCount();
         }
 
-
-
     }
-
-
 
 }
