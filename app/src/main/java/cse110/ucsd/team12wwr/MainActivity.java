@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
+    DecimalFormat DF = new DecimalFormat("#.##");
 
+    /* height */
     SharedPreferences spf;
 
     /* steps */
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean("HAVE_HEIGHT", false);
 
-        //launchHeightActivity();
+        // Launches height activity only on first start
         if(!previouslyStarted) {
             System.out.println("Never started!");
             SharedPreferences.Editor edit = prefs.edit();
@@ -79,26 +81,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
-        // Collect the height from the previous page
+        // Collect the height from the height page
         spf = getSharedPreferences("height", MODE_PRIVATE);
         int feet = spf.getInt("feet", 0);
         int inches = spf.getInt("inches", 0);
 
-        System.out.println("FEET: " + feet + " iNCHES: " + inches);
-
-        System.out.println("feet: " + feet + " inches: "  + inches);
+//        System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        numSteps = 0;
-        DecimalFormat df = new DecimalFormat("#.##");
-        textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
+        SharedPreferences spf2 = getSharedPreferences("TOTAL_DIST_STEP", MODE_PRIVATE);
+        SharedPreferences.Editor editor = spf2.edit();
+        if ( spf2.getInt("totalSteps", 0) == 0 ) {
+            editor.putInt("totalSteps", 0);
+            editor.apply();
+        }
 
-        btnDebugIncSteps.setOnClickListener((view) -> {
-            numSteps += 100;
-            textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
-            textStep.setText(""+numSteps);
+        numSteps = spf2.getInt("totalSteps", 0);
+        textStep.setText(""+numSteps);
+        textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
+
+        btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                numSteps += 100;
+                editor.putInt("totalSteps", numSteps+=100);
+//                double totalDist = strideLength / MILE_FACTOR * numSteps;
+                editor.apply();
+                textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
+                textStep.setText(""+spf2.getInt("totalSteps", 0));
+            }
         });
     }
 
@@ -197,7 +210,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 }
 
 /*
-
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
     boolean previouslyStarted = prefs.getBoolean(getString(R.string.pref_previously_started), false);
     if(!previouslyStarted) {
