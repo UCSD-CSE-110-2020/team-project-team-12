@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int feet = spf.getInt(FEET_KEY, 0);
         int inches = spf.getInt(INCHES_KEY, 0);
 
-//        System.out.println("feet: " + feet + " inches: "  + inches);
+        System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;

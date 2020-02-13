@@ -18,6 +18,10 @@ import android.widget.Toast;
 
 public class StartPage extends AppCompatActivity {
 
+    final String HEIGHT_SPF_NAME = "HEIGHT";
+    final String FEET_KEY = "FEET";
+    final String INCHES_KEY = "INCHES";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +57,11 @@ public class StartPage extends AppCompatActivity {
                 if ( feetValue == 0 && inchValue == 0 ) {
                     Toast.makeText(StartPage.this, "You can't be 0 feet and 0 inches! Impossible!", Toast.LENGTH_SHORT).show();
                 } else {
-                    SharedPreferences sharedPreferences = getSharedPreferences("height", MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    editor.putInt("feet", feetValue);
-                    editor.putInt("inches", inchValue);
+                    editor.putInt(FEET_KEY, feetValue);
+                    editor.putInt(INCHES_KEY, inchValue);
                     editor.apply();
 
                     finish();
