@@ -10,6 +10,7 @@ import androidx.room.RoomDatabase;
 public abstract class WalkDatabase extends RoomDatabase {
     private static volatile WalkDatabase INSTANCE;
     public abstract WalkDao walkDao();
+    public abstract RouteDao routeDao();
 
     public static WalkDatabase getInstance(Context context) {
         if (INSTANCE == null) {
