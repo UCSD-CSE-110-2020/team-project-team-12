@@ -13,7 +13,6 @@ public class Route {
     @PrimaryKey @NonNull
     public String name;
 
-    @NonNull
     public String startingPoint;
 
     @TypeConverters(RouteType.class)
