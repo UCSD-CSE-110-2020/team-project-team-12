@@ -30,6 +30,7 @@ public class SaveHeightTest {
         mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtras(mainIntent);
         mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+
     }
 
     @Test
