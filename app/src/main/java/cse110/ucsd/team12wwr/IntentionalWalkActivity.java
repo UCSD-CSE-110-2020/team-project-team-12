@@ -26,7 +26,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
     private int temporaryNumSteps;
 
-    private iClock clock;
+    private IClock clock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +111,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
     }
 
-    protected void setClock(iClock clock) {
+    protected void setClock(IClock clock) {
         this.clock = clock;
     }
 
