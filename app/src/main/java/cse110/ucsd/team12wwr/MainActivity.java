@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     DecimalFormat DF = new DecimalFormat("#.##");
 
     /* height */
-    SharedPreferences spf;
+    SharedPreferences spf, spf2, prefs;
 
     /* steps */
     SensorManager sensorManager;
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean("HAVE_HEIGHT", false);
 
         // Launches height activity only on first start
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        SharedPreferences spf2 = getSharedPreferences("TOTAL_DIST_STEP", MODE_PRIVATE);
+        spf2 = getSharedPreferences("TOTAL_DIST_STEP", MODE_PRIVATE);
         SharedPreferences.Editor editor = spf2.edit();
         if ( spf2.getInt("totalSteps", 0) == 0 ) {
             editor.putInt("totalSteps", 0);

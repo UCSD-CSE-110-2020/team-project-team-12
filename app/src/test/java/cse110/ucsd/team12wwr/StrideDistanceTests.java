@@ -124,6 +124,8 @@ public class StrideDistanceTests {
         SharedPreferences spf = mainActivityTestRule.getActivity().spf;
         SharedPreferences.Editor editor = spf.edit();
 
+        SharedPreferences spf2 = mainActivityTestRule.getActivity().spf2;
+
         editor.putInt("feet", 6);
         editor.putInt("inches", 11);
         editor.apply();
@@ -138,7 +140,6 @@ public class StrideDistanceTests {
             assertEquals(spf.getInt("feet", 0), 6);
             assertEquals(spf.getInt("inches", 0), 11);
 
-            System.out.print(spf.getInt("inches", 0));
             assertNotNull(takeStep);
 
             takeStep.performClick();
@@ -167,21 +168,6 @@ public class StrideDistanceTests {
  FitnessServiceFactory.put(TEST_SERVICE, TestFitnessService::new);
  intent = new Intent(ApplicationProvider.getApplicationContext(), StepCountActivity.class);
  intent.putExtra(StepCountActivity.FITNESS_SERVICE_KEY, TEST_SERVICE);
- }
-
- @Test
- public void testUpdateStepsButton() {
- nextStepCount = 1337;
-
- ActivityScenario<StepCountActivity> scenario = ActivityScenario.launch(intent);
- scenario.onActivity(activity -> {
- TextView textSteps = activity.findViewById(R.id.textSteps);
- Button btnUpdateSteps = activity.findViewById(R.id.buttonUpdateSteps);
- assertThat(textSteps.getText().toString()).isEqualTo("steps will be shown here");
- btnUpdateSteps.performClick();
- assertThat(textSteps.getText().toString()).isEqualTo(String.valueOf(nextStepCount));
- //assertThat()
- });
  }
  */
 
