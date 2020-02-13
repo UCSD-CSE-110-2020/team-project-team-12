@@ -1,7 +1,9 @@
 package cse110.ucsd.team12wwr;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -10,6 +12,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -44,7 +47,33 @@ public class MainActivity extends AppCompatActivity {
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
     /* Async */
-    AsyncStepUpdate asyncStepsUpdater;
+    //AsyncStepUpdate asyncStepsUpdater;
+    /*SERVICE*/
+    private PedometerService pedoService;
+    private boolean isBound;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service){
+            PedometerService.LocalService localService = (PedometerService.LocalService)service;
+            //service.Stub.asInterface(service);
+            //PedometerService.Stub.asInterface(service);
+            //System.out.println("LOOK FOR THIS LINE" + service);
+            System.out.println("COMMENCE WAIT TIME");
+            try{
+                Thread.sleep(5000);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+            pedoService = localService.getService();
+            isBound = true;
+            System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            pedoService.gimmethemsteppies(fitnessService);
+
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {isBound = false;}
+    };
 
     /* distance */
     TextView textDist;
@@ -55,6 +84,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /*SERVICE START*/
+        Intent intent = new Intent(this, PedometerService.class);
+        System.out.println("COMMENCE BIND");
+        //bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        /*SERVICE END*/
+
 
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
 
@@ -98,9 +134,11 @@ public class MainActivity extends AppCompatActivity {
 
         /* PEDOMETER START / ASYNC */
         fitnessService.setup();
-        fitnessService.updateStepCount();
-        asyncStepsUpdater = new AsyncStepUpdate();
-        asyncStepsUpdater.execute();
+        //fitnessService.updateStepCount();
+        //REPLACE THIS WITH THE SERVICE
+        //asyncStepsUpdater = new AsyncStepUpdate();
+        //asyncStepsUpdater.execute();
+
     }
 
     public void launchActivity() {
@@ -178,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     //Async Class, updates step count every 5 seconds
+    /*
     private class AsyncStepUpdate extends AsyncTask<String, String, String> {
         private String resp = "";
 
@@ -205,9 +244,29 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         protected void onProgressUpdate(String...text){
+            //the service will do this
             fitnessService.updateStepCount();
         }
 
+    }
+*/
+
+
+
+
+
+
+
+
+
+
+    @Override
+    protected void onDestroy() {
+        if(isBound){
+            unbindService(serviceConnection);
+            isBound = false;
+        }
+        super.onDestroy();
     }
 
 }

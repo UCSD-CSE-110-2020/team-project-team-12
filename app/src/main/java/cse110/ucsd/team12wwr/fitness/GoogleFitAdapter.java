@@ -43,7 +43,7 @@ public class GoogleFitAdapter implements FitnessService {
                     account,
                     fitnessOptions);
         } else {
-            updateStepCount();
+            //updateStepCount();
             startRecording();
         }
     }
@@ -58,8 +58,7 @@ public class GoogleFitAdapter implements FitnessService {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
-                        //Log.i(TAG, "Successfully subscribed!");
+                        Log.i(TAG, "Successfully subscribed!");
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -86,14 +85,12 @@ public class GoogleFitAdapter implements FitnessService {
                         new OnSuccessListener<DataSet>() {
                             @Override
                             public void onSuccess(DataSet dataSet) {
-                                //Log.d(TAG, dataSet.toString());
                                 long total =
                                         dataSet.isEmpty()
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(Field.FIELD_STEPS).asInt();
 
                                 activity.setStepCount(total); //THIS IS WHERE SETSTEPCOUNT HAPPENS
-                                //Log.d(TAG, "Total steps: " + total);
                             }
                         })
                 .addOnFailureListener(
