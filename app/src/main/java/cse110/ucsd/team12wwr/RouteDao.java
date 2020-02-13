@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -14,6 +15,9 @@ public interface RouteDao {
 
     @Delete
     void delete(Route r);
+
+    @Update
+    void update(Route r);
 
     @Query("SELECT * FROM Route r ORDER BY name ASC")
     List<Route> retrieveAllRoutes();
