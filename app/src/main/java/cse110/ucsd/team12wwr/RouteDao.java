@@ -15,6 +15,6 @@ public interface RouteDao {
     @Delete
     void delete(Route r);
 
-    @Query("SELECT * FROM Route r")
+    @Query("SELECT * FROM Route r ORDER BY name ASC")
     List<Route> retrieveAllRoutes();
 }
