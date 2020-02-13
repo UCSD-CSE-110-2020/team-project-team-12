@@ -3,12 +3,16 @@ package cse110.ucsd.team12wwr;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import org.apache.tools.ant.Main;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowIntent;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -18,11 +22,15 @@ import androidx.test.rule.ActivityTestRule;
 import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(AndroidJUnit4.class)
 public class SaveHeightTest {
     private Intent intent, mainIntent;
     private ActivityTestRule<MainActivity> mainActivityTestRule;
+    private ActivityTestRule<StartPage> startPageActivityTestRule;
 
     @Before
     public void setUp() {
@@ -30,7 +38,7 @@ public class SaveHeightTest {
         mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtras(mainIntent);
         mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
-
+        startPageActivityTestRule = new ActivityTestRule<>(StartPage.class);
     }
 
     @Test
@@ -95,7 +103,6 @@ public class SaveHeightTest {
         assertEquals(6 , spf.getInt("inches", 0));
 
     }
-
 
 
 }
