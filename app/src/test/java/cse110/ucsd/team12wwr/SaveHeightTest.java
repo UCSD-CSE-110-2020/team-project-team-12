@@ -67,22 +67,31 @@ public class SaveHeightTest {
 
     @Test
     public void testHeightIsSaved() {
+
         mainActivityTestRule.launchActivity(mainIntent);
+
         SharedPreferences prefs = mainActivityTestRule.getActivity().prefs;
         SharedPreferences spf = mainActivityTestRule.getActivity().spf;
+        SharedPreferences.Editor editor = spf.edit();
 
         assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), true);
-        assertNotEquals(0 , spf.getInt("feet", 0));
-        assertNotEquals(0 , spf.getInt("inches", 0));
+
+        assertEquals(0 , spf.getInt("feet", 0));
+        assertEquals(0 , spf.getInt("inches", 0));
+
+        editor.putInt("feet", 5);
+        editor.putInt("inches", 6);
+        editor.apply();
 
         mainActivityTestRule.finishActivity();
+        mainActivityTestRule.getActivityResult();
         mainActivityTestRule.launchActivity(mainIntent);
 
         prefs = mainActivityTestRule.getActivity().prefs;
 
         assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), true);
-        assertNotEquals(0 , spf.getInt("feet", 0));
-        assertNotEquals(0 , spf.getInt("inches", 0));
+        assertEquals(5 , spf.getInt("feet", 0));
+        assertEquals(6 , spf.getInt("inches", 0));
 
     }
 
