@@ -48,8 +48,8 @@ public class SaveHeightTest {
         SharedPreferences.Editor editor = spf.edit();
         SharedPreferences spf2 = mainActivityTestRule.getActivity().spf2;
 
-        editor.putInt("feet", 7);
-        editor.putInt("inches", 3);
+        editor.putInt("FEET", 7);
+        editor.putInt("INCHES", 3);
         editor.apply();
 
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
@@ -58,8 +58,8 @@ public class SaveHeightTest {
             Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
 
-            assertEquals(spf.getInt("feet", 0), 7);
-            assertEquals(spf.getInt("inches", 0), 3);
+            assertEquals(spf.getInt("FEET", 0), 7);
+            assertEquals(spf.getInt("INCHES", 0), 3);
 
             assertNotNull(takeStep);
 
@@ -85,11 +85,11 @@ public class SaveHeightTest {
 
         assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), true);
 
-        assertEquals(0 , spf.getInt("feet", 0));
-        assertEquals(0 , spf.getInt("inches", 0));
+        assertEquals(0 , spf.getInt("FEET", 0));
+        assertEquals(0 , spf.getInt("INCHES", 0));
 
-        editor.putInt("feet", 5);
-        editor.putInt("inches", 6);
+        editor.putInt("FEET", 5);
+        editor.putInt("INCHES", 6);
         editor.apply();
 
         mainActivityTestRule.finishActivity();
@@ -99,8 +99,8 @@ public class SaveHeightTest {
         prefs = mainActivityTestRule.getActivity().prefs;
 
         assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), true);
-        assertEquals(5 , spf.getInt("feet", 0));
-        assertEquals(6 , spf.getInt("inches", 0));
+        assertEquals(5 , spf.getInt("FEET", 0));
+        assertEquals(6 , spf.getInt("INCHES", 0));
 
     }
 
