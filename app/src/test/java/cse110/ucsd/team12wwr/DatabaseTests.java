@@ -87,5 +87,72 @@ public class DatabaseTests {
         t.start();
     }
 
+    @Test
+    public void testInsertSingleRoute() {
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                Route newEntry = new Route();
+                newEntry.name = "Mission Hills Tour";
+                newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+                newEntry.routeType = Route.RouteType.LOOP;
+                newEntry.hilliness = Route.Hilliness.FLAT;
+                newEntry.surfaceType = Route.SurfaceType.STREETS;
+                newEntry.evenness = Route.Evenness.EVEN_SURFACE;
+                newEntry.difficulty = Route.Difficulty.MODERATE;
+                newEntry.notes = "This is a pretty dope route wanna do it again";
+                db.routeDao().insertAll(newEntry);
+
+                List<Route> routes = db.routeDao().retrieveAllRoutes();
+                Route r = routes.get(0);
+                assertEquals("Mission Hills Tour", r.name);
+                assertEquals("Kufuerstendamm & Friedrichstrasse", r.startingPoint);
+                assertEquals(Route.RouteType.LOOP, r.routeType);
+                assertEquals(Route.Hilliness.FLAT, r.hilliness);
+                assertEquals(Route.SurfaceType.STREETS, r.surfaceType);
+                assertEquals(Route.Evenness.EVEN_SURFACE, r.evenness);
+                assertEquals(Route.Difficulty.MODERATE, r.difficulty);
+                assertEquals("This is a pretty dope route wanna do it again", r.notes);
+            }
+        };
+        t.start();
+    }
+
+    @Test
+    public void testInsertMultipleRoutes() {
+        int NUM_OF_ENTRIES = 3;
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                Route[] routeArr = new Route[NUM_OF_ENTRIES];
+                for (int i = 0; i < NUM_OF_ENTRIES; i++) {
+                    routeArr[i] = new Route();
+                }
+
+                Route newEntry = routeArr[0];
+                newEntry.name = "Mission Hills Tour";
+                newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+                newEntry.routeType = Route.RouteType.LOOP;
+                newEntry.hilliness = Route.Hilliness.FLAT;
+                newEntry.surfaceType = Route.SurfaceType.STREETS;
+                newEntry.evenness = Route.Evenness.EVEN_SURFACE;
+                newEntry.difficulty = Route.Difficulty.MODERATE;
+                newEntry.notes = "This is a pretty dope route wanna do it again";
+                db.routeDao().insertAll(newEntry);
+
+                routeArr[1].name = "Hike to Mars";
+
+                routeArr[2].name = "Zamba!";
+
+                List<Route> routes = db.routeDao().retrieveAllRoutes();
+                assertEquals("Hike to Mars", routes.get(0));
+                assertEquals("Mission Hills Tour", routes.get(1));
+                assertEquals("Zamba!", routes.get(2));
+
+            }
+        };
+        t.start();
+    }
+
     /* TODO: try specifying an empty primary key */
 }
