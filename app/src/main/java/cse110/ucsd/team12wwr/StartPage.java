@@ -32,14 +32,12 @@ public class StartPage extends AppCompatActivity {
         ArrayAdapter<Integer> feet_adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, foot_items);
         foot_dropdown.setAdapter(feet_adapter);
         foot_dropdown.setSelection(0);
-        //foot_dropdown.setPrompt("0");
 
         final Spinner inch_dropdown = findViewById(R.id.inch_spinner);
         final Integer[] inch_items = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         ArrayAdapter<Integer> inch_adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, inch_items);
         inch_dropdown.setAdapter(inch_adapter);
         inch_dropdown.setSelection(0);
-        //inch_dropdown.setPrompt("0");
 
         // Button to launch new page
         Button launchMainPage = (Button) findViewById(R.id.enter_button);
@@ -63,15 +61,9 @@ public class StartPage extends AppCompatActivity {
                     editor.apply();
 
                     finish();
-                    //launchMainActivity();
                 }
             }
         });
     }
-
-//    public void launchMainActivity() {
-//        Intent intent = new Intent(this, MainActivity.class);
-//        startActivity(intent);
-//    }
 
 }
