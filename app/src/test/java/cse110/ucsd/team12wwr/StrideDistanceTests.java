@@ -90,8 +90,8 @@ public class StrideDistanceTests {
         SharedPreferences spf = mainActivityTestRule.getActivity().spf;
         SharedPreferences.Editor editor = spf.edit();
 
-        editor.putInt("feet", 5);
-        editor.putInt("inches", 4);
+        editor.putInt("FEET", 5);
+        editor.putInt("INCHES", 4);
         editor.apply();
 
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
@@ -101,10 +101,10 @@ public class StrideDistanceTests {
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
-            assertEquals(spf.getInt("feet", 0), 5);
-            assertEquals(spf.getInt("inches", 0), 4);
+            assertEquals(spf.getInt("FEET", 0), 5);
+            assertEquals(spf.getInt("INCHES", 0), 4);
 
-            System.out.print(spf.getInt("inches", 0));
+            System.out.print(spf.getInt("INCHES", 0));
             assertNotNull(takeStep);
 
             takeStep.performClick();
@@ -126,8 +126,8 @@ public class StrideDistanceTests {
 
         SharedPreferences spf2 = mainActivityTestRule.getActivity().spf2;
 
-        editor.putInt("feet", 6);
-        editor.putInt("inches", 11);
+        editor.putInt("FEET", 6);
+        editor.putInt("INCHES", 11);
         editor.apply();
 
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
@@ -137,8 +137,8 @@ public class StrideDistanceTests {
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
-            assertEquals(spf.getInt("feet", 0), 6);
-            assertEquals(spf.getInt("inches", 0), 11);
+            assertEquals(spf.getInt("FEET", 0), 6);
+            assertEquals(spf.getInt("INCHES", 0), 11);
 
             assertNotNull(takeStep);
 
