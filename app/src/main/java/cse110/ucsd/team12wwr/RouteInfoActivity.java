@@ -32,8 +32,10 @@ public class RouteInfoActivity extends AppCompatActivity {
     final String UNEVEN = "Uneven Surface";
     final String NONETYPE = "";
 
+    /* Favorite button */
     boolean isFavorite = false;
 
+    /* Difficult */
     boolean isEasy = false;
     boolean isModerate = false;
     boolean isHard = false;
@@ -120,21 +122,7 @@ public class RouteInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: Easy Button is clicked");
                 //Make sure button hasn't been pressed
-                if (isEasy) {
-                    isEasy = false;
-                    easyBtn.setBackground(defaultColor);
-                    easyBtn.setTextColor(Color.parseColor("#000000"));
-                } else  {
-                    isModerate = false;
-                    moderateBtn.setBackground(defaultColor);
-                    moderateBtn.setTextColor(Color.parseColor("#000000"));
-                    isHard = false;
-                    hardBtn.setBackground(defaultColor);
-                    hardBtn.setTextColor(Color.parseColor("#000000"));
-                    isEasy = true;
-                    easyBtn.setBackgroundColor(Color.parseColor("#787878"));
-                    easyBtn.setTextColor(Color.parseColor("#FFFFFF"));
-                }
+                setEasyButton(easyBtn, moderateBtn, hardBtn);
             }
         });
 
@@ -142,22 +130,8 @@ public class RouteInfoActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: Moderate Button is clicked");
-                //Make sure button hasn't been pressed
-                if (isModerate) {
-                    isModerate = false;
-                    moderateBtn.setBackground(defaultColor);
-                    moderateBtn.setTextColor(Color.parseColor("#000000"));
-                } else  {
-                    isEasy = false;
-                    easyBtn.setBackground(defaultColor);
-                    easyBtn.setTextColor(Color.parseColor("#000000"));
-                    isHard = false;
-                    hardBtn.setBackground(defaultColor);
-                    hardBtn.setTextColor(Color.parseColor("#000000"));
-                    isModerate = true;
-                    moderateBtn.setBackgroundColor(Color.parseColor("#787878"));
-                    moderateBtn.setTextColor(Color.parseColor("#FFFFFF"));
-                }
+                //Make sure button hasn't been pressed'
+                setModerateButton(easyBtn, moderateBtn, hardBtn);
             }
         });
 
@@ -166,23 +140,73 @@ public class RouteInfoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Log.d(TAG, "onClick: Hard Button is clicked");
                 //Make sure button hasn't been pressed
-                if (isHard) {
-                    isHard = false;
-                    hardBtn.setBackground(defaultColor);
-                    hardBtn.setTextColor(Color.parseColor("#000000"));
-                } else {
-                    isModerate = false;
-                    moderateBtn.setBackground(defaultColor);
-                    moderateBtn.setTextColor(Color.parseColor("#000000"));
-                    isEasy = false;
-                    easyBtn.setBackground(defaultColor);
-                    easyBtn.setTextColor(Color.parseColor("#000000"));
-                    isHard = true;
-                    hardBtn.setBackgroundColor(Color.parseColor("#787878"));
-                    hardBtn.setTextColor(Color.parseColor("#FFFFFF"));
-                }
+                setHardButton(easyBtn, moderateBtn, hardBtn);
             }
         });
 
     }
+
+    public void setEasyButton(Button easyBtn, Button moderateBtn, Button hardBtn) {
+        if (isEasy) {
+            isEasy = false;
+            easyBtn.setBackground(defaultColor);
+            easyBtn.setTextColor(Color.parseColor("#000000"));
+        } else  {
+            isModerate = false;
+            moderateBtn.setBackground(defaultColor);
+            moderateBtn.setTextColor(Color.parseColor("#000000"));
+            isHard = false;
+            hardBtn.setBackground(defaultColor);
+            hardBtn.setTextColor(Color.parseColor("#000000"));
+            isEasy = true;
+            easyBtn.setBackgroundColor(Color.parseColor("#787878"));
+            easyBtn.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+        Log.d(TAG, "onClick: isHard: " + isHard );
+        Log.d(TAG, "onClick: isModerate: " + isModerate);
+        Log.d(TAG, "onClick: isEasy: " + isEasy);
+    }
+
+    public void setModerateButton(Button easyBtn, Button moderateBtn, Button hardBtn) {
+        if (isModerate) {
+            isModerate = false;
+            moderateBtn.setBackground(defaultColor);
+            moderateBtn.setTextColor(Color.parseColor("#000000"));
+        } else  {
+            isEasy = false;
+            easyBtn.setBackground(defaultColor);
+            easyBtn.setTextColor(Color.parseColor("#000000"));
+            isHard = false;
+            hardBtn.setBackground(defaultColor);
+            hardBtn.setTextColor(Color.parseColor("#000000"));
+            isModerate = true;
+            moderateBtn.setBackgroundColor(Color.parseColor("#787878"));
+            moderateBtn.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+        Log.d(TAG, "onClick: isHard: " + isHard );
+        Log.d(TAG, "onClick: isModerate: " + isModerate);
+        Log.d(TAG, "onClick: isEasy: " + isEasy);
+    }
+
+    public void setHardButton(Button easyBtn, Button moderateBtn, Button hardBtn) {
+        if (isHard) {
+            isHard = false;
+            hardBtn.setBackground(defaultColor);
+            hardBtn.setTextColor(Color.parseColor("#000000"));
+        } else {
+            isModerate = false;
+            moderateBtn.setBackground(defaultColor);
+            moderateBtn.setTextColor(Color.parseColor("#000000"));
+            isEasy = false;
+            easyBtn.setBackground(defaultColor);
+            easyBtn.setTextColor(Color.parseColor("#000000"));
+            isHard = true;
+            hardBtn.setBackgroundColor(Color.parseColor("#787878"));
+            hardBtn.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+        Log.d(TAG, "onClick: isHard: " + isHard );
+        Log.d(TAG, "onClick: isModerate: " + isModerate);
+        Log.d(TAG, "onClick: isEasy: " + isEasy);
+    }
+
 }
