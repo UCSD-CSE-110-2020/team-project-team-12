@@ -46,7 +46,7 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void testInsertMultipleWalks() {
+    public void testNewestMultipleWalks() {
         int NUM_OF_ENTRIES = 3;
         Walk[] walkArr = new Walk[NUM_OF_ENTRIES];
         for (int i = 0; i < NUM_OF_ENTRIES; i++) {
@@ -101,7 +101,7 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void testInsertMultipleRoutes() {
+    public void testAlphabeticalOrderRoutes() {
         int NUM_OF_ENTRIES = 3;
         Route[] routeArr = new Route[NUM_OF_ENTRIES];
         for (int i = 0; i < NUM_OF_ENTRIES; i++) {
