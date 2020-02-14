@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        launchRouteInfoActivity();
+        
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
@@ -131,6 +133,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
+    public void launchRouteInfoActivity() {
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onResume() {
