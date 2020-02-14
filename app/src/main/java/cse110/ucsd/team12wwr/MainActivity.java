@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     final int MILE_FACTOR = 63360;
     DecimalFormat DF = new DecimalFormat("#.##");
     final String FIRST_LAUNCH = "HAVE_HEIGHT";
-    final String HEIGHT = "HEIGHT";
+    final String HEIGHT = "height";
     final String FEET = "FEET";
     final String INCHES = "INCHES";
     final String STEP_SPF = "TOTAL_DIST_STEP";
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int feet = spf.getInt(FEET, 0);
         int inches = spf.getInt(INCHES, 0);
 
-//        System.out.println("feet: " + feet + " inches: "  + inches);
+        System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
