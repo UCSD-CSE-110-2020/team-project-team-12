@@ -310,6 +310,30 @@
             android:textSize="15sp" />
     </LinearLayout>
 
+    <CheckBox
+        android:id="@+id/favoriteCheckBtn"
+        android:layout_width="40dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="104dp"
+        android:button="@drawable/favorite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout5"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+
+    <TextView
+        android:id="@+id/favoriteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Favorite?"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/favoriteCheckBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout5"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
+        app:layout_constraintVertical_bias="1.0" />
+
     <LinearLayout
         android:id="@+id/linearLayout7"
         android:layout_width="match_parent"
@@ -336,16 +360,5 @@
             android:text="Save"
             android:textSize="15sp" />
     </LinearLayout>
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="42dp"
-        android:text="CheckBox"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

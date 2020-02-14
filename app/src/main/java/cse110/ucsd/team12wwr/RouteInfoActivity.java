@@ -2,10 +2,13 @@ package cse110.ucsd.team12wwr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
@@ -13,6 +16,8 @@ import java.lang.reflect.Array;
 
 public class RouteInfoActivity extends AppCompatActivity {
 
+    /* Constants */
+    private static final String TAG = "RouteInfoActivity";
     final String LOOP = "Loop";
     final String OUT_N_BACK = "Out-and-Back";
     final String FLAT = "Flat";
@@ -53,14 +58,29 @@ public class RouteInfoActivity extends AppCompatActivity {
         ArrayAdapter<String> texture_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, textureItems);
         textureSpinner.setAdapter(texture_adapter);
 
+        Log.d(TAG, "onCreate: Page is now set up");
         // Favorite button
-        ImageButton favoriteBtn = findViewById(R.id.favorite_btn);
+        CheckBox favoriteBtn = findViewById(R.id.favoriteCheckBtn);
         favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( favoriteBtn.getTag().equals("@android:drawable/star_big_off")) {
-                    
+                if ( favoriteBtn.isChecked() ) {
+                    isFavorite = true;
+                    Log.d(TAG, "onClick: isFavorite: " + isFavorite);
+                } else {
+                    isFavorite = false;
+                    Log.d(TAG, "onClick: isFavorite: " + isFavorite);
                 }
+//                    favoriteBtn.setImageResource(R.drawable.);
+//                System.out.println("Tag: " + favoriteBtn.getTag());
+//                System.out.println(favoriteBtn.getDrawable());
+////                if ( favoriteBtn.getTag() == "@android:drawable/star_big_off") {
+////                    favoriteBtn.setTag("@android:drawable/star_big_on");
+////                    isFavorite = true;
+////                } else {
+////                    favoriteBtn.setTag("@android:drawable/star_big_off");
+////                    isFavorite = false;
+////                }
             }
         });
 
