@@ -1,4 +1,4 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.database;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;

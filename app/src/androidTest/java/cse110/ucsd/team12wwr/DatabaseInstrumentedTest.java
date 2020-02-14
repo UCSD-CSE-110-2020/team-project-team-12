@@ -13,16 +13,20 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import cse110.ucsd.team12wwr.database.Route;
+import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class DatabaseInstrumentedTest {
-    private WalkDatabase db;
+    private WWRDatabase db;
 
     @Before
     public void setUp() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        db = Room.inMemoryDatabaseBuilder(context, WalkDatabase.class).build();
+        db = Room.inMemoryDatabaseBuilder(context, WWRDatabase.class).build();
     }
 
     @After
