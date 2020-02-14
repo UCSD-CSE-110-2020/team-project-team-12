@@ -150,17 +150,17 @@ public class RouteInfoActivity extends AppCompatActivity {
         if (isEasy) {
             isEasy = false;
             easyBtn.setBackground(defaultColor);
-            easyBtn.setTextColor(Color.parseColor("#000000"));
+            easyBtn.setTextColor(Color.BLACK);
         } else  {
             isModerate = false;
             moderateBtn.setBackground(defaultColor);
-            moderateBtn.setTextColor(Color.parseColor("#000000"));
+            moderateBtn.setTextColor(Color.BLACK);
             isHard = false;
             hardBtn.setBackground(defaultColor);
-            hardBtn.setTextColor(Color.parseColor("#000000"));
+            hardBtn.setTextColor(Color.BLACK);
             isEasy = true;
             easyBtn.setBackgroundColor(Color.parseColor("#787878"));
-            easyBtn.setTextColor(Color.parseColor("#FFFFFF"));
+            easyBtn.setTextColor(Color.WHITE);
         }
         Log.d(TAG, "onClick: isHard: " + isHard );
         Log.d(TAG, "onClick: isModerate: " + isModerate);
@@ -171,17 +171,17 @@ public class RouteInfoActivity extends AppCompatActivity {
         if (isModerate) {
             isModerate = false;
             moderateBtn.setBackground(defaultColor);
-            moderateBtn.setTextColor(Color.parseColor("#000000"));
+            moderateBtn.setTextColor(Color.BLACK);
         } else  {
             isEasy = false;
             easyBtn.setBackground(defaultColor);
-            easyBtn.setTextColor(Color.parseColor("#000000"));
+            easyBtn.setTextColor(Color.BLACK);
             isHard = false;
             hardBtn.setBackground(defaultColor);
-            hardBtn.setTextColor(Color.parseColor("#000000"));
+            hardBtn.setTextColor(Color.BLACK);
             isModerate = true;
             moderateBtn.setBackgroundColor(Color.parseColor("#787878"));
-            moderateBtn.setTextColor(Color.parseColor("#FFFFFF"));
+            moderateBtn.setTextColor(Color.WHITE);
         }
         Log.d(TAG, "onClick: isHard: " + isHard );
         Log.d(TAG, "onClick: isModerate: " + isModerate);
@@ -192,17 +192,17 @@ public class RouteInfoActivity extends AppCompatActivity {
         if (isHard) {
             isHard = false;
             hardBtn.setBackground(defaultColor);
-            hardBtn.setTextColor(Color.parseColor("#000000"));
+            hardBtn.setTextColor(Color.BLACK);
         } else {
             isModerate = false;
             moderateBtn.setBackground(defaultColor);
-            moderateBtn.setTextColor(Color.parseColor("#000000"));
+            moderateBtn.setTextColor(Color.BLACK);
             isEasy = false;
             easyBtn.setBackground(defaultColor);
-            easyBtn.setTextColor(Color.parseColor("#000000"));
+            easyBtn.setTextColor(Color.BLACK);
             isHard = true;
             hardBtn.setBackgroundColor(Color.parseColor("#787878"));
-            hardBtn.setTextColor(Color.parseColor("#FFFFFF"));
+            hardBtn.setTextColor(Color.WHITE);
         }
         Log.d(TAG, "onClick: isHard: " + isHard );
         Log.d(TAG, "onClick: isModerate: " + isModerate);
