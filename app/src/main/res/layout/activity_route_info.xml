@@ -314,25 +314,24 @@
         android:id="@+id/favoriteCheckBtn"
         android:layout_width="40dp"
         android:layout_height="42dp"
-        android:layout_marginTop="104dp"
+        android:layout_marginTop="4dp"
         android:button="@drawable/favorite"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.529"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout4"
+        app:layout_constraintTop_toBottomOf="@+id/favoriteTextView" />
 
     <TextView
         android:id="@+id/favoriteTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:text="Favorite?"
         android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/favoriteCheckBtn"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintHorizontal_bias="0.471"
         app:layout_constraintStart_toEndOf="@+id/linearLayout5"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout6"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
 
     <LinearLayout
         android:id="@+id/linearLayout7"
