@@ -42,6 +42,9 @@
     <string name="fav_text">Favorite?</string>
     <string name="cancel_text">Cancel</string>
     <string name="save_text">Save</string>
+    <string name="route_edit_hint">Name of Route</string>
+    <string name="start_edit_hint">Where you started</string>
+    <string name="end_edit_hint">Where you ended</string>
 
 
 

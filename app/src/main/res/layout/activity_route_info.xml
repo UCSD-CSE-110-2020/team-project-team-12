@@ -30,7 +30,7 @@
                 android:layout_width="234dp"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:hint="Name of Route"/>
+                android:hint="@string/route_edit_hint"/>
 
         </TableRow>
 
@@ -49,7 +49,7 @@
                 android:id="@+id/start_text"
                 android:layout_width="253dp"
                 android:inputType="text"
-                android:hint="Where you Started"/>
+                android:hint="@string/start_edit_hint"/>
 
         </TableRow>
 
@@ -66,7 +66,7 @@
                 android:id="@+id/stop_text"
                 android:layout_width="wrap_content"
                 android:inputType="text"
-                android:hint="Where you Ended"/>
+                android:hint="@string/end_edit_hint"/>
 
         </TableRow>
 
