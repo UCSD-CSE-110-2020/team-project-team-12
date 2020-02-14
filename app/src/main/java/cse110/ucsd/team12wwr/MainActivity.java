@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +26,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
     /* constants */
+    private static final String TAG = "MainActivity";
+    
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
@@ -58,13 +62,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         launchRouteInfoActivity();
-        
+
+        Log.d(TAG, "onCreate: Launched Main Page");
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
-
+        
         // Launches height activity only on first start
         if(!previouslyStarted) {
-//            System.out.println("Never started!");
+            Log.d(TAG, "onCreate: First time launching, now launching height page");
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();

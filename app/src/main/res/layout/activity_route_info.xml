@@ -293,15 +293,28 @@
             android:textSize="15sp" />
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/favorite_btn"
-        android:layout_width="67dp"
-        android:layout_height="61dp"
-        android:layout_marginTop="12dp"
+    <CheckBox
+        android:id="@+id/favoriteCheckBtn"
+        android:layout_width="40dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="104dp"
+        android:button="@drawable/favorite"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.585"
-        app:layout_constraintStart_toEndOf="@+id/path_spinner"
+        app:layout_constraintHorizontal_bias="0.529"
+        app:layout_constraintStart_toEndOf="@+id/incline_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/dist_textEdit" />
+
+    <TextView
+        android:id="@+id/favoriteTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Favorite?"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/favoriteCheckBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintStart_toEndOf="@+id/incline_spinner"
         app:layout_constraintTop_toBottomOf="@+id/dist_textEdit"
-        app:srcCompat="@android:drawable/star_big_off" />
+        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
