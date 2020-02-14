@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,8 +33,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
+    DecimalFormat DF = new DecimalFormat("#.##");
+    final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
+    final String HEIGHT_SPF_NAME = "HEIGHT";
+    final String FEET_KEY = "FEET";
+    final String INCHES_KEY = "INCHES";
+    final String STEP_SPF_NAME = "TOTAL_DIST_STEP";
+    final String TOTAL_STEPS_KEY = "totalSteps";
 
-    SharedPreferences spf;
+    /* height */
+    SharedPreferences spf, spf2, prefs;
 
     /* steps */
     SensorManager sensorManager;
@@ -50,6 +59,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
+
+        // Launches height activity only on first start
+        if(!previouslyStarted) {
+//            System.out.println("Never started!");
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
+            edit.commit();
+            launchHeightActivity();
+        }
 
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
 
@@ -70,24 +91,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
-        // Collect the height from the previous page
-        spf = getSharedPreferences("height", MODE_PRIVATE);
-        int feet = spf.getInt("feet", 0);
-        int inches = spf.getInt("inches", 0);
+        // Collect the height from the height page
+        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+        int feet = spf.getInt(FEET_KEY, 0);
+        int inches = spf.getInt(INCHES_KEY, 0);
 
-        System.out.println("feet: " + feet + " inches: "  + inches);
+//        System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        numSteps = 0;
-        DecimalFormat df = new DecimalFormat("#.##");
-        textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
+        spf2 = getSharedPreferences(STEP_SPF_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = spf2.edit();
+        if ( spf2.getInt(TOTAL_STEPS_KEY, 0) == 0 ) {
+            editor.putInt(TOTAL_STEPS_KEY, 0);
+            editor.apply();
+        }
 
-        btnDebugIncSteps.setOnClickListener((view) -> {
-            numSteps += 100;
-            textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
-            textStep.setText(""+numSteps);
+        numSteps = spf2.getInt(TOTAL_STEPS_KEY, 0);
+        textStep.setText(""+numSteps);
+        textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
+
+        btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                numSteps += 100;
+                editor.putInt(TOTAL_STEPS_KEY, numSteps+=100);
+//                double totalDist = strideLength / MILE_FACTOR * numSteps;
+                editor.apply();
+                textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
+                textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
+            }
         });
     }
 
@@ -95,6 +129,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
     }
+
+    public void launchHeightActivity() {
+        Intent intent = new Intent( this, StartPage.class );
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onResume() {
