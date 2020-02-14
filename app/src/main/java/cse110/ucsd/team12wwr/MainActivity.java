@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // Launches height activity only on first start
         if(!previouslyStarted) {
-//            System.out.println("Never started!");
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int feet = spf.getInt(FEET_KEY, 0);
         int inches = spf.getInt(INCHES_KEY, 0);
 
-        System.out.println("feet: " + feet + " inches: "  + inches);
+//        System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
@@ -111,9 +110,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                numSteps += 100;
                 editor.putInt(TOTAL_STEPS_KEY, numSteps+=100);
-//                double totalDist = strideLength / MILE_FACTOR * numSteps;
                 editor.apply();
                 textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
                 textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
