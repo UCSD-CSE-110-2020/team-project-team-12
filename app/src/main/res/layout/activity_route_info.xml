@@ -139,7 +139,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Additional Information"
-            android:textSize="18sp">
+            android:textSize="18sp"
+            android:paddingLeft="5dp">
 
         </TextView>
 
