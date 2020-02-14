@@ -25,6 +25,10 @@ import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
+
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     /* constants */
@@ -119,9 +123,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                numSteps += 100;
                 editor.putInt(TOTAL_STEPS_KEY, numSteps+=100);
-//                double totalDist = strideLength / MILE_FACTOR * numSteps;
                 editor.apply();
                 textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
                 textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
@@ -157,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
-            WalkDatabase walkDb = WalkDatabase.getInstance(this);
+            WWRDatabase walkDb = WWRDatabase.getInstance(this);
             WalkDao dao = walkDb.walkDao();
 
             Walk newestWalk = dao.findNewestEntry();

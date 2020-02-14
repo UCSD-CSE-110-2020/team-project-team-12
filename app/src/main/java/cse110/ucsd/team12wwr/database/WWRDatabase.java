@@ -1,4 +1,4 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.database;
 
 import android.content.Context;
 
@@ -7,17 +7,17 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
 @Database(entities = {Walk.class, Route.class}, version = 1, exportSchema = false)
-public abstract class WalkDatabase extends RoomDatabase {
-    private static volatile WalkDatabase INSTANCE;
+public abstract class WWRDatabase extends RoomDatabase {
+    private static volatile WWRDatabase INSTANCE;
     public abstract WalkDao walkDao();
     public abstract RouteDao routeDao();
 
-    public static WalkDatabase getInstance(Context context) {
+    public static WWRDatabase getInstance(Context context) {
         if (INSTANCE == null) {
-            synchronized (WalkDatabase.class) {
+            synchronized (WWRDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            WalkDatabase.class, "word_database").build();
+                            WWRDatabase.class, "word_database").build();
                 }
             }
         }

@@ -1,4 +1,4 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.database;
 
 import android.view.Surface;
 
@@ -58,6 +58,10 @@ public class Route {
 
         @TypeConverter
         public static int getEnumCode(RouteType r) {
+            if (r == null) {
+                return -1;
+            }
+
             return r.code;
         }
     }
@@ -88,6 +92,10 @@ public class Route {
 
         @TypeConverter
         public static int getEnumCode(Hilliness h) {
+            if (h == null) {
+                return -1;
+            }
+
             return h.code;
         }
     }
@@ -118,6 +126,10 @@ public class Route {
 
         @TypeConverter
         public static int getEnumCode(SurfaceType s) {
+            if (s == null) {
+                return -1;
+            }
+
             return s.code;
         }
     }
@@ -148,6 +160,10 @@ public class Route {
 
         @TypeConverter
         public static int getEnumCode(Evenness e) {
+            if (e == null) {
+                return -1;
+            }
+
             return e.code;
         }
     }
@@ -179,6 +195,10 @@ public class Route {
 
         @TypeConverter
         public static int getEnumCode(Difficulty d) {
+            if (d == null) {
+                return -1;
+            }
+
             return d.code;
         }
     }

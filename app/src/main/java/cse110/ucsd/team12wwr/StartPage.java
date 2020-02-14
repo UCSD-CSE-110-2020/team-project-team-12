@@ -21,6 +21,7 @@ public class StartPage extends AppCompatActivity {
 
     /* constants */
     private static final String TAG = "StartPage";
+
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
     final String INCHES_KEY = "INCHES";
@@ -64,7 +65,9 @@ public class StartPage extends AppCompatActivity {
                     Log.d(TAG, "onClick: Invalid height of 0 feet 0 inches");
                     Toast.makeText(StartPage.this, "You can't be 0 feet and 0 inches! Impossible!", Toast.LENGTH_SHORT).show();
                 } else {
+
                     Log.d(TAG, "onClick: Valid height and now adding to sharedPreferences");
+
                     SharedPreferences sharedPreferences = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
