@@ -159,7 +159,7 @@ public class RouteInfoActivity extends AppCompatActivity {
             hardBtn.setBackground(defaultColor);
             hardBtn.setTextColor(Color.BLACK);
             isEasy = true;
-            easyBtn.setBackgroundColor(Color.parseColor("#787878"));
+            easyBtn.setBackgroundColor(Color.DKGRAY);
             easyBtn.setTextColor(Color.WHITE);
         }
         Log.d(TAG, "onClick: isHard: " + isHard );
@@ -180,7 +180,7 @@ public class RouteInfoActivity extends AppCompatActivity {
             hardBtn.setBackground(defaultColor);
             hardBtn.setTextColor(Color.BLACK);
             isModerate = true;
-            moderateBtn.setBackgroundColor(Color.parseColor("#787878"));
+            moderateBtn.setBackgroundColor(Color.DKGRAY);
             moderateBtn.setTextColor(Color.WHITE);
         }
         Log.d(TAG, "onClick: isHard: " + isHard );
@@ -201,7 +201,7 @@ public class RouteInfoActivity extends AppCompatActivity {
             easyBtn.setBackground(defaultColor);
             easyBtn.setTextColor(Color.BLACK);
             isHard = true;
-            hardBtn.setBackgroundColor(Color.parseColor("#787878"));
+            hardBtn.setBackgroundColor(Color.DKGRAY);
             hardBtn.setTextColor(Color.WHITE);
         }
         Log.d(TAG, "onClick: isHard: " + isHard );
