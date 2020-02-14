@@ -30,12 +30,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
     DecimalFormat DF = new DecimalFormat("#.##");
-    final String FIRST_LAUNCH = "HAVE_HEIGHT";
-    final String HEIGHT = "height";
-    final String FEET = "FEET";
-    final String INCHES = "INCHES";
-    final String STEP_SPF = "TOTAL_DIST_STEP";
-    final String TOTAL_STEPS = "totalSteps";
+
+    final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
+    final String HEIGHT_SPF_NAME = "HEIGHT";
+    final String FEET_KEY = "FEET";
+    final String INCHES_KEY = "INCHES";
+    final String STEP_SPF_NAME = "TOTAL_DIST_STEP";
+    final String TOTAL_STEPS_KEY = "totalSteps";
 
     /* height */
     SharedPreferences spf, spf2, prefs;
@@ -56,14 +57,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        launchRouteInfoActivity();
+        
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH, false);
+        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
         // Launches height activity only on first start
         if(!previouslyStarted) {
 //            System.out.println("Never started!");
             SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(FIRST_LAUNCH, Boolean.TRUE);
+            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();
             launchHeightActivity();
         }
@@ -88,23 +91,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         closeOptionsMenu();
 
         // Collect the height from the height page
-        spf = getSharedPreferences(HEIGHT, MODE_PRIVATE);
-        int feet = spf.getInt(FEET, 0);
-        int inches = spf.getInt(INCHES, 0);
+        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+        int feet = spf.getInt(FEET_KEY, 0);
+        int inches = spf.getInt(INCHES_KEY, 0);
 
         System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        spf2 = getSharedPreferences(STEP_SPF, MODE_PRIVATE);
+        spf2 = getSharedPreferences(STEP_SPF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = spf2.edit();
-        if ( spf2.getInt(TOTAL_STEPS, 0) == 0 ) {
-            editor.putInt(TOTAL_STEPS, 0);
+        if ( spf2.getInt(TOTAL_STEPS_KEY, 0) == 0 ) {
+            editor.putInt(TOTAL_STEPS_KEY, 0);
             editor.apply();
         }
 
-        numSteps = spf2.getInt(TOTAL_STEPS, 0);
+        numSteps = spf2.getInt(TOTAL_STEPS_KEY, 0);
         textStep.setText(""+numSteps);
         textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
 
@@ -112,11 +115,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View view) {
 //                numSteps += 100;
-                editor.putInt(TOTAL_STEPS, numSteps+=100);
+                editor.putInt(TOTAL_STEPS_KEY, numSteps+=100);
 //                double totalDist = strideLength / MILE_FACTOR * numSteps;
                 editor.apply();
                 textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
-                textStep.setText(""+spf2.getInt(TOTAL_STEPS, 0));
+                textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
             }
         });
     }
@@ -131,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
+    public void launchRouteInfoActivity() {
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onResume() {
@@ -214,14 +221,3 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         return super.onOptionsItemSelected(item);
     }
 }
-
-/*
-    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-    boolean previouslyStarted = prefs.getBoolean(getString(R.string.pref_previously_started), false);
-    if(!previouslyStarted) {
-        SharedPreferences.Editor edit = prefs.edit();
-        edit.putBoolean(getString(R.string.pref_previously_started), Boolean.TRUE);
-        edit.commit();
-        showHelp();
-    }
- */
