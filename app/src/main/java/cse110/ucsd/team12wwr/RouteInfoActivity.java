@@ -141,7 +141,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         moderateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: Easy Button is clicked");
+                Log.d(TAG, "onClick: Moderate Button is clicked");
                 //Make sure button hasn't been pressed
                 if (isModerate) {
                     isModerate = false;
@@ -164,7 +164,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         hardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: Easy Button is clicked");
+                Log.d(TAG, "onClick: Hard Button is clicked");
                 //Make sure button hasn't been pressed
                 if (isHard) {
                     isHard = false;

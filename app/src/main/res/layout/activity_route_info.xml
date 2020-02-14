@@ -143,7 +143,8 @@
             android:layout_height="wrap_content"
             android:text="@string/additional_info"
             android:textSize="18sp"
-            android:paddingLeft="5dp">
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp">
 
         </TextView>
 
@@ -342,9 +343,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/difficulty_buttons"
         app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="0dp"
+        style="?android:attr/buttonBarStyle">
 
         <Button
             android:id="@+id/cancel_btn"
@@ -353,7 +355,8 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="@string/cancel_text"
-            android:textSize="15sp" />
+            android:textSize="15sp"
+            style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
             android:id="@+id/save_btn"
@@ -362,7 +365,9 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="@string/save_text"
-            android:textSize="15sp" />
+            android:textColor="@color/colorPrimary"
+            android:textSize="15sp"
+            style="?android:attr/buttonBarButtonStyle"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
