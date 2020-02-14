@@ -1,4 +1,4 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.database;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

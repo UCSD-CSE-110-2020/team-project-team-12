@@ -13,6 +13,12 @@ import android.widget.TextView;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cse110.ucsd.team12wwr.clock.DeviceClock;
+import cse110.ucsd.team12wwr.clock.IClock;
+import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
+
 public class IntentionalWalkActivity extends AppCompatActivity {
     // TODO code repetition
     private final int HEIGHT_FACTOR = 12;
@@ -95,7 +101,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         stopButton.setOnClickListener((view) -> {
             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
             databaseWriteExecutor.execute(() -> {
-                WalkDatabase walkDb = WalkDatabase.getInstance(this);
+                WWRDatabase walkDb = WWRDatabase.getInstance(this);
                 WalkDao dao = walkDb.walkDao();
 
                 Walk newEntry = new Walk();

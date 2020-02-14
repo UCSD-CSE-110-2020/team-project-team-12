@@ -1,13 +1,11 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Intent;
-import android.widget.TextView;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -15,6 +13,10 @@ import androidx.test.rule.ActivityTestRule;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
 
 import static org.junit.Assert.*;
 
@@ -35,7 +37,7 @@ public class IntentionalWalkTests {
         scenario.onActivity(activity -> {
             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
             databaseWriteExecutor.execute(() -> {
-                WalkDatabase walkDb = WalkDatabase.getInstance(activity);
+                WWRDatabase walkDb = WWRDatabase.getInstance(activity);
                 WalkDao dao = walkDb.walkDao();
 
                 Walk newEntry = new Walk();
@@ -48,7 +50,7 @@ public class IntentionalWalkTests {
             });
 
             databaseWriteExecutor.execute(() -> {
-                WalkDatabase walkDb = WalkDatabase.getInstance(activity);
+                WWRDatabase walkDb = WWRDatabase.getInstance(activity);
                 WalkDao dao = walkDb.walkDao();
 
                 Walk newestWalk = dao.findNewestEntry();
@@ -73,7 +75,7 @@ public class IntentionalWalkTests {
 //
 //            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(2);
 //            databaseWriteExecutor.execute(() -> {
-//                WalkDatabase walkDb = WalkDatabase.getInstance(activity);
+//                WWRDatabase walkDb = WWRDatabase.getInstance(activity);
 //                WalkDao dao = walkDb.walkDao();
 //
 //                Walk newEntry = new Walk();
