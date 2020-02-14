@@ -4,11 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 
@@ -71,19 +73,10 @@ public class RouteInfoActivity extends AppCompatActivity {
                     isFavorite = false;
                     Log.d(TAG, "onClick: isFavorite: " + isFavorite);
                 }
-//                    favoriteBtn.setImageResource(R.drawable.);
-//                System.out.println("Tag: " + favoriteBtn.getTag());
-//                System.out.println(favoriteBtn.getDrawable());
-////                if ( favoriteBtn.getTag() == "@android:drawable/star_big_off") {
-////                    favoriteBtn.setTag("@android:drawable/star_big_on");
-////                    isFavorite = true;
-////                } else {
-////                    favoriteBtn.setTag("@android:drawable/star_big_off");
-////                    isFavorite = false;
-////                }
             }
         });
 
+        // Cancel Button
         Button cancelBtn = findViewById(R.id.cancel_btn);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,21 +84,22 @@ public class RouteInfoActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Title Field
+        EditText titleField = findViewById(R.id.title_text);
+        // Save Button
+        Button saveBtn = findViewById(R.id.save_btn);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: Save Button is clicked");
+                // Make sure it is not null
+                if ( TextUtils.isEmpty(titleField.getText()) ) {
+                    Log.d(TAG, "onClick: Title field is null");
+                    titleField.setError("You must enter a title for your route!");
+                }
+            }
+        });
+
     }
 }
-
-/**
- // Set up the dropdown menus for height
- final Spinner foot_dropdown = findViewById(R.id.feet_spinner);
- final Integer[] foot_items = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8};
- ArrayAdapter<Integer> feet_adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, foot_items);
- foot_dropdown.setAdapter(feet_adapter);
- foot_dropdown.setSelection(0);
-
- final Spinner inch_dropdown = findViewById(R.id.inch_spinner);
- final Integer[] inch_items = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
- ArrayAdapter<Integer> inch_adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, inch_items);
- inch_dropdown.setAdapter(inch_adapter);
- inch_dropdown.setSelection(0);
-
- */
