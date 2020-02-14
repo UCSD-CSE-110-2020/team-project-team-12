@@ -29,7 +29,8 @@
                 android:id="@+id/title_text"
                 android:layout_width="234dp"
                 android:layout_height="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:hint="Name of Route"/>
 
         </TableRow>
 
@@ -47,7 +48,8 @@
             <EditText
                 android:id="@+id/start_text"
                 android:layout_width="253dp"
-                android:inputType="text" />
+                android:inputType="text"
+                android:hint="Where you Started"/>
 
         </TableRow>
 
@@ -63,7 +65,8 @@
             <EditText
                 android:id="@+id/stop_text"
                 android:layout_width="wrap_content"
-                android:inputType="text" />
+                android:inputType="text"
+                android:hint="Where you Ended"/>
 
         </TableRow>
 
