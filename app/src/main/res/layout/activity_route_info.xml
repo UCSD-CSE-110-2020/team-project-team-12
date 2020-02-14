@@ -132,7 +132,7 @@
         android:text="Path:"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
+        app:layout_constraintHorizontal_bias="0.033"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -140,9 +140,9 @@
         android:id="@+id/path_spinner"
         android:layout_width="204dp"
         android:layout_height="30dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.063"
+        app:layout_constraintHorizontal_bias="0.118"
         app:layout_constraintStart_toEndOf="@+id/path_textView"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
@@ -244,23 +244,23 @@
         app:layout_constraintTop_toBottomOf="@+id/spinner3" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/easy_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
         android:layout_marginTop="40dp"
-        android:text="Button"
-        app:layout_constraintEnd_toStartOf="@+id/button4"
-        app:layout_constraintHorizontal_bias="0.366"
+        android:text="EASY"
+        app:layout_constraintEnd_toStartOf="@+id/moderate_btn"
+        app:layout_constraintHorizontal_bias="0.12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner4" />
 
     <Button
-        android:id="@+id/button4"
+        android:id="@+id/moderate_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        android:text="Button"
+        android:text="MODERATE"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner4" />
@@ -273,7 +273,18 @@
         android:text="HARD"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.356"
-        app:layout_constraintStart_toEndOf="@+id/button4"
+        app:layout_constraintStart_toEndOf="@+id/moderate_btn"
         app:layout_constraintTop_toBottomOf="@+id/spinner4" />
+
+    <ImageButton
+        android:id="@+id/favorite_btn"
+        android:layout_width="67dp"
+        android:layout_height="61dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.585"
+        app:layout_constraintStart_toEndOf="@+id/path_spinner"
+        app:layout_constraintTop_toBottomOf="@+id/dist_textEdit"
+        app:srcCompat="@android:drawable/star_big_off" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
