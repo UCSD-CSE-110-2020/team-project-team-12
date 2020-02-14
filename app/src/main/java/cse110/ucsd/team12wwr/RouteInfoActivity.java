@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 
 import java.lang.reflect.Array;
@@ -21,6 +22,8 @@ public class RouteInfoActivity extends AppCompatActivity {
     final String EVEN = "Even Surface";
     final String UNEVEN = "Uneven Surface";
     final String NONETYPE = "";
+
+    boolean isFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,17 @@ public class RouteInfoActivity extends AppCompatActivity {
         final String[] textureItems = new String[]{NONETYPE, EVEN, UNEVEN};
         ArrayAdapter<String> texture_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, textureItems);
         textureSpinner.setAdapter(texture_adapter);
+
+        // Favorite button
+        ImageButton favoriteBtn = findViewById(R.id.favorite_btn);
+        favoriteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if ( favoriteBtn.getTag().equals("@android:drawable/star_big_off")) {
+                    
+                }
+            }
+        });
 
         Button cancelBtn = findViewById(R.id.cancel_btn);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
