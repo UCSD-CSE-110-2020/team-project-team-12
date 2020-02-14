@@ -13,6 +13,8 @@ import android.widget.TextView;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cse110.ucsd.team12wwr.clock.DeviceClock;
+import cse110.ucsd.team12wwr.clock.IClock;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;

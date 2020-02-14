@@ -1,4 +1,4 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.clock;
 
 import android.os.SystemClock;
 
