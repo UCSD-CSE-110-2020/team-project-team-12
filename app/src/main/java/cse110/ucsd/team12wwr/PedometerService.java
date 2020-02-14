@@ -3,13 +3,23 @@ package cse110.ucsd.team12wwr;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 
 public class PedometerService extends Service {
 
     //private MainActivity activity;
+    private long currentSteps;
+
+    public void setCurrentSteps(long value){
+        currentSteps = value;
+    }
+    public long getCurrentSteps(){
+        return currentSteps;
+    }
 
     public PedometerService() {
     }
@@ -30,17 +40,39 @@ public class PedometerService extends Service {
 
     //GOOGLE FIT API SHIT GO HURRR
     public void gimmethemsteppies(FitnessService fitnessService){
+        //if (fitnessService.getSubscribed()) {
+            //fitnessService.updateStepCount();
+            //Log.i("gimmethemsteppies", "updateStepCount called");
+        //}
+        //else{
+            //Log.i("gimmethemsteppies", "NOT YET SUBSCRIBED PLZ TRY LATER");
+        //}
+
+        Log.i("gimmethemsteppies", "BEFORE HANDLER");
+        //fitnessService.updateStepCount();
+
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("gimmethemsteppies", "handler running");
+                fitnessService.updateStepCount();
+                currentSteps = fitnessService.getStepValue();
+                Log.i("gimmethemsteppies", "VALUE STORED IN SERVICE.STEPS IS: " + currentSteps);
+                handler.postDelayed(this, 8000);
+            }
+        }, 8000);
+/*
         for (int i=-1; i<0; i--){
             try {
-                Thread.sleep(5000);
-                System.out.println("CURRENT VALUE OF I: " + i);
+
+                Log.i("gimmethemsteppies", "updateStepCount called");
                 fitnessService.updateStepCount();
-            } catch (InterruptedException e) {
+                Thread.sleep(15000);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-    public int tester1(int a){
-        return a+1;
+        }*/
     }
 }

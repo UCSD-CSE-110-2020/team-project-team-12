@@ -3,11 +3,7 @@ package cse110.ucsd.team12wwr;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.IBinder;
-import android.widget.Button;
-import android.widget.TextView;
 
-import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ServiceTestRule;
@@ -27,6 +23,14 @@ import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
 
 import static com.google.common.truth.Truth.assertThat;
 import static org.robolectric.Shadows.shadowOf;
+
+//LITERALLY DO NONE OF THIS WE JUST NEED TO TWO TESTERS FOR USER STORY 1 THEY DON'T NEED TO BE WHETHER OR NOT GOOGLE FIT FUCKING CONNECTS NERD
+//test setStepCount FOR SURE BECAUSE EZPZ
+//we can do that with test fitness service just pass it a thing to set the count to so fake fitness.update{setstepcount(42)}
+//as the before thing
+//and then two tests that check that 42 is the value in numsteps
+//and the other that checks 42 gets displayed to the text correctly
+
 
 @RunWith(AndroidJUnit4.class)
 public class PedometerTests {
@@ -53,7 +57,7 @@ public class PedometerTests {
 
 
     }
-
+/*
     @Test
     public void testWithBoundService() throws TimeoutException {
         // Create the service Intent.
@@ -109,12 +113,21 @@ public class PedometerTests {
     }
 
 
+ */
+
+//we can probably do something close to this with like idfk
+
     private class TestFitnessService implements FitnessService {
         private static final String TAG = "[TestFitnessService]: ";
         private MainActivity mainActivity;
 
         public TestFitnessService(MainActivity mainActivity) {
             this.mainActivity = mainActivity;
+        }
+
+        @Override
+        public long getStepValue(){
+            return 0;
         }
 
         @Override
@@ -131,6 +144,11 @@ public class PedometerTests {
         public void updateStepCount() {
             System.out.println(TAG + "updateStepCount");
             mainActivity.setStepCount(mainActivity.numSteps);
+        }
+
+        @Override
+        public boolean getSubscribed(){
+            return true;
         }
     }
 }

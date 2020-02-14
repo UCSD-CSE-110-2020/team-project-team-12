@@ -58,16 +58,24 @@ public class MainActivity extends AppCompatActivity {
             //service.Stub.asInterface(service);
             //PedometerService.Stub.asInterface(service);
             //System.out.println("LOOK FOR THIS LINE" + service);
-            System.out.println("COMMENCE WAIT TIME");
+            /*
+            Log.i("onServiceConnected", "Beginning 5 second delay to scam nullpointer");
             try{
                 Thread.sleep(5000);
             }
             catch(Exception e){
                 e.printStackTrace();
-            }
+            }*/
             pedoService = localService.getService();
             isBound = true;
-            System.out.println("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+            /*
+            Log.i("onServiceConnected", "Beginning 5 second delay to scam subscriber");
+            try{
+                Thread.sleep(5000);
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }*/
             pedoService.gimmethemsteppies(fitnessService);
 
         }
@@ -85,11 +93,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*SERVICE START*/
-        Intent intent = new Intent(this, PedometerService.class);
-        System.out.println("COMMENCE BIND");
-        //bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        /*SERVICE END*/
+
 
 
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
@@ -139,11 +143,43 @@ public class MainActivity extends AppCompatActivity {
         //asyncStepsUpdater = new AsyncStepUpdate();
         //asyncStepsUpdater.execute();
 
+
+
+        /*SERVICE START*/
+
+        /*SERVICE END*/
+
+    }/*
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Log.i("onStart", "ON CREATE HAS COMPLETED AT THIS POINT");
+        Intent intent = new Intent(this, PedometerService.class);
+        Log.i("Main Activity", "COMMENCE THE BINDING");
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+
+
+    }*/
+    public void bindTheThing(){
+        Intent intent = new Intent(this, PedometerService.class);
+        Log.i("Main Activity", "COMMENCE THE BINDING");
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        //pedoService.onUnbind();
+        //getApplicationContext().unbindService(serviceConnection);
+        //pedoService.onDestroy();
+
+
     }
 
     @Override
