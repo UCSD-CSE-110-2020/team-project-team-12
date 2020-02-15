@@ -16,7 +16,9 @@
         <TableRow
             android:id="@+id/route_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/title_text_view"
@@ -29,15 +31,17 @@
                 android:id="@+id/title_text"
                 android:layout_width="234dp"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/route_edit_hint"/>
+                android:hint="@string/route_edit_hint"
+                android:inputType="text" />
 
         </TableRow>
 
         <TableRow
             android:id="@+id/starting_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/start_textview"
@@ -48,25 +52,27 @@
             <EditText
                 android:id="@+id/start_text"
                 android:layout_width="253dp"
-                android:inputType="text"
-                android:hint="@string/start_edit_hint"/>
+                android:hint="@string/start_edit_hint"
+                android:inputType="text" />
 
         </TableRow>
 
         <TableRow
-            android:id="@+id/stop_row">
+            android:id="@+id/stop_row"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/stop_textView"
                 android:layout_width="wrap_content"
                 android:text="@string/stop_location"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/stop_text"
                 android:layout_width="wrap_content"
-                android:inputType="text"
-                android:hint="@string/end_edit_hint"/>
+                android:hint="@string/end_edit_hint"
+                android:inputType="text" />
 
         </TableRow>
 

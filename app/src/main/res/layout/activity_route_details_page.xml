@@ -23,7 +23,8 @@
             android:paddingEnd="15dp"
             android:text="Route Title"
             android:textAlignment="textEnd"
-            android:textSize="28sp" />
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <CheckBox
             android:id="@+id/checkBox"
