@@ -20,6 +20,7 @@ import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
@@ -163,4 +164,66 @@ public class DatabaseInstrumentedTest {
     }
 
     /* TODO: try specifying an empty primary key */
+
+    @Test
+    public void testFindRouteGivenName() {
+        Route newEntry = new Route();
+        newEntry.name = "Mission Hills Tour";
+        newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        newEntry.routeType = Route.RouteType.LOOP;
+        newEntry.hilliness = Route.Hilliness.FLAT;
+        newEntry.surfaceType = Route.SurfaceType.STREETS;
+        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.notes = "This is a pretty dope route wanna do it again";
+
+        Route secondEntry = new Route();
+        secondEntry.name = "Hike Around The Moon";
+        secondEntry.startingPoint = "Kennedy Space Center";
+        secondEntry.routeType = Route.RouteType.OUT_AND_BACK;
+        secondEntry.hilliness = Route.Hilliness.FLAT;
+        secondEntry.surfaceType = Route.SurfaceType.TRAIL;
+        secondEntry.evenness = Route.Evenness.EVEN_SURFACE;
+        secondEntry.difficulty = Route.Difficulty.DIFFICULT;
+        secondEntry.notes = "Ground Control to Major Tom";
+
+        db.routeDao().insertAll(newEntry, secondEntry);
+
+        Route firstQuery = db.routeDao().findName("Mission Hills Tour");
+        assertEquals("Mission Hills Tour", firstQuery.name);
+        assertEquals("Kufuerstendamm & Friedrichstrasse", firstQuery.startingPoint);
+        assertEquals(Route.RouteType.LOOP, firstQuery.routeType);
+        assertEquals(Route.Hilliness.FLAT, firstQuery.hilliness);
+        assertEquals(Route.SurfaceType.STREETS, firstQuery.surfaceType);
+        assertEquals(Route.Evenness.EVEN_SURFACE, firstQuery.evenness);
+        assertEquals(Route.Difficulty.MODERATE, firstQuery.difficulty);
+        assertEquals("This is a pretty dope route wanna do it again", firstQuery.notes);
+
+        Route secondQuery = db.routeDao().findName("Hike Around The Moon");
+        assertEquals("Hike Around The Moon", secondQuery.name);
+        assertEquals("Kennedy Space Center", secondQuery.startingPoint);
+        assertEquals(Route.RouteType.OUT_AND_BACK, secondQuery.routeType);
+        assertEquals(Route.Hilliness.FLAT, secondQuery.hilliness);
+        assertEquals(Route.SurfaceType.TRAIL, secondQuery.surfaceType);
+        assertEquals(Route.Evenness.EVEN_SURFACE, secondQuery.evenness);
+        assertEquals(Route.Difficulty.DIFFICULT, secondQuery.difficulty);
+        assertEquals("Ground Control to Major Tom", secondQuery.notes);
+    }
+
+    @Test
+    public void testFindRouteGivenNonexistentName() {
+        Route newEntry = new Route();
+        newEntry.name = "Mission Hills Tour";
+
+        Route secondEntry = new Route();
+        secondEntry.name = "Hike Around The Moon";
+
+        db.routeDao().insertAll(newEntry, secondEntry);
+
+        Route nonexistentQuery = db.routeDao().findName("Andromeda Galaxy");
+        assertNull("Queried object doesn't actually exist", nonexistentQuery);
+
+        Route inverseCaseQuery = db.routeDao().findName("mISSION hILLS tOUR");
+        assertNull("Case wise, object shouldn't exist", inverseCaseQuery);
+    }
 }
