@@ -10,16 +10,7 @@ import android.util.Log;
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 
 public class PedometerService extends Service {
-
-    //private MainActivity activity;
     private long currentSteps;
-
-    public void setCurrentSteps(long value){
-        currentSteps = value;
-    }
-    public long getCurrentSteps(){
-        return currentSteps;
-    }
 
     public PedometerService() {
     }
@@ -28,7 +19,6 @@ public class PedometerService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         return iBinder;
     }
     class LocalService extends Binder {
@@ -38,41 +28,25 @@ public class PedometerService extends Service {
 
     }
 
-    //GOOGLE FIT API SHIT GO HURRR
-    public void gimmethemsteppies(FitnessService fitnessService){
-        //if (fitnessService.getSubscribed()) {
-            //fitnessService.updateStepCount();
-            //Log.i("gimmethemsteppies", "updateStepCount called");
-        //}
-        //else{
-            //Log.i("gimmethemsteppies", "NOT YET SUBSCRIBED PLZ TRY LATER");
-        //}
-
-        Log.i("gimmethemsteppies", "BEFORE HANDLER");
-        //fitnessService.updateStepCount();
-
-
+    public void beginStepTracking(FitnessService fitnessService){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                Log.i("gimmethemsteppies", "handler running");
                 fitnessService.updateStepCount();
-                currentSteps = fitnessService.getStepValue();
-                Log.i("gimmethemsteppies", "VALUE STORED IN SERVICE.STEPS IS: " + currentSteps);
-                handler.postDelayed(this, 8000);
+                setCurrentSteps(fitnessService.getStepValue());
+                Log.i("PedometerService.beginStepTracking",
+                        "VALUE STORED IN PedometerService.currentSteps IS: " + currentSteps);
+                handler.postDelayed(this, 5000);
             }
-        }, 8000);
-/*
-        for (int i=-1; i<0; i--){
-            try {
+        }, 5000);
+    }
 
-                Log.i("gimmethemsteppies", "updateStepCount called");
-                fitnessService.updateStepCount();
-                Thread.sleep(15000);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }*/
+    public void setCurrentSteps(long value){
+        currentSteps = value;
+    }
+
+    public long getCurrentSteps(){
+        return currentSteps;
     }
 }

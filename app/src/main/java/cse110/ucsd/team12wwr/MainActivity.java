@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
@@ -39,45 +38,24 @@ public class MainActivity extends AppCompatActivity {
 
     /* steps */
     TextView textStep;
-    long numSteps;
+    long numSteps = 0;
 
     /* GoogleFit */
     private static final String TAG = "MainActivity";
     private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
-    /* Async */
-    //AsyncStepUpdate asyncStepsUpdater;
+
     /*SERVICE*/
-    private PedometerService pedoService;
-    private boolean isBound;
+    private PedometerService pedService;
+    private boolean isBound = false;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service){
             PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            //service.Stub.asInterface(service);
-            //PedometerService.Stub.asInterface(service);
-            //System.out.println("LOOK FOR THIS LINE" + service);
-            /*
-            Log.i("onServiceConnected", "Beginning 5 second delay to scam nullpointer");
-            try{
-                Thread.sleep(5000);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }*/
-            pedoService = localService.getService();
+            pedService = localService.getService();
             isBound = true;
-            /*
-            Log.i("onServiceConnected", "Beginning 5 second delay to scam subscriber");
-            try{
-                Thread.sleep(5000);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }*/
-            pedoService.gimmethemsteppies(fitnessService);
-
+            Log.i("MainActivity.onServiceConnected", "PedometerService Connected");
         }
         @Override
         public void onServiceDisconnected(ComponentName name) {isBound = false;}
@@ -93,11 +71,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
-
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -119,7 +93,6 @@ public class MainActivity extends AppCompatActivity {
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
-        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -128,43 +101,64 @@ public class MainActivity extends AppCompatActivity {
         int feet = spf.getInt("feet", 0);
         int inches = spf.getInt("inches", 0);
 
-        System.out.println("feet: " + feet + " inches: "  + inches);
-
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        numSteps = 0;
-
-
-        /* PEDOMETER START / ASYNC */
+        /* PEDOMETER START */
+        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
         fitnessService.setup();
-        //fitnessService.updateStepCount();
-        //REPLACE THIS WITH THE SERVICE
-        //asyncStepsUpdater = new AsyncStepUpdate();
-        //asyncStepsUpdater.execute();
+        startStepUpdaterMethod();
 
-
-
-        /*SERVICE START*/
-
-        /*SERVICE END*/
-
-    }/*
-    @Override
-    protected void onStart(){
-        super.onStart();
-        Log.i("onStart", "ON CREATE HAS COMPLETED AT THIS POINT");
+    }
+    public void startStepUpdaterMethod(){
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("MainActivity.startStepUpdaterMethod", "start runner called");
+                if(!isBound) {
+                    Log.i("MainActivity.startStepUpdaterMethod", "Still waiting for successful bind");
+                    handler.postDelayed(this, 2000);
+                }
+                else{
+                    Log.i("MainActivity.startStepUpdaterMethod", "Successful bind achieved");
+                    pedService.beginStepTracking(fitnessService);
+                }
+            }
+        }, 1500);
+    }
+    public void continueStepUpdaterMethod(){
+        final Handler bindCheckHandler = new Handler();
+        bindCheckHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Log.i("MainActivity.continueStepUpdaterMethod", "continue Runner Called");
+                if(!isBound) {
+                    Log.i("MainActivity.continueStepUpdaterMethod", "Still waiting for successful bind");
+                    bindCheckHandler.postDelayed(this, 2000);
+                }
+                else{
+                    Log.i("MainActivity.continueStepUpdaterMethod", "Successful bind achieved");
+                    final Handler updateStepsHandler = new Handler();
+                    updateStepsHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            setStepCount(pedService.getCurrentSteps());
+                            updateStepsHandler.postDelayed(this, 3000);
+                        }
+                    }, 3000);
+                }
+            }
+        }, 1500);
+    }
+    public void bindPedService(){
         Intent intent = new Intent(this, PedometerService.class);
-        Log.i("Main Activity", "COMMENCE THE BINDING");
+        //Log.i("MainActivity.bindTheThing", "COMMENCE THE BINDING");
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-
-
-
-    }*/
-    public void bindTheThing(){
-        Intent intent = new Intent(this, PedometerService.class);
-        Log.i("Main Activity", "COMMENCE THE BINDING");
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        //Log.i("MainActivity.bindTheThing", "BIND COMPLETE");
+    }
+    public void unbindPedometerService(){
+        unbindService(serviceConnection);
     }
 
     public void launchActivity() {
@@ -174,17 +168,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        //pedoService.onUnbind();
-        //getApplicationContext().unbindService(serviceConnection);
-        //pedoService.onDestroy();
-
-
+        Log.i("MainActivity.onPause", "onPause() has been called");
+        stopService(new Intent(this, PedometerService.class));
+        isBound = false;
+        unbindPedometerService();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.i("MainActivity.onResume", "onResume() has been called");
+        bindPedService();
+        continueStepUpdaterMethod();
 
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
@@ -251,53 +246,10 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "ERROR, google fit result code: " + resultCode);
         }
     }
-    //Async Class, updates step count every 5 seconds
-    /*
-    private class AsyncStepUpdate extends AsyncTask<String, String, String> {
-        private String resp = "";
-
-        @Override
-        protected String doInBackground(String... params){
-            for (int i=-1; i<0; i--){
-                try {
-                    Thread.sleep(5000);
-                    System.out.println("CURRENT VALUE OF I: " + i);
-                    publishProgress(resp);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return resp;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Nothing needed here yet
-        }
-        @Override
-        protected void onPreExecute() {
-            //Nothing needed here yet
-        }
-        @Override
-        protected void onProgressUpdate(String...text){
-            //the service will do this
-            fitnessService.updateStepCount();
-        }
-
-    }
-*/
-
-
-
-
-
-
-
-
-
 
     @Override
     protected void onDestroy() {
+        Log.i("MainActivity.onDestroy", "onDestroy() has been called");
         if(isBound){
             unbindService(serviceConnection);
             isBound = false;
