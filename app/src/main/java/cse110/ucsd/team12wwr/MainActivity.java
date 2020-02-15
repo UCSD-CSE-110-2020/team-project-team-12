@@ -46,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
-    /* Async */
-    //AsyncStepUpdate asyncStepsUpdater;
+
     /*SERVICE*/
     private PedometerService pedoService;
     private boolean isBound;
@@ -55,29 +54,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service){
             PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            //service.Stub.asInterface(service);
-            //PedometerService.Stub.asInterface(service);
-            //System.out.println("LOOK FOR THIS LINE" + service);
-            /*
-            Log.i("onServiceConnected", "Beginning 5 second delay to scam nullpointer");
-            try{
-                Thread.sleep(5000);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }*/
             pedoService = localService.getService();
             isBound = true;
-            /*
-            Log.i("onServiceConnected", "Beginning 5 second delay to scam subscriber");
-            try{
-                Thread.sleep(5000);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }*/
             pedoService.gimmethemsteppies(fitnessService);
-
         }
         @Override
         public void onServiceDisconnected(ComponentName name) {isBound = false;}
@@ -93,11 +72,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
-
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         int feet = spf.getInt("feet", 0);
         int inches = spf.getInt("inches", 0);
 
-        System.out.println("feet: " + feet + " inches: "  + inches);
+        //System.out.println("feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
@@ -136,18 +111,9 @@ public class MainActivity extends AppCompatActivity {
         numSteps = 0;
 
 
-        /* PEDOMETER START / ASYNC */
+        /* PEDOMETER START */
         fitnessService.setup();
-        //fitnessService.updateStepCount();
-        //REPLACE THIS WITH THE SERVICE
-        //asyncStepsUpdater = new AsyncStepUpdate();
-        //asyncStepsUpdater.execute();
 
-
-
-        /*SERVICE START*/
-
-        /*SERVICE END*/
 
     }/*
     @Override
@@ -251,41 +217,6 @@ public class MainActivity extends AppCompatActivity {
             Log.e(TAG, "ERROR, google fit result code: " + resultCode);
         }
     }
-    //Async Class, updates step count every 5 seconds
-    /*
-    private class AsyncStepUpdate extends AsyncTask<String, String, String> {
-        private String resp = "";
-
-        @Override
-        protected String doInBackground(String... params){
-            for (int i=-1; i<0; i--){
-                try {
-                    Thread.sleep(5000);
-                    System.out.println("CURRENT VALUE OF I: " + i);
-                    publishProgress(resp);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return resp;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            //Nothing needed here yet
-        }
-        @Override
-        protected void onPreExecute() {
-            //Nothing needed here yet
-        }
-        @Override
-        protected void onProgressUpdate(String...text){
-            //the service will do this
-            fitnessService.updateStepCount();
-        }
-
-    }
-*/
 
 
 
