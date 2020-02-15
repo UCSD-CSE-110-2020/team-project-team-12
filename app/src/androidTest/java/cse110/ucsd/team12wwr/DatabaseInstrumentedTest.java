@@ -237,8 +237,31 @@ public class DatabaseInstrumentedTest {
 
         Route nonexistentQuery = db.routeDao().findName("Andromeda Galaxy");
         assertNull("Queried object doesn't actually exist", nonexistentQuery);
+    }
+
+    @Test
+    public void testFindRouteGivenNameCaseInsensitive() {
+        Route newEntry = new Route();
+        newEntry.name = "Mission Hills Tour";
+        newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        newEntry.routeType = Route.RouteType.LOOP;
+        newEntry.hilliness = Route.Hilliness.FLAT;
+        newEntry.surfaceType = Route.SurfaceType.STREETS;
+        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.notes = "This is a pretty dope route wanna do it again";
+
+        db.routeDao().insertAll(newEntry);
 
         Route inverseCaseQuery = db.routeDao().findName("mISSION hILLS tOUR");
-        assertNull("Case wise, object shouldn't exist", inverseCaseQuery);
+        assertEquals("Mission Hills Tour", inverseCaseQuery.name);
+        assertEquals("Kufuerstendamm & Friedrichstrasse", inverseCaseQuery.startingPoint);
+        assertEquals(Route.RouteType.LOOP, inverseCaseQuery.routeType);
+        assertEquals(Route.Hilliness.FLAT, inverseCaseQuery.hilliness);
+        assertEquals(Route.SurfaceType.STREETS, inverseCaseQuery.surfaceType);
+        assertEquals(Route.Evenness.EVEN_SURFACE, inverseCaseQuery.evenness);
+        assertEquals(Route.Difficulty.MODERATE, inverseCaseQuery.difficulty);
+        assertEquals("This is a pretty dope route wanna do it again", inverseCaseQuery.notes);
+
     }
 }
