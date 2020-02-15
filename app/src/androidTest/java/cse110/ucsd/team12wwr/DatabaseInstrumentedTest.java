@@ -127,8 +127,10 @@ public class DatabaseInstrumentedTest {
         newEntry.notes = "This is a pretty dope route wanna do it again";
 
         routeArr[1].name = "Hike to Mars";
+        routeArr[1].startingPoint = "Phobos & Deimos";
 
         routeArr[2].name = "Zamba!";
+        routeArr[2].startingPoint = "Alpha & Omega";
 
         db.routeDao().insertAll(routeArr[0], routeArr[1], routeArr[2]);
 
@@ -229,9 +231,11 @@ public class DatabaseInstrumentedTest {
     public void testFindRouteGivenNonexistentName() {
         Route newEntry = new Route();
         newEntry.name = "Mission Hills Tour";
+        newEntry.startingPoint = "A";
 
         Route secondEntry = new Route();
         secondEntry.name = "Hike Around The Moon";
+        secondEntry.startingPoint = "B";
 
         db.routeDao().insertAll(newEntry, secondEntry);
 
