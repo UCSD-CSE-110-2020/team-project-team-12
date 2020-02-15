@@ -101,7 +101,6 @@ public class GoogleFitAdapter implements FitnessService {
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(FIELD_STEPS).asInt();
                                 Log.i("GoogleFitAdapter.updateStepCount", "CURRENT STEP COUNT IS " + total);
-                                activity.setStepCount(total); //THIS IS WHERE SETSTEPCOUNT HAPPENS
                                 currentStepValue = total;
                             }
                         })
