@@ -79,6 +79,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 launchActivity();
             }
         });
+
+        Button launchRoutesScreen = findViewById(R.id.btn_to_routes_screen);
+
+        launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRoutesScreenActivity();
+            }
+        });
+
         Toolbar toolbar = findViewById(R.id.toolbar);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -87,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textStep = findViewById(R.id.num_steps);
 
         Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
+
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -127,11 +138,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         startActivity(intent);
     }
 
+    public void launchRoutesScreenActivity() {
+        Intent intent = new Intent(this, RoutesScreen.class);
+        startActivity(intent);
+    }
+
     public void launchHeightActivity() {
         Intent intent = new Intent( this, StartPage.class );
         startActivity(intent);
     }
-
 
     @Override
     protected void onResume() {
