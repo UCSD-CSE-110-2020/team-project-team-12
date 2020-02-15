@@ -3,6 +3,7 @@ package cse110.ucsd.team12wwr.database;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
@@ -10,9 +11,10 @@ import androidx.room.TypeConverters;
 
 @Entity
 public class Route {
-    @PrimaryKey @NonNull
+    @PrimaryKey @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String name;
 
+    @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String startingPoint;
 
     @TypeConverters(RouteType.class)
