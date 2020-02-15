@@ -1,12 +1,14 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteConstraintException;
 
 import androidx.room.Room;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class DatabaseInstrumentedTest {
@@ -132,6 +135,31 @@ public class DatabaseInstrumentedTest {
         assertEquals("Hike to Mars", routes.get(0).name);
         assertEquals("Mission Hills Tour", routes.get(1).name);
         assertEquals("Zamba!", routes.get(2).name);
+    }
+
+    @Test
+    public void testInsertDuplicateRoutes() {
+        Route newEntry = new Route();
+        newEntry.name = "Mission Hills Tour";
+        newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        newEntry.routeType = Route.RouteType.LOOP;
+        newEntry.hilliness = Route.Hilliness.FLAT;
+        newEntry.surfaceType = Route.SurfaceType.STREETS;
+        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.notes = "This is a pretty dope route wanna do it again";
+
+        Route duplicateEntry = new Route();
+        duplicateEntry.name = "Mission Hills Tour";
+        db.routeDao().insertAll(newEntry);
+        try {
+            db.routeDao().insertAll(duplicateEntry);
+            Assert.fail("Should have thrown a SQLiteConstraintException here!");
+        } catch (SQLiteConstraintException e) {}
+
+        List<Route> routes = db.routeDao().retrieveAllRoutes();
+        assertEquals(1, routes.size());
+        assertEquals("Mission Hills Tour", routes.get(0).name);
     }
 
     /* TODO: try specifying an empty primary key */
