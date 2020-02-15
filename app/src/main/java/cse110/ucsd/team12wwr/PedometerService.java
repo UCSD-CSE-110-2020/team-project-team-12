@@ -28,6 +28,7 @@ public class PedometerService extends Service {
 
     }
 
+
     public void beginStepTracking(FitnessService fitnessService){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -37,6 +38,7 @@ public class PedometerService extends Service {
                 setCurrentSteps(fitnessService.getStepValue());
                 Log.i("PedometerService.beginStepTracking",
                         "VALUE STORED IN PedometerService.currentSteps IS: " + currentSteps);
+                currentSteps = fitnessService.getStepValue();
                 handler.postDelayed(this, 5000);
             }
         }, 5000);

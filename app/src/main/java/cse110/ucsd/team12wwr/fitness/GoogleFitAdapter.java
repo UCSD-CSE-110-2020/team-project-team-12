@@ -68,6 +68,7 @@ public class GoogleFitAdapter implements FitnessService {
                         Log.i("GoogleFitAdapter.startRecording", "Successfully subscribed!");
                         subscribed = true;
                         activity.bindPedService();
+
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
