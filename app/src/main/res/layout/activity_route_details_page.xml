@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:paddingStart="5sp"
             android:paddingEnd="15dp"
-            android:text="Route Title"
+            android:text="Route Title hello my name is wolrd nad im lonely"
             android:textAlignment="textEnd"
             android:textSize="28sp" />
 

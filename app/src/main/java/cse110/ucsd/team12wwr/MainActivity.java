@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(R.layout.activity_main);
 
         launchRouteInfoActivity();
+
+//        launchRouteDetailsActivity();
 
         Log.d(TAG, "onCreate: Launched Main Page");
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -151,6 +154,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
+        startActivity(intent);
+    }
+
+    public void launchRouteDetailsActivity() {
+        Log.d(TAG, "launchRouteDetailsActivity: launching the route details page");
+        Intent intent = new Intent(this, RouteDetailsPage.class);
         startActivity(intent);
     }
 
