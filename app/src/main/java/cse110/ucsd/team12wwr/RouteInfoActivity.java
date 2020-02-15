@@ -105,7 +105,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: Save Button is clicked");
                 // Make sure it is not null
                 if ( TextUtils.isEmpty(titleField.getText()) ) {
-                    Log.d(TAG, "onClick: Title field is null");
+                    Log.d(TAG, "onClick: Title field is null, save not finished");
                     titleField.setError("You must enter a title for your route!");
                 }
             }
