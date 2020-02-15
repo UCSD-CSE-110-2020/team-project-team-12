@@ -155,7 +155,7 @@ public class DatabaseInstrumentedTest {
         db.routeDao().insertAll(newEntry);
         try {
             db.routeDao().insertAll(duplicateEntry);
-            Assert.fail("Should have thrown a SQLiteConstraintException here!");
+            Assert.fail("Duplicated primary key, should have thrown a SQLiteConstraintException here!");
         } catch (SQLiteConstraintException e) {}
 
         List<Route> routes = db.routeDao().retrieveAllRoutes();
@@ -163,7 +163,22 @@ public class DatabaseInstrumentedTest {
         assertEquals("Mission Hills Tour", routes.get(0).name);
     }
 
-    /* TODO: try specifying an empty primary key */
+    @Test
+    public void testInsertEmptyRouteName() {
+        Route emptyNameEntry = new Route();
+        emptyNameEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        emptyNameEntry.routeType = Route.RouteType.LOOP;
+        emptyNameEntry.hilliness = Route.Hilliness.FLAT;
+        emptyNameEntry.surfaceType = Route.SurfaceType.STREETS;
+        emptyNameEntry.evenness = Route.Evenness.EVEN_SURFACE;
+        emptyNameEntry.difficulty = Route.Difficulty.MODERATE;
+        emptyNameEntry.notes = "This is a pretty dope route wanna do it again";
+
+        try {
+            db.routeDao().insertAll(emptyNameEntry);
+            Assert.fail("Empty primary key, should have thrown a SQLiteConstraintException here!");
+        } catch (SQLiteConstraintException e) {}
+    }
 
     @Test
     public void testFindRouteGivenName() {
