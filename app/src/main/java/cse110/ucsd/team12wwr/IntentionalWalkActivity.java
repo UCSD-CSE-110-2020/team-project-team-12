@@ -109,6 +109,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 newEntry.duration = stopwatchText.getText().toString();
                 newEntry.steps = stepsText.getText().toString();
                 newEntry.distance = distanceText.getText().toString();
+                //newEntry.routeName = "New Route";
 
                 dao.insertAll(newEntry);
             });

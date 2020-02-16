@@ -5,6 +5,8 @@ import androidx.room.Room;
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
 
 import android.app.Instrumentation;
 import android.database.sqlite.SQLiteConstraintException;
@@ -21,8 +23,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -107,7 +111,7 @@ public class RouteInfoActivity extends AppCompatActivity {
     boolean isFavorite = false;
 
     /* Setting spinners and textfields */
-    String routeTitle, startPosition, endLocation, notesField;
+    String routeTitle, startPosition, endLocation, notesField, totalDistance, totalTime;
     Boolean isHilly, isStreet, isEven, isLoop;
 
     /* Difficulty */
@@ -150,12 +154,15 @@ public class RouteInfoActivity extends AppCompatActivity {
         EditText titleField = findViewById(R.id.title_text);
         EditText startPoint = findViewById(R.id.start_text);
         EditText endPoint = findViewById(R.id.stop_text);
+        TextView totalDistText = findViewById(R.id.dist_textEdit);
+        TextView totalTimeText = findViewById(R.id.totalTime_textEdit);
         CheckBox favoriteBtn = findViewById(R.id.favoriteCheckBtn);
         Button cancelBtn = findViewById(R.id.cancel_btn);
         Button saveBtn = findViewById(R.id.save_btn);
         Button easyBtn = findViewById(R.id.easy_btn);
         Button moderateBtn = findViewById(R.id.moderate_btn);
         Button hardBtn = findViewById(R.id.hard_btn);
+
 
         // Set spinners
         final Spinner pathSpinner = findViewById(R.id.path_spinner);
@@ -183,14 +190,19 @@ public class RouteInfoActivity extends AppCompatActivity {
             ExecutorService dbWriteExecutor = Executors.newSingleThreadExecutor();//Executors.newFixedThreadPool(1);
             dbWriteExecutor.execute(() -> {
                 WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                RouteDao dao = routeDb.routeDao();
+                RouteDao routeDao = routeDb.routeDao();
+                WalkDao walkDao = routeDb.walkDao();
 
-                Route currEntry = dao.findName(currRouteName);
+                Route currEntry = routeDao.findName(currRouteName);
+                List<Walk> currWalk = walkDao.findByRouteName(currRouteName);
 
                 routeTitle = currEntry.name;
                 startPosition = currEntry.startingPoint;
                 endLocation = currEntry.endingPoint;
                 notesField = currEntry.notes;
+                totalDistance = currWalk.get(0).distance;
+                totalTime = currWalk.get(0).duration;
+
                 if ( currEntry.routeType != null ) {
                     Log.d(TAG, "onCreate: setting routeType to: " + currEntry.routeType);
                     if (currEntry.routeType == Route.RouteType.LOOP) {
@@ -301,6 +313,9 @@ public class RouteInfoActivity extends AppCompatActivity {
             if ( endLocation != null ) {
                 endPoint.setText(endLocation);
             }
+            if ( totalDistance != null ) {
+
+            }
             if ( isLoop != null ) {
                 if ( isLoop ) {
                     pathSpinner.setSelection(1);
@@ -328,6 +343,14 @@ public class RouteInfoActivity extends AppCompatActivity {
                 } else {
                     textureSpinner.setSelection(2);
                 }
+            }
+            if ( totalTime != null ) {
+                // TODO: Figure out how it is saved
+                totalTimeText.setText(totalTime);
+            }
+            if ( totalDistance != null ) {
+                // TODO:
+                totalDistText.setText(totalDistance);
             }
         }
 
@@ -434,9 +457,9 @@ public class RouteInfoActivity extends AppCompatActivity {
                         });
 
                         if ( dupeTitle[0] ) {
-                          titleField.setError("Route already exists, use another name!");
+                            titleField.setError("Route already exists, use another name!");
                             Log.d(TAG, "onClick: did not insert route into database");
-//                          return;
+                            return;
                         } else {
                             Log.d(TAG, "onClick: inserted a route into database");
                         }
@@ -463,8 +486,11 @@ public class RouteInfoActivity extends AppCompatActivity {
                             Log.d(TAG, "onClick: Updated route information for old route");
 
                         });
-                    } // End inner else ( if not a new route ) 
+                    } // End inner else ( if not a new route )
+                    finish();
                 } // End else
+
+
             } // End onClick()
         }); // End setOnClickListener()
     }
@@ -621,6 +647,8 @@ public class RouteInfoActivity extends AppCompatActivity {
         startPosition = null;
         endLocation = null;
         notesField = null;
+        totalDistance = null;
+        totalTime = null;
     }
 
 }
