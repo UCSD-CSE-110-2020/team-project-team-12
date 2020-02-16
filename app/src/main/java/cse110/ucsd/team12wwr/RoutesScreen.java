@@ -47,15 +47,17 @@ public class RoutesScreen extends AppCompatActivity {
 
             Route newRoute = new Route();
 
-            newRoute.name = "Potato Chip Rock Hike";
+            newRoute.name = Long.toString(System.currentTimeMillis());
             newRoute.startingPoint = "Street";
 
-//            dao.insertAll(newRoute);
+            dao.insertAll(newRoute);
 
             routeList = dao.retrieveAllRoutes();
         });
 
-        listView = (ListView)findViewById(R.id.list_view);
+        while (routeList == null); //  makes this thread wait until databaseWriteExecutor finishes
+
+        listView = findViewById(R.id.list_view);
 
         arrayList = new ArrayList<>();
 
