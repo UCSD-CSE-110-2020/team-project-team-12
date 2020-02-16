@@ -401,35 +401,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="410dp"
-        android:layout_height="45dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Back" />
-
-        <Button
-            android:id="@+id/edit_route"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="edit" />
-
-        <Button
-            android:id="@+id/start_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Start" />
-    </LinearLayout>
-
-    <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="409dp"
         android:layout_height="118dp"
         android:layout_marginTop="12dp"
@@ -466,7 +438,37 @@
             android:layout_marginStart="25dp"
             android:layout_marginTop="5dp"
             android:scrollbars="vertical"
-            android:text="    Hello these are notes I wrote down about this trail."/>
+            android:text="    Hello these are notes I wrote down about this trail." />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout5"
+        android:layout_width="410dp"
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/back_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/edit_route"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="edit" />
+
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
