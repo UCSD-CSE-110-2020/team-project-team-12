@@ -2,8 +2,10 @@ package cse110.ucsd.team12wwr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -25,10 +27,11 @@ import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class RoutesScreen extends AppCompatActivity {
 
+    private static final String TAG = "RoutesScreen";
+
     ListView listView;
     ArrayList<String> arrayList;
     List<Route> routeList;
-//    WalkDao dao;
     RouteDao dao;
 
     @Override
@@ -75,7 +78,15 @@ public class RoutesScreen extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                routeList.get(position);
+                launchRouteInfoActivity();
+
             }
         });
+    }
+
+    public void launchRouteInfoActivity() {
+        Log.d(TAG, "launchRoutesInfoActivity: launching the route info activity");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+        startActivity(intent);
     }
 }
