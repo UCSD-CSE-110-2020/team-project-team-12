@@ -110,6 +110,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
         stopButton.setOnClickListener((view) -> {
             launchRouteInfoPage();
+            // TODO: Help me
             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
             databaseWriteExecutor.execute(() -> {
                 WWRDatabase walkDb = WWRDatabase.getInstance(this);
