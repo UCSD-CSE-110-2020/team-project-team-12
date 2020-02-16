@@ -33,6 +33,7 @@ public class RoutesScreen extends AppCompatActivity {
     ArrayList<String> arrayList;
     List<Route> routeList;
     RouteDao dao;
+    String routeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +78,16 @@ public class RoutesScreen extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                routeList.get(position);
-                launchRouteInfoActivity();
-
+                routeName = routeList.get(position).name;
+                launchRoutesDetailsPage();
             }
         });
     }
 
-    public void launchRouteInfoActivity() {
-        Log.d(TAG, "launchRoutesInfoActivity: launching the route info activity");
-        Intent intent = new Intent(this, RouteInfoActivity.class);
+    public void launchRoutesDetailsPage() {
+        Log.d(TAG, "launchRoutesDetailsPage: launching the route details page");
+        Intent intent = new Intent(this, RouteDetailsPage.class);
+//        intent.putExtra(name, routeName);
         startActivity(intent);
     }
 }

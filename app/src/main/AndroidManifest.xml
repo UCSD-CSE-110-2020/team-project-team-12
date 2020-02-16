@@ -11,6 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".RoutesScreen" />
         <activity android:name=".RouteInfoActivity"></activity>
+        <activity android:name=".RouteDetailsPage"></activity>
         <activity
             android:name=".StartPage"
             android:label="@string/title_activity_start_page"
