@@ -6,6 +6,7 @@ import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -23,7 +24,7 @@ import cse110.ucsd.team12wwr.database.WWRDatabase;
 public class RoutesScreen extends AppCompatActivity {
 
     ListView listView;
-//    ArrayList<String> arrayList;
+    ArrayList<String> arrayList;
     List<Route> routeList;
 
     @Override
@@ -40,8 +41,27 @@ public class RoutesScreen extends AppCompatActivity {
 
         listView = (ListView)findViewById(R.id.list_view);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+        arrayList = new ArrayList<>();
 
-        listView.setAdapter(arrayAdapter);
+        arrayList.add("Mission Bay");
+        arrayList.add("Torrey Pines Hike");
+        arrayList.add("Potato Chip Rock Hike");
+
+        if (routeList != null) {
+            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+
+            listView.setAdapter(arrayAdapter);
+        } else {
+            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
+
+            listView.setAdapter(arrayAdapter);
+        }
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 }
