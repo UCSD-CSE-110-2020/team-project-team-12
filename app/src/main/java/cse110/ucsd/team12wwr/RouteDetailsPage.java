@@ -65,15 +65,16 @@ public class RouteDetailsPage extends AppCompatActivity {
 
             if (newRoute.difficulty != null) {
                 TextView textView1 = (TextView) findViewById(R.id.diff_detail);
-                if ( newRoute.difficulty != null ) {
-                    if ( newRoute.difficulty == Route.Difficulty.EASY ) {
+                if (newRoute.difficulty != null) {
+                    if (newRoute.difficulty == Route.Difficulty.EASY) {
                         textView1.setText("Easy");
-                    } else if ( newRoute.difficulty == Route.Difficulty.MODERATE ) {
+                    } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
                         textView1.setText("Moderate");
                     } else {
                         textView1.setText("Hard");
                     }
                 }
+            }
         }
     }
 }
