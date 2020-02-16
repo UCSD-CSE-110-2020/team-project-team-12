@@ -46,12 +46,34 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
-            TextView textView = (TextView) findViewById(R.id.textView2);
+            TextView textView = (TextView) findViewById(R.id.route_title_detail);
             textView.setText(routeName);
-//                newRoute = walkDb.routeDao().findName(routeName);
+            newRoute = walkDb.routeDao().findName(routeName);
         }
 
 
-//        if ()
+        if (newRoute != null) {
+            if (newRoute.startingPoint != null) {
+                TextView textView = (TextView) findViewById(R.id.start_textview);
+                textView.setText("Starting Point: " + newRoute.startingPoint);
+            }
+
+            if (newRoute.endingPoint != null) {
+                TextView textView1 = (TextView) findViewById(R.id.end_textview);
+                textView1.setText("Ending Point: " + newRoute.endingPoint);
+            }
+
+            if (newRoute.difficulty != null) {
+                TextView textView1 = (TextView) findViewById(R.id.diff_detail);
+                if ( newRoute.difficulty != null ) {
+                    if ( newRoute.difficulty == Route.Difficulty.EASY ) {
+                        textView1.setText("Easy");
+                    } else if ( newRoute.difficulty == Route.Difficulty.MODERATE ) {
+                        textView1.setText("Moderate");
+                    } else {
+                        textView1.setText("Hard");
+                    }
+                }
+        }
     }
 }

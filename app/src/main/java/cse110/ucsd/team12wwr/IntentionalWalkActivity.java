@@ -1,11 +1,17 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -34,10 +40,37 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
     private IClock clock;
 
+    //private long stepsFromService = -1;
+
+    /*
+    private PedometerService pedoService;
+    private boolean isBound;
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service){
+            PedometerService.LocalService localService = (PedometerService.LocalService)service;
+            pedoService = localService.getService();
+            isBound = true;
+            stepsFromService = pedoService.getCurrentSteps();
+            Log.i("onServiceConnected", "Current Step Count is " + stepsFromService);
+
+            //pedoService.gimmethemsteppies(fitnessService);
+        }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {isBound = false;}
+    };
+
+    public void bindTheThing(){
+        Intent intent = new Intent(this, PedometerService.class);
+        Log.i("Intentional Walk Activity", "COMMENCE THE BINDING");
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }*/
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intentional_walk);
+        //bindTheThing();
         clock = new DeviceClock();
 
         // TODO this is code repetition, should just declare getStrideLength() somewhere
