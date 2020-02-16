@@ -125,7 +125,7 @@
     <string name="path_text">Path:</string>
     <string name="incline_text">Incline:</string>
     <string name="terrain_text">Terrain:</string>
-    <string name="texture_text">Texture:</string>
+    <string name="texture_text">Surface:</string>
     <string name="easy_mode">EASY</string>
     <string name="mod_mode">MODERATE</string>
     <string name="hard_mode">HARD</string>
