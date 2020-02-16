@@ -34,7 +34,7 @@ public class PedometerTests {
     public void setUp() {
         //ShadowApplication shadowApplication = Shadows.shadowOf(RuntimeEnvironment.application);
         //shadowApplication.declareActionUnbindable("cse110.ucsd.team12wwr.service.START");
-        intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        intent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);
         //testPedService = new TestPedometerService();
     }
     @Test
@@ -51,16 +51,18 @@ public class PedometerTests {
     /* Commented until I figure out how to work around robolectric not letting services be tested
     @Test
     public void test1() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
+        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {
             assert(true);
+            activity.setTestingFlag(false);
+            assert(activity.testingFlag);
 
         });
-    }
+    }*/
 
     @Test
     public void testStepsDisplayedCorrectlyInMainActivity() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
+        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {
             testService = new TestFitnessService(activity, 69);
             testService.updateStepCount();
@@ -69,18 +71,19 @@ public class PedometerTests {
 
         });
     }
+
     @Test
     public void testStepsUpdatedInMainDisplayANDService() {
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
+        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {
             testService = new TestFitnessService(activity, 420);
+            testPedService = new TestPedometerService(testService.getStepValue());
             testPedService.beginStepTracking(testService);
             assert(testPedService.getCurrentSteps() == 420);
             TextView displayedSteps = activity.findViewById(R.id.num_steps);
             assert(Long.parseLong(displayedSteps.getText().toString()) == 420);
         });
-    }*/
-
+    }
 
     private class TestPedometerService extends PedometerService{
         private long currentSteps;

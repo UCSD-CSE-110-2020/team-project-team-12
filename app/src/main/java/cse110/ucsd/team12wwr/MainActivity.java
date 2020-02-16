@@ -69,8 +69,14 @@ public class MainActivity extends AppCompatActivity {
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service){
+            Log.i("MainActivity.onServiceConnected", "PedometerService Connection Initializing");
             PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            pedService = localService.getService();
+            try {
+                pedService = localService.getService();
+            }
+            catch(Exception e){
+                Log.i("Not real", "NOT REAL THIS DOESN'T HAPPEN");
+            }
             isBound = true;
             Log.i("MainActivity.onServiceConnected", "PedometerService Connected");
         }
@@ -83,10 +89,15 @@ public class MainActivity extends AppCompatActivity {
     int totalHeight;
     double strideLength;
 
+    /* TESTING */
+    public boolean testingFlag = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
@@ -135,9 +146,19 @@ public class MainActivity extends AppCompatActivity {
 
         /* PEDOMETER START */
         Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
-        fitnessService.setup();
-        startStepUpdaterMethod();
+        if(testingFlag) {
+            fitnessService.setup();
+            startStepUpdaterMethod();
+        }
 
+    }
+
+
+    public void setFitnessService(FitnessService newService){
+        fitnessService = newService;
+    }
+    public void setTestingFlag(boolean flag){
+        testingFlag = flag;
     }
 
     public void startStepUpdaterMethod(){
@@ -146,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Log.i("MainActivity.startStepUpdaterMethod", "start runner called");
-                if(!isBound) {
+                if(!isBound || pedService==null) {
                     Log.i("MainActivity.startStepUpdaterMethod", "Still waiting for successful bind");
                     handler.postDelayed(this, 2000);
                 }
@@ -182,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
         }, 1500);
     }
     public void bindPedService(){
+        if(!testingFlag)
+            return;
         Intent intent = new Intent(this, PedometerService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
@@ -258,8 +281,9 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.debug_walk) {
+            Intent intent = new Intent(this, DebugWalkActivity.class);
+            startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

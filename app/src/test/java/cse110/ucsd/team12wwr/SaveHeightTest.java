@@ -22,14 +22,14 @@ import static org.junit.Assert.assertNotEquals;
 @RunWith(AndroidJUnit4.class)
 public class SaveHeightTest {
     private Intent intent, mainIntent;
-    private ActivityTestRule<MainActivity> mainActivityTestRule;
+    private ActivityTestRule<mockMainActivity> mainActivityTestRule;
 
     @Before
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
-        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);
         intent.putExtras(mainIntent);
-        mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+        mainActivityTestRule = new ActivityTestRule<>(mockMainActivity.class);
     }
 
     @Test
@@ -46,20 +46,22 @@ public class SaveHeightTest {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
+            //Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
 
             assertEquals(spf.getInt("FEET", 0), 7);
             assertEquals(spf.getInt("INCHES", 0), 3);
 
-            assertNotNull(takeStep);
+            //assertNotNull(takeStep);
 
-            takeStep.performClick();
-            assertEquals(spf2.getInt("totalSteps", 0), 100);
+            //takeStep.performClick();
+            //assertEquals(spf2.getInt("totalSteps", 0), 100);
+            activity.setStepCount(100);
             assertEquals(dist.getText().toString(), "0.06");
 
-            takeStep.performClick();
-            assertEquals(spf2.getInt("totalSteps", 0), 200);
+            //takeStep.performClick();
+            //assertEquals(spf2.getInt("totalSteps", 0), 200);
+            activity.setStepCount(200);
             assertEquals(dist.getText().toString(), "0.11");
 
         });
