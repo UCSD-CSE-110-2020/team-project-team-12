@@ -34,6 +34,11 @@ public class Route {
 
     public String notes;
 
+    @TypeConverters(Favorite.class)
+    public Favorite favorite;
+
+    public String testingLol;
+
     public enum RouteType {
         LOOP(0),
         OUT_AND_BACK(1);
@@ -202,6 +207,40 @@ public class Route {
             }
 
             return d.code;
+        }
+    }
+
+    public enum Favorite {
+        FAVORITE(0),
+        NOT_FAVORITE(1);
+
+        private int code;
+
+        Favorite(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        @TypeConverter
+        public static Favorite getFavorite(int code) {
+            for(Favorite f : values()) {
+                if (f.code == code) {
+                    return f;
+                }
+            }
+            return null;
+        }
+
+        @TypeConverter
+        public static int getEnumCode(Favorite f) {
+            if (f == null) {
+                return -1;
+            }
+
+            return f.code;
         }
     }
 }
