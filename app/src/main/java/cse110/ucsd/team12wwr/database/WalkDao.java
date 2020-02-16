@@ -18,7 +18,7 @@ public interface WalkDao {
     @Query("SELECT * FROM Walk w WHERE NOT EXISTS (SELECT a.time FROM Walk a WHERE a.time > w.time)")
     Walk findNewestEntry();
 
-    @Query("SELECT * FROM Walk w WHERE w.routeName=:routeName")
+    @Query("SELECT * FROM Walk w WHERE w.routeName=:routeName ORDER BY time DESC")
     List<Walk> findByRouteName(String routeName);
 }
 
