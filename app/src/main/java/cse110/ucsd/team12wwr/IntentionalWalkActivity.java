@@ -215,13 +215,12 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                     WalkDao dao = walkDb.walkDao();
                     RouteDao rDao = walkDb.routeDao();
 
-                    //Route route = rDao.findName(result);
                     Walk newEntry = new Walk();
                     newEntry.time = System.currentTimeMillis();
                     newEntry.duration = stopwatchText.getText().toString();
                     newEntry.steps = stepsText.getText().toString();
                     newEntry.distance = distanceText.getText().toString();
-                    newEntry.routeName = result;//route.name;
+                    newEntry.routeName = result;
 
                     dao.insertAll(newEntry);
                 });
