@@ -40,8 +40,14 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testInsertSingleWalk() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+
         Walk newEntry = new Walk();
         newEntry.time = System.currentTimeMillis();
+        newEntry.routeName = "Mission Hills Tour";
         newEntry.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
         newEntry.steps = String.format("%d", 1337);
         newEntry.distance = String.format("%.2f mi", 13.09);
@@ -51,10 +57,16 @@ public class DatabaseInstrumentedTest {
         assertEquals("1337", newestWalk.steps);
         assertEquals("13.09 mi", newestWalk.distance);
         assertEquals("12:34:56", newestWalk.duration);
+        assertEquals("Mission Hills Tour", newestWalk.routeName);
     }
 
     @Test
     public void testNewestMultipleWalks() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+        
         int NUM_OF_ENTRIES = 3;
         Walk[] walkArr = new Walk[NUM_OF_ENTRIES];
         for (int i = 0; i < NUM_OF_ENTRIES; i++) {
@@ -62,16 +74,19 @@ public class DatabaseInstrumentedTest {
         }
 
         walkArr[0].time = System.currentTimeMillis();
+        walkArr[0].routeName = "Mission Hills Tour";
         walkArr[0].duration = String.format("%02d:%02d:%02d", 12, 34, 56);
         walkArr[0].steps = String.format("%d", 1337);
         walkArr[0].distance = String.format("%.2f mi", 13.09);
 
         walkArr[1].time = System.currentTimeMillis() + 100000;
+        walkArr[1].routeName = "Mission Hills Tour";
         walkArr[1].duration = String.format("%02d:%02d:%02d", 21, 43, 65);
         walkArr[1].steps = String.format("%d", 7331);
         walkArr[1].distance = String.format("%.2f mi", 31.09);
 
         walkArr[2].time = System.currentTimeMillis() - 100000;
+        walkArr[2].routeName = "Mission Hills Tour";
         walkArr[2].duration = String.format("%02d:%02d:%02d", 34, 56, 78);
         walkArr[2].steps = String.format("%d", 888);
         walkArr[2].distance = String.format("%.2f mi", 11.11);
