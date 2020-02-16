@@ -92,7 +92,7 @@ public class DatabaseInstrumentedTest {
         newEntry.hilliness = Route.Hilliness.FLAT;
         newEntry.surfaceType = Route.SurfaceType.STREETS;
         newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.difficulty = Route.Difficulty.EASY;
         newEntry.notes = "This is a pretty dope route wanna do it again";
         db.routeDao().insertAll(newEntry);
 
@@ -104,8 +104,9 @@ public class DatabaseInstrumentedTest {
         assertEquals(Route.Hilliness.FLAT, r.hilliness);
         assertEquals(Route.SurfaceType.STREETS, r.surfaceType);
         assertEquals(Route.Evenness.EVEN_SURFACE, r.evenness);
-        assertEquals(Route.Difficulty.MODERATE, r.difficulty);
+        assertEquals(Route.Difficulty.EASY, r.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", r.notes);
+        assertNull("Favorite is not specified", r.favorite);
     }
 
     @Test
@@ -193,6 +194,7 @@ public class DatabaseInstrumentedTest {
         newEntry.evenness = Route.Evenness.EVEN_SURFACE;
         newEntry.difficulty = Route.Difficulty.MODERATE;
         newEntry.notes = "This is a pretty dope route wanna do it again";
+        newEntry.favorite = Route.Favorite.FAVORITE;
 
         Route secondEntry = new Route();
         secondEntry.name = "Hike Around The Moon";
@@ -203,6 +205,7 @@ public class DatabaseInstrumentedTest {
         secondEntry.evenness = Route.Evenness.EVEN_SURFACE;
         secondEntry.difficulty = Route.Difficulty.DIFFICULT;
         secondEntry.notes = "Ground Control to Major Tom";
+        secondEntry.favorite = Route.Favorite.NOT_FAVORITE;
 
         db.routeDao().insertAll(newEntry, secondEntry);
 
@@ -215,6 +218,7 @@ public class DatabaseInstrumentedTest {
         assertEquals(Route.Evenness.EVEN_SURFACE, firstQuery.evenness);
         assertEquals(Route.Difficulty.MODERATE, firstQuery.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", firstQuery.notes);
+        assertEquals(Route.Favorite.FAVORITE, firstQuery.favorite);
 
         Route secondQuery = db.routeDao().findName("Hike Around The Moon");
         assertEquals("Hike Around The Moon", secondQuery.name);
@@ -225,6 +229,7 @@ public class DatabaseInstrumentedTest {
         assertEquals(Route.Evenness.EVEN_SURFACE, secondQuery.evenness);
         assertEquals(Route.Difficulty.DIFFICULT, secondQuery.difficulty);
         assertEquals("Ground Control to Major Tom", secondQuery.notes);
+        assertEquals(Route.Favorite.NOT_FAVORITE, secondQuery.favorite);
     }
 
     @Test
