@@ -348,7 +348,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         });
 
         // Cancel Button
-        Button cancelBtn = findViewById(R.id.cancel_btn);
+//        Button cancelBtn = findViewById(R.id.cancel_btn);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -357,9 +357,9 @@ public class RouteInfoActivity extends AppCompatActivity {
         });
 
         // Title Field
-        EditText titleField = findViewById(R.id.title_text);
+//        EditText titleField = findViewById(R.id.title_text);
         // Save Button
-        Button saveBtn = findViewById(R.id.save_btn);
+//        Button saveBtn = findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -372,9 +372,9 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
-        Button easyBtn = findViewById(R.id.easy_btn);
-        Button moderateBtn = findViewById(R.id.moderate_btn);
-        Button hardBtn = findViewById(R.id.hard_btn);
+//        Button easyBtn = findViewById(R.id.easy_btn);
+//        Button moderateBtn = findViewById(R.id.moderate_btn);
+//        Button hardBtn = findViewById(R.id.hard_btn);
 
         defaultColor = (Drawable) easyBtn.getBackground();
 

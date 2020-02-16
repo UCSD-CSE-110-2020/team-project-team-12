@@ -192,6 +192,14 @@ public class Route {
         }
         
         @TypeConverter
+        public static Difficulty getDifficulty(int code) {
+            for(Difficulty d : values()) {
+                if (d.code == code) {
+                    return d;
+                }
+            }
+            return null;
+        }
 
 
         @TypeConverter

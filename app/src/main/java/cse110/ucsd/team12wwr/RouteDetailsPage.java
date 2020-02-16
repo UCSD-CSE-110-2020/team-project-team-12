@@ -10,6 +10,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
@@ -21,6 +26,40 @@ public class RouteDetailsPage extends AppCompatActivity {
     RouteDao dao;
     WWRDatabase walkDb;
     Route newRoute;
+
+    // Public constants for string intents
+    public static final String TITLE = "ROUTE_TITLE";
+    public static final String START = "START_POINT";
+    public static final String END = "END_POINT";
+    public static final String TIME = "TOTAL_TIME";
+    public static final String DIST = "TOTAL_DISTANCE";
+    public static final String PATH = "PATH_TYPE";
+    public static final String TERRAIN = "TERRAIN_TYPE";
+    public static final String INCLINE = "INCLINE_TYPE";
+    public static final String SURFACE = "SURFACE_TYPE";
+    public static final String DIFFICULTY = "SELECTED_DIFFICULTY";
+    public static final String NOTES = "NOTES_CONTENT";
+
+    private static final String TAG = "RouteDetailsPage";
+
+    // Header
+    TextView routeTitle = findViewById(R.id.route_title_detail);
+    TextView startPoint = findViewById(R.id.start_textview);
+    TextView endPoint = findViewById(R.id.end_textview);
+
+    // Metrics
+    TextView totalTime = findViewById(R.id.total_time_detail);
+    TextView totalDist = findViewById(R.id.dist_details);
+
+    // Spinner info
+    TextView path = findViewById(R.id.path_details);
+    TextView terrain = findViewById(R.id.terrain_deets);
+    TextView incline = findViewById(R.id.incline_deets);
+    TextView surface = findViewById(R.id.texture_details);
+
+    // Extra info
+    TextView difficulty = findViewById(R.id.diff_detail);
+    TextView notes = findViewById(R.id.notes_content);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,22 +98,130 @@ public class RouteDetailsPage extends AppCompatActivity {
             }
 
             if (newRoute.endingPoint != null) {
-                TextView textView1 = (TextView) findViewById(R.id.end_textview);
-                textView1.setText("Ending Point: " + newRoute.endingPoint);
+                TextView textView = (TextView) findViewById(R.id.end_textview);
+                textView.setText("Ending Point: " + newRoute.endingPoint);
             }
 
             if (newRoute.difficulty != null) {
-                TextView textView1 = (TextView) findViewById(R.id.diff_detail);
-                if (newRoute.difficulty != null) {
-                    if (newRoute.difficulty == Route.Difficulty.EASY) {
-                        textView1.setText("Easy");
-                    } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
-                        textView1.setText("Moderate");
-                    } else {
-                        textView1.setText("Hard");
-                    }
+                TextView textView = (TextView) findViewById(R.id.diff_detail);
+                if (newRoute.difficulty == Route.Difficulty.EASY) {
+                    textView.setText("Easy");
+                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                    textView.setText("Moderate");
+                } else {
+                    textView.setText("Hard");
                 }
             }
+
+            if (newRoute.evenness != null) {
+                TextView textView = (TextView) findViewById(R.id.texture_details);
+                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                    textView.setText("Surface: Even");
+                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                    textView.setText("Surface: Uneven");
+                }
+            }
+
+            if (newRoute.hilliness != null) {
+                TextView textView = (TextView) findViewById(R.id.incline_deets);
+                if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                    textView.setText("Incline: Flat");
+                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                    textView.setText("Incline: Hilly");
+                }
+            }
+
+            if (newRoute.routeType != null) {
+                TextView textView = (TextView) findViewById(R.id.path_details);
+                if (newRoute.routeType == Route.RouteType.LOOP) {
+                    textView.setText("Path Type: Loop");
+                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                    textView.setText("Path Type: Out and Back");
+                }
+            }
+
+            if (newRoute.surfaceType != null) {
+                TextView textView = (TextView) findViewById(R.id.terrain_deets);
+                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                    textView.setText("Terrain Type: Streets");
+                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                    textView.setText("Terrain Type: Trial");
+                }
+            }
+
+//            if (newRoute.favorite != null) {
+//                TextView textView = (TextView) findViewById(R.id.favorited_details);
+//                if (newRoute.favorite == Route.Favorite.FAVORITE) {
+//                    textView.setText("Surface: Even");
+//                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+//                    textView.setText("Surface: Uneven");
+//                }
+//            }
         }
+        Button back = findViewById(R.id.back_button);
+        Button edit = findViewById(R.id.edit_route);
+        Button start = findViewById(R.id.start_button);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchIntentionalActivity();
+            }
+        });
+
     }
+
+    public void launchRouteInfoActivity() {
+        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+
+        startActivity(intent);
+    }
+
+    public void launchIntentionalActivity() {
+        Log.d(TAG, "launchActivity: launching the walking activity");
+        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        passHeaderInfo(intent, routeTitle, startPoint, endPoint);
+        passMetrics(intent, totalTime, totalDist);
+        startActivity(intent);
+    }
+
+    public void passHeaderInfo(Intent intent, TextView routeTitle, TextView startPoint, TextView endPoint) {
+        intent.putExtra(TITLE, extractString(routeTitle));
+        intent.putExtra(START, extractString(startPoint));
+        intent.putExtra(END, extractString(endPoint));
+    }
+
+    public void passMetrics(Intent intent, TextView totalTime, TextView totalDist) {
+        intent.putExtra(TIME, extractString(totalTime));
+        intent.putExtra(DIST, extractString(totalDist));
+    }
+
+    public void passSpinnerInfo(Intent intent, TextView path, TextView incline, TextView terrain, TextView surface) {
+
+    }
+
+    public void passExtraInfo(Intent intent, TextView difficulty, TextView notes) {
+
+    }
+
+    public String extractString (TextView textView) {
+        return textView.getText().toString();
+    }
+
+
 }
