@@ -96,7 +96,7 @@
     </TableLayout>
 
     <LinearLayout
-        android:id="@+id/metrics_layout"
+        android:id="@+id/metrics_details_layout"
         android:layout_width="413dp"
         android:layout_height="49dp"
         android:layout_marginTop="12dp"
@@ -104,13 +104,13 @@
         app:layout_constraintTop_toBottomOf="@+id/tableLayout">
 
         <LinearLayout
-            android:id="@+id/time_,layout"
+            android:id="@+id/time_details_layout"
             android:layout_width="210dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/totalTime_textView"
+                android:id="@+id/total_time_detail_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="6dp"
@@ -120,7 +120,7 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/totalTime_textEdit"
+                android:id="@+id/total_time_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="6dp"
@@ -131,13 +131,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/distance layout"
+            android:id="@+id/distance_detail_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/totalDist_textView"
+                android:id="@+id/totalDist_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="6dp"
@@ -147,13 +147,13 @@
                 android:textSize="18sp" />
 
             <LinearLayout
-                android:id="@+id/mini_dist_layout"
+                android:id="@+id/mini_dist_detail_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/dist_textEdit"
+                    android:id="@+id/dist_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="60dp"
@@ -165,7 +165,7 @@
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/metrics_textView"
+                    android:id="@+id/metrics_details"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="6dp"
@@ -186,7 +186,7 @@
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/metrics_layout">
+        app:layout_constraintTop_toBottomOf="@id/metrics_details_layout">
 
         <TextView
             android:id="@+id/add_info"
@@ -204,7 +204,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/texture_layout"
+        android:id="@+id/texture_details_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -212,7 +212,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/terrainLayout">
+        app:layout_constraintTop_toBottomOf="@+id/terrain_detail_layout">
 
         <ImageView
             android:id="@+id/surface_image"
@@ -223,7 +223,7 @@
             app:srcCompat="@drawable/surface" />
 
         <TextView
-            android:id="@+id/texture_textView"
+            android:id="@+id/texture_details"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -238,12 +238,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/terrainLayout"
+        android:id="@+id/terrain_detail_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/incline_layout"
+        app:layout_constraintTop_toBottomOf="@+id/incline_detail_layout"
         tools:layout_editor_absoluteX="0dp">
 
         <ImageView
@@ -255,7 +255,7 @@
             app:srcCompat="@drawable/terrain" />
 
         <TextView
-            android:id="@+id/terrain_text"
+            android:id="@+id/terrain_deets"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -270,13 +270,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/incline_layout"
+        android:id="@+id/incline_detail_layout"
         android:layout_width="411dp"
         android:layout_height="34dp"
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/path_layout">
+        app:layout_constraintTop_toBottomOf="@+id/path_details_layout">
 
         <ImageView
             android:id="@+id/incline_image"
@@ -290,7 +290,7 @@
             app:srcCompat="@drawable/incline" />
 
         <TextView
-            android:id="@+id/incline_text"
+            android:id="@+id/incline_deets"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -305,7 +305,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/path_layout"
+        android:id="@+id/path_details_layout"
         android:layout_width="413dp"
         android:layout_height="34dp"
         android:layout_marginTop="12dp"
@@ -322,7 +322,7 @@
             app:srcCompat="@drawable/path" />
 
         <TextView
-            android:id="@+id/path_textView"
+            android:id="@+id/path_details"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -339,15 +339,16 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout2"
+        android:id="@+id/diff_fave_layout"
         android:layout_width="412dp"
         android:layout_height="92dp"
         android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texture_layout">
+        app:layout_constraintTop_toBottomOf="@+id/texture_details_layout">
 
         <LinearLayout
+            android:id="@+id/diff_col"
             android:layout_width="205dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -373,6 +374,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/favorite_col"
             android:layout_width="208dp"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -388,7 +390,7 @@
                 android:textStyle="bold" />
 
             <CheckBox
-                android:id="@+id/checkBox2"
+                android:id="@+id/favorited_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="85dp"
@@ -401,13 +403,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout4"
+        android:id="@+id/notes_details_layout"
         android:layout_width="409dp"
         android:layout_height="118dp"
         android:layout_marginTop="12dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+        app:layout_constraintTop_toBottomOf="@+id/diff_fave_layout">
 
         <LinearLayout
             android:id="@+id/notes_layout"
@@ -442,7 +444,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
+        android:id="@+id/button_bar"
         android:layout_width="410dp"
         android:layout_height="45dp"
         android:orientation="horizontal"
