@@ -423,7 +423,7 @@
 
                 <TextView
                     android:id="@+id/notes_content"
-                    android:layout_width="357dp"
+                    android:layout_width="363dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
