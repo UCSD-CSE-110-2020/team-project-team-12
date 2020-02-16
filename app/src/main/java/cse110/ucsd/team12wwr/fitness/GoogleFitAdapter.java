@@ -90,7 +90,7 @@ public class GoogleFitAdapter implements FitnessService {
             return;
         }
         Fitness.getHistoryClient(activity, account)
-                .readDailyTotal(DataType.TYPE_STEP_COUNT_DELTA)
+                .readDailyTotalFromLocalDevice(DataType.TYPE_STEP_COUNT_DELTA)
                 .addOnSuccessListener(
                         new OnSuccessListener<DataSet>() {
                             @Override
@@ -100,7 +100,8 @@ public class GoogleFitAdapter implements FitnessService {
                                         dataSet.isEmpty()
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(FIELD_STEPS).asInt();
-                                //Log.i("GoogleFitAdapter.updateStepCount", "CURRENT STEP COUNT IS " + total);
+                                Log.i("GoogleFitAdapter.updateStepCount", "CURRENT STEP COUNT IS " + total);
+                                Log.i("GoogleFitAdapter.updateStepCount", "Is dataset empty: " + dataSet.isEmpty());
                                 currentStepValue = total;
                             }
                         })

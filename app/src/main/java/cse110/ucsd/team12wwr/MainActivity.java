@@ -92,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
     /* TESTING */
     public boolean testingFlag = false;
 
+    public boolean startServCalled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     Log.i("MainActivity.startStepUpdaterMethod", "Successful bind achieved");
                     pedService.beginStepTracking(fitnessService);
+                    startServCalled = true;
                 }
             }
         }, 1500);
@@ -186,6 +189,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity.continueStepUpdaterMethod", "continue Runner Called");
                 if(!isBound) {
                     Log.i("MainActivity.continueStepUpdaterMethod", "Still waiting for successful bind");
+                    bindCheckHandler.postDelayed(this, 2000);
+                }
+                if(!startServCalled){
+                    Log.i("MainActivity.continueStepUpdaterMethod", "beginStepTracking Uncalled");
                     bindCheckHandler.postDelayed(this, 2000);
                 }
                 else{
