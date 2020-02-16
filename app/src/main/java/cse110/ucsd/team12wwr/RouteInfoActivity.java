@@ -8,7 +8,9 @@ import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
 
+import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -143,8 +145,16 @@ public class RouteInfoActivity extends AppCompatActivity {
 //        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
 //        db = Room.inMemoryDatabaseBuilder(context, WWRDatabase.class).build();
         // TODO: Retrieve passed in object for route() through intent
-//        String currRouteName = (String) getIntent().getExtras().getString("route_data");
-        //currRouteName = "Fun Route";
+        if ( getIntent().hasExtra("route_data")) {
+            currRouteName = getIntent().getExtras().getString("route_data");
+        }
+        if ( getIntent().hasExtra("distance") ) {
+            totalDistance = getIntent().getExtras().getString("distance");
+        }
+        if (getIntent().hasExtra("duration") ) {
+            totalTime = (String) getIntent().getExtras().getString("duration");
+            //currRouteName = "Fun Route";
+        }
 
         //System.out.println(currRouteName);
         if (currRouteName != null) {
@@ -314,9 +324,12 @@ public class RouteInfoActivity extends AppCompatActivity {
             if ( endLocation != null ) {
                 endPoint.setText(endLocation);
             }
-            if ( totalDistance != null ) {
-
-            }
+//            if ( totalDistance != null ) {
+//                totalDistText.setText(totalDistance);
+//            }
+//            if( totalTime != null ) {
+//                totalTimeText.setText(totalTime);
+//            }
             if ( isLoop != null ) {
                 if ( isLoop ) {
                     pathSpinner.setSelection(1);
@@ -488,6 +501,9 @@ public class RouteInfoActivity extends AppCompatActivity {
 
                         });
                     } // End inner else ( if not a new route )
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("routeTitle", routeTitle);
+                    setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } // End else
 

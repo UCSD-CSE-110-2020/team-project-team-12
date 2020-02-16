@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -38,7 +39,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
     private IClock clock;
 
+    private String result;
     private static final String TAG = "IntentionalWalkActivity";
+    private static int LAUNCH_SECOND_ACTIVITY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_intentional_walk);
         clock = new DeviceClock();
 
+        result = null;
         // TODO this is code repetition, should just declare getStrideLength() somewhere
         SharedPreferences spf = getSharedPreferences("height", MODE_PRIVATE);
         int feet = spf.getInt("feet", 0);
@@ -112,13 +116,13 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 WalkDao dao = walkDb.walkDao();
                 RouteDao rDao = walkDb.routeDao();
 
-//                Route route = rDao.findName()
+                Route route = rDao.findName(result);
                 Walk newEntry = new Walk();
                 newEntry.time = System.currentTimeMillis();
                 newEntry.duration = stopwatchText.getText().toString();
                 newEntry.steps = stepsText.getText().toString();
                 newEntry.distance = distanceText.getText().toString();
-                //newEntry.routeName = "New Route";
+                newEntry.routeName = route.name;
 
                 dao.insertAll(newEntry);
             });
@@ -130,7 +134,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private void launchRouteInfoPage() {
         Log.d(TAG, "launchRouteInfoPage: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
-        startActivity(intent);
+        intent.putExtra("duration", stopwatchText.getText().toString());
+        intent.putExtra("distance", distanceText.getText().toString());
+        startActivityForResult(intent, LAUNCH_SECOND_ACTIVITY);
     }
 
     protected void setClock(IClock clock) {
@@ -191,5 +197,19 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             distanceText.setText(text[2]);
         }
 
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == LAUNCH_SECOND_ACTIVITY) {
+            if(resultCode == Activity.RESULT_OK){
+                result = data.getStringExtra("result");
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 }
