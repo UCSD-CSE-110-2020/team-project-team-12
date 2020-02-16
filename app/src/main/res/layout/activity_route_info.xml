@@ -374,7 +374,7 @@
     <LinearLayout
         android:id="@+id/notes_field"
         android:layout_width="411dp"
-        android:layout_height="156dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
@@ -396,7 +396,7 @@
             android:layout_marginStart="20dp"
             android:ems="10"
             android:hint="Enter notes here..."
-            android:inputType="textCapSentences|textImeMultiLine"
+            android:inputType="textMultiLine|textCapSentences"
             android:maxLength="2000"
             android:maxLines="5" />
     </LinearLayout>
