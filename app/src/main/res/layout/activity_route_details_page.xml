@@ -427,8 +427,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
+                    android:inputType="textMultiLine|textCapSentences"
                     android:scrollbars="vertical"
-                    android:text="    Hello these are notes I wrote down about this trail." />
+                    android:text="    Hello these are notes I wrote down about this trail. I don't know why I'm writing so much about this trail." />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
