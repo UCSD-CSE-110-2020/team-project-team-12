@@ -126,7 +126,6 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
-//    Route currRoute;
 
     /* Database */
     WWRDatabase db;
@@ -139,28 +138,6 @@ public class RouteInfoActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Route Information");
 
         resetFields();
-        isNewRoute = true;
-
-        // Init database
-//        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//        db = Room.inMemoryDatabaseBuilder(context, WWRDatabase.class).build();
-        // TODO: Retrieve passed in object for route() through intent
-        if ( getIntent().hasExtra("route_data")) {
-            currRouteName = getIntent().getExtras().getString("route_data");
-        }
-        if ( getIntent().hasExtra("distance") ) {
-            totalDistance = getIntent().getExtras().getString("distance");
-        }
-        if (getIntent().hasExtra("duration") ) {
-            totalTime = (String) getIntent().getExtras().getString("duration");
-            //currRouteName = "Fun Route";
-        }
-
-        //System.out.println(currRouteName);
-        if (currRouteName != null) {
-            isNewRoute = false;
-            Log.d(TAG, "onCreate: This is a new route we will be creating");
-        }
 
         EditText titleField = findViewById(R.id.title_text);
         EditText startPoint = findViewById(R.id.start_text);
@@ -174,6 +151,27 @@ public class RouteInfoActivity extends AppCompatActivity {
         Button moderateBtn = findViewById(R.id.moderate_btn);
         Button hardBtn = findViewById(R.id.hard_btn);
 
+
+        // TODO: Retrieve passed in object for route() through intent
+        if ( getIntent().hasExtra("route_data")) {
+            currRouteName = getIntent().getExtras().getString("route_data");
+            Log.d(TAG, "onCreate: currentRouteName: " + currRouteName);
+        }
+        if ( getIntent().hasExtra("distance") ) {
+            totalDistance = getIntent().getExtras().getString("distance");
+            Log.d(TAG, "onCreate: totalDistance passed in: " + totalDistance);
+            totalDistText.setText(totalDistance);
+        }
+        if (getIntent().hasExtra("duration") ) {
+            totalTime = (String) getIntent().getExtras().getString("duration");
+            totalTimeText.setText(totalTime);
+            Log.d(TAG, "onCreate: totalTime passed in: " + totalTime);
+        }
+
+        if (currRouteName != null) {
+            isNewRoute = false;
+            Log.d(TAG, "onCreate: This is a new route we will be creating");
+        }
 
         // Set spinners
         final Spinner pathSpinner = findViewById(R.id.path_spinner);
@@ -223,6 +221,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     }
                 }
                 if ( currEntry.hilliness != null ) {
+                    Log.d(TAG, "onCreate: setting hilliness to: " + currEntry.hilliness);
                     if ( currEntry.hilliness == Route.Hilliness.HILLY ) {
                         isHilly = true;
                     } else {
@@ -230,6 +229,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     }
                 }
                 if ( currEntry.surfaceType != null ) {
+                    Log.d(TAG, "onCreate: setting surfaceType to: " + currEntry.surfaceType);
                     if ( currEntry.surfaceType == Route.SurfaceType.STREETS ) {
                         isStreet = true;
                     } else {
@@ -237,6 +237,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     }
                 }
                 if (currEntry.evenness != null ) {
+                    Log.d(TAG, "onCreate: setting evenness to: " + currEntry.evenness);
                     if ( currEntry.evenness == Route.Evenness.EVEN_SURFACE ) {
                         isEven = true;
                     } else {
@@ -244,6 +245,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     }
                 }
                 if ( currEntry.difficulty != null ) {
+                    Log.d(TAG, "onCreate: setting difficulty to: " + currEntry.difficulty);
                     if ( currEntry.difficulty == Route.Difficulty.EASY ) {
                         easyBtn.performClick();
                     } else if ( currEntry.difficulty == Route.Difficulty.MODERATE ) {
@@ -253,6 +255,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     }
                 }
                 if ( currEntry.favorite != null ) {
+                    Log.d(TAG, "onCreate: setting favorite is: " + currEntry.favorite);
                     if ( currEntry.favorite == Route.Favorite.FAVORITE ) {
                         favoriteBtn.performClick();
                     }
@@ -262,51 +265,6 @@ public class RouteInfoActivity extends AppCompatActivity {
 
             while( routeTitle == null );
         }
-
-//        routeTitle = currRoute.name;
-//        startPosition = currRoute.startingPoint;
-//        System.out.println(startPosition);
-//        // TODO: get the ending point
-//        notesField = currRoute.notes;
-//        if ( currRoute.routeType != null ) {
-//            Log.d(TAG, "onCreate: setting routeType to: " + currRoute.routeType);
-//            if (currRoute.routeType == Route.RouteType.LOOP) {
-//                isLoop = true;
-//            } else {
-//                isLoop = false;
-//                System.out.println("not loop");
-//            }
-//        }
-//        if ( currRoute.hilliness != null ) {
-//            if ( currRoute.hilliness == Route.Hilliness.HILLY ) {
-//                isHilly = true;
-//            } else {
-//                isHilly = false;
-//            }
-//        }
-//        if ( currRoute.surfaceType != null ) {
-//            if ( currRoute.surfaceType == Route.SurfaceType.STREETS ) {
-//                isStreet = true;
-//            } else {
-//                isStreet = false;
-//            }
-//        }
-//        if (currRoute.evenness != null ) {
-//            if ( currRoute.evenness == Route.Evenness.EVEN_SURFACE ) {
-//                isEven = true;
-//            } else {
-//                isEven = false;
-//            }
-//        }
-//        if ( currRoute.difficulty != null ) {
-//            if ( currRoute.difficulty == Route.Difficulty.EASY ) {
-//                isEasy = true;
-//            } else if ( currRoute.difficulty == Route.Difficulty.MODERATE ) {
-//                isModerate = true;
-//            } else {
-//                isHard = true;
-//            }
-//        }
 
         Log.d(TAG, "onCreate: Page is now set up");
 
@@ -324,12 +282,6 @@ public class RouteInfoActivity extends AppCompatActivity {
             if ( endLocation != null ) {
                 endPoint.setText(endLocation);
             }
-//            if ( totalDistance != null ) {
-//                totalDistText.setText(totalDistance);
-//            }
-//            if( totalTime != null ) {
-//                totalTimeText.setText(totalTime);
-//            }
             if ( isLoop != null ) {
                 if ( isLoop ) {
                     pathSpinner.setSelection(1);
@@ -359,11 +311,9 @@ public class RouteInfoActivity extends AppCompatActivity {
                 }
             }
             if ( totalTime != null ) {
-                // TODO: Figure out how it is saved
                 totalTimeText.setText(totalTime);
             }
             if ( totalDistance != null ) {
-                // TODO:
                 totalDistText.setText(totalDistance);
             }
         }
@@ -426,9 +376,6 @@ public class RouteInfoActivity extends AppCompatActivity {
         // Save Button
         saveBtn.setOnClickListener(new View.OnClickListener() {
 
-            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-            RouteDao dao = routeDb.routeDao();
-
             @Override
             public void onClick(View view) {
                 Log.d(TAG, "onClick: Save Button is clicked");
@@ -466,17 +413,17 @@ public class RouteInfoActivity extends AppCompatActivity {
 //                                titleField.setError("Route already exists, use another name!");
                                 Log.d(TAG, "onClick: Title already in use");
                                 dupeTitle[0] = true;
-//                                return;
+                               return;
                             }
                         });
 
-                        if ( dupeTitle[0] ) {
-                            titleField.setError("Route already exists, use another name!");
-                            Log.d(TAG, "onClick: did not insert route into database");
-                            return;
-                        } else {
-                            Log.d(TAG, "onClick: inserted a route into database");
-                        }
+//                        if ( dupeTitle[0] ) {
+//                            titleField.setError("Route already exists, use another name!");
+//                            Log.d(TAG, "onClick: did not insert route into database");
+//                            return;
+//                        } else {
+//                            Log.d(TAG, "onClick: inserted a route into database");
+//                        }
                     } else {
                         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
                         databaseWriteExecutor.execute(() -> {
@@ -502,7 +449,8 @@ public class RouteInfoActivity extends AppCompatActivity {
                         });
                     } // End inner else ( if not a new route )
                     Intent resultIntent = new Intent();
-                    resultIntent.putExtra("routeTitle", routeTitle);
+                    resultIntent.putExtra("routeTitle", titleField.getText().toString());
+                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle")) ;
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } // End else

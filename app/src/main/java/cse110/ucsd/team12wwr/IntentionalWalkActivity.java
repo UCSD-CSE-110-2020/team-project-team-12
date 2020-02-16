@@ -110,25 +110,26 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
         stopButton.setOnClickListener((view) -> {
             launchRouteInfoPage();
+
             // TODO: Help me
-            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-            databaseWriteExecutor.execute(() -> {
-                WWRDatabase walkDb = WWRDatabase.getInstance(this);
-                WalkDao dao = walkDb.walkDao();
-                RouteDao rDao = walkDb.routeDao();
-
-                Route route = rDao.findName(result);
-                Walk newEntry = new Walk();
-                newEntry.time = System.currentTimeMillis();
-                newEntry.duration = stopwatchText.getText().toString();
-                newEntry.steps = stepsText.getText().toString();
-                newEntry.distance = distanceText.getText().toString();
-                newEntry.routeName = route.name;
-
-                dao.insertAll(newEntry);
-            });
-
-            finish();
+//            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+//            databaseWriteExecutor.execute(() -> {
+//                WWRDatabase walkDb = WWRDatabase.getInstance(this);
+//                WalkDao dao = walkDb.walkDao();
+//                RouteDao rDao = walkDb.routeDao();
+//
+//                //Route route = rDao.findName(result);
+//                Walk newEntry = new Walk();
+//                newEntry.time = System.currentTimeMillis();
+//                newEntry.duration = stopwatchText.getText().toString();
+//                newEntry.steps = stepsText.getText().toString();
+//                newEntry.distance = distanceText.getText().toString();
+//                newEntry.routeName = result;//route.name;
+//
+//                dao.insertAll(newEntry);
+//            });
+//
+//            finish();
         });
     }
 
@@ -206,7 +207,26 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
-                result = data.getStringExtra("result");
+                result = data.getExtras().getString("routeTitle");
+                System.out.println("RESULT IS: " + result);
+                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+                databaseWriteExecutor.execute(() -> {
+                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
+                    WalkDao dao = walkDb.walkDao();
+                    RouteDao rDao = walkDb.routeDao();
+
+                    //Route route = rDao.findName(result);
+                    Walk newEntry = new Walk();
+                    newEntry.time = System.currentTimeMillis();
+                    newEntry.duration = stopwatchText.getText().toString();
+                    newEntry.steps = stepsText.getText().toString();
+                    newEntry.distance = distanceText.getText().toString();
+                    newEntry.routeName = result;//route.name;
+
+                    dao.insertAll(newEntry);
+                });
+
+                this.finish();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
