@@ -41,6 +41,7 @@ public class PedometerService extends Service {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Log.i("PedometerService.beginStepTracking", "ENGAGED: " + getEngaged());
                 fitnessService.updateStepCount();
                 setCurrentSteps(fitnessService.getStepValue());
                 Log.i("PedometerService.beginStepTracking",
