@@ -232,11 +232,14 @@ public class RouteInfoActivity extends AppCompatActivity {
                 }
                 if ( currEntry.difficulty != null ) {
                     if ( currEntry.difficulty == Route.Difficulty.EASY ) {
-                        isEasy = true;
+                        easyBtn.performClick();
+//                        isEasy = true;
                     } else if ( currEntry.difficulty == Route.Difficulty.MODERATE ) {
-                        isModerate = true;
+                        moderateBtn.performClick();
+//                        isModerate = true;
                     } else {
-                        isHard = true;
+                        hardBtn.performClick();
+//                        isHard = true;
                     }
                 }
                 // TODO: Favorite?
@@ -275,6 +278,15 @@ public class RouteInfoActivity extends AppCompatActivity {
                             textureSpinner.setSelection(2);
                         }
                     }
+//                    if ( isEasy ) {
+//                        easyBtn.performClick();
+//                    }
+//                    if ( isModerate ) {
+//                        moderateBtn.performClick();
+//                    }
+//                    if (isHard) {
+//                        hardBtn.performClick();
+//                    }
                 }
 
             });
@@ -492,7 +504,28 @@ public class RouteInfoActivity extends AppCompatActivity {
                         } else {
                             Log.d(TAG, "onClick: inserted a route into database");
                         }
-                    }
+                    } else {
+                        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+                        databaseWriteExecutor.execute(() -> {
+
+                            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                            RouteDao dao = routeDb.routeDao();
+
+                            Route newEntry = dao.findName(currRouteName);
+                            newEntry.name = titleField.getText().toString();
+                            newEntry.startingPoint = startPoint.getText().toString();
+                            // TODO: Need ending point
+                            setRouteType(newEntry, pathSpinner);
+                            setHilliness(newEntry, inclineSpinner);
+                            setSurfaceType(newEntry, terrainSpinner);
+                            setEvenness(newEntry, textureSpinner);
+                            setDifficulty(newEntry);
+                            // TODO: Fix notes
+                            setNotes(newEntry, "");
+                            dao.update(newEntry);
+                            Log.d(TAG, "onClick: Updated route information for old route");
+                        });
+                    } // End inner else ( if not a new route ) 
                 } // End else
             } // End onClick()
         }); // End setOnClickListener()
