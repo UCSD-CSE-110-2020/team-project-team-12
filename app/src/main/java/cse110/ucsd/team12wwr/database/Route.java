@@ -14,7 +14,7 @@ public class Route {
     @PrimaryKey @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String name;
 
-    @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String startingPoint;
 
     @TypeConverters(RouteType.class)
@@ -36,8 +36,6 @@ public class Route {
 
     @TypeConverters(Favorite.class)
     public Favorite favorite;
-
-    public String testingLol;
 
     public enum RouteType {
         LOOP(0),
