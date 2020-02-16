@@ -153,8 +153,8 @@ public class RouteInfoActivity extends AppCompatActivity {
 
 
         // TODO: Retrieve passed in object for route() through intent
-        if ( getIntent().hasExtra("route_data")) {
-            currRouteName = getIntent().getExtras().getString("route_data");
+        if ( getIntent().hasExtra("ROUTE_TITLE")) {
+            currRouteName = getIntent().getExtras().getString("ROUTE_TITLE");
             Log.d(TAG, "onCreate: currentRouteName: " + currRouteName);
         }
         if ( getIntent().hasExtra("distance") ) {
@@ -168,7 +168,8 @@ public class RouteInfoActivity extends AppCompatActivity {
             Log.d(TAG, "onCreate: totalTime passed in: " + totalTime);
         }
 
-        if (currRouteName != null) {
+        // TODO: Remove Route Title 
+        if (currRouteName != null || !currRouteName.equals("Route Title")) {
             isNewRoute = false;
             Log.d(TAG, "onCreate: This is a new route we will be creating");
         }
