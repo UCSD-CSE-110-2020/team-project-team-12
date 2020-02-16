@@ -55,7 +55,7 @@ public class GoogleFitAdapter implements FitnessService {
         return subscribed;
     }
 
-    private void startRecording() {
+    public void startRecording() {
         if (account == null) {
             Log.i("GoogleFitAdapter.startRecording", "GoogleSignInAccount is null");
             return;
@@ -100,7 +100,7 @@ public class GoogleFitAdapter implements FitnessService {
                                         dataSet.isEmpty()
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(FIELD_STEPS).asInt();
-                                Log.i("GoogleFitAdapter.updateStepCount", "CURRENT STEP COUNT IS " + total);
+                                //Log.i("GoogleFitAdapter.updateStepCount", "CURRENT STEP COUNT IS " + total);
                                 currentStepValue = total;
                             }
                         })
