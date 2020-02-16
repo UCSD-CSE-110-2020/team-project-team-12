@@ -147,10 +147,11 @@
             android:id="@+id/add_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
             android:text="@string/additional_info"
             android:textSize="18sp"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp">
+            android:textStyle="bold">
 
         </TextView>
 
@@ -257,7 +258,7 @@
         android:id="@+id/texture_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
