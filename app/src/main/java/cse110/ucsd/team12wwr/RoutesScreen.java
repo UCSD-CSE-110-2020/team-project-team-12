@@ -20,12 +20,16 @@ import java.util.concurrent.Executors;
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class RoutesScreen extends AppCompatActivity {
 
     ListView listView;
     ArrayList<String> arrayList;
     List<Route> routeList;
+//    WalkDao dao;
+    RouteDao dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,15 @@ public class RoutesScreen extends AppCompatActivity {
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
             WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            RouteDao dao = walkDb.routeDao();
+            dao = walkDb.routeDao();
+
+            Route newRoute = new Route();
+
+            newRoute.name = "Potato Chip Rock Hike";
+            newRoute.startingPoint = "Street";
+
+//            dao.insertAll(newRoute);
+
             routeList = dao.retrieveAllRoutes();
         });
 
@@ -46,6 +58,8 @@ public class RoutesScreen extends AppCompatActivity {
         arrayList.add("Mission Bay");
         arrayList.add("Torrey Pines Hike");
         arrayList.add("Potato Chip Rock Hike");
+
+        System.err.println(routeList);
 
         if (routeList != null) {
             ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
@@ -60,7 +74,7 @@ public class RoutesScreen extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+//                routeList.get(position);
             }
         });
     }
