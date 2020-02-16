@@ -345,7 +345,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         notes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: Notes field is clickedg");
+                Log.d(TAG, "onClick: Notes field is clicked");
             }
         });
 
