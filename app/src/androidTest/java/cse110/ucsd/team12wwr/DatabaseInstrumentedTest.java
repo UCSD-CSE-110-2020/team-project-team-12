@@ -40,8 +40,14 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testInsertSingleWalk() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+
         Walk newEntry = new Walk();
         newEntry.time = System.currentTimeMillis();
+        newEntry.routeName = "Mission Hills Tour";
         newEntry.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
         newEntry.steps = String.format("%d", 1337);
         newEntry.distance = String.format("%.2f mi", 13.09);
@@ -51,10 +57,16 @@ public class DatabaseInstrumentedTest {
         assertEquals("1337", newestWalk.steps);
         assertEquals("13.09 mi", newestWalk.distance);
         assertEquals("12:34:56", newestWalk.duration);
+        assertEquals("Mission Hills Tour", newestWalk.routeName);
     }
 
     @Test
     public void testNewestMultipleWalks() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+        
         int NUM_OF_ENTRIES = 3;
         Walk[] walkArr = new Walk[NUM_OF_ENTRIES];
         for (int i = 0; i < NUM_OF_ENTRIES; i++) {
@@ -62,16 +74,19 @@ public class DatabaseInstrumentedTest {
         }
 
         walkArr[0].time = System.currentTimeMillis();
+        walkArr[0].routeName = "Mission Hills Tour";
         walkArr[0].duration = String.format("%02d:%02d:%02d", 12, 34, 56);
         walkArr[0].steps = String.format("%d", 1337);
         walkArr[0].distance = String.format("%.2f mi", 13.09);
 
         walkArr[1].time = System.currentTimeMillis() + 100000;
+        walkArr[1].routeName = "Mission Hills Tour";
         walkArr[1].duration = String.format("%02d:%02d:%02d", 21, 43, 65);
         walkArr[1].steps = String.format("%d", 7331);
         walkArr[1].distance = String.format("%.2f mi", 31.09);
 
         walkArr[2].time = System.currentTimeMillis() - 100000;
+        walkArr[2].routeName = "Mission Hills Tour";
         walkArr[2].duration = String.format("%02d:%02d:%02d", 34, 56, 78);
         walkArr[2].steps = String.format("%d", 888);
         walkArr[2].distance = String.format("%.2f mi", 11.11);
@@ -84,6 +99,71 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
+    public void testFindWalksGivenRouteName() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+
+        Walk firstWalk = new Walk();
+        firstWalk.time = System.currentTimeMillis();
+        firstWalk.routeName = "Mission Hills Tour";
+        firstWalk.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
+        firstWalk.steps = String.format("%d", 1337);
+        firstWalk.distance = String.format("%.2f mi", 13.09);
+
+        Walk secondWalk = new Walk();
+        secondWalk.time = System.currentTimeMillis() + 100000;
+        secondWalk.routeName = "Mission Hills Tour";
+        secondWalk.duration = String.format("%02d:%02d:%02d", 21, 43, 65);
+        secondWalk.steps = String.format("%d", 7331);
+        secondWalk.distance = String.format("%.2f mi", 31.09);
+
+        Walk thirdWalk = new Walk();
+        thirdWalk.time = System.currentTimeMillis() - 100000;
+        thirdWalk.routeName = "Mission Hills Tour";
+        thirdWalk.duration = String.format("%02d:%02d:%02d", 34, 56, 78);
+        thirdWalk.steps = String.format("%d", 888);
+        thirdWalk.distance = String.format("%.2f mi", 11.11);
+
+        db.walkDao().insertAll(firstWalk, secondWalk, thirdWalk);
+
+        List<Walk> walks = db.walkDao().findByRouteName("Mission Hills Tour");
+
+        assertEquals("7331", walks.get(0).steps);
+        assertEquals("31.09 mi", walks.get(0).distance);
+        assertEquals("21:43:65", walks.get(0).duration);
+        
+        assertEquals("1337", walks.get(1).steps);
+        assertEquals("13.09 mi", walks.get(1).distance);
+        assertEquals("12:34:56", walks.get(1).duration);
+
+        assertEquals("888", walks.get(2).steps);
+        assertEquals("11.11 mi", walks.get(2).distance);
+        assertEquals("34:56:78", walks.get(2).duration);
+    }
+
+    @Test
+    public void testFindWalksGivenNonexistentRouteName() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+
+        Walk firstWalk = new Walk();
+        firstWalk.time = System.currentTimeMillis();
+        firstWalk.routeName = "Mission Hills Tour";
+        firstWalk.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
+        firstWalk.steps = String.format("%d", 1337);
+        firstWalk.distance = String.format("%.2f mi", 13.09);
+
+        db.walkDao().insertAll(firstWalk);
+
+        List<Walk> walks = db.walkDao().findByRouteName("Ho Ho Ho!");
+        assertEquals(0, walks.size());
+    }
+
+    @Test
     public void testInsertSingleRoute() {
         Route newEntry = new Route();
         newEntry.name = "Mission Hills Tour";
@@ -92,7 +172,7 @@ public class DatabaseInstrumentedTest {
         newEntry.hilliness = Route.Hilliness.FLAT;
         newEntry.surfaceType = Route.SurfaceType.STREETS;
         newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.difficulty = Route.Difficulty.EASY;
         newEntry.notes = "This is a pretty dope route wanna do it again";
         db.routeDao().insertAll(newEntry);
 
@@ -104,8 +184,9 @@ public class DatabaseInstrumentedTest {
         assertEquals(Route.Hilliness.FLAT, r.hilliness);
         assertEquals(Route.SurfaceType.STREETS, r.surfaceType);
         assertEquals(Route.Evenness.EVEN_SURFACE, r.evenness);
-        assertEquals(Route.Difficulty.MODERATE, r.difficulty);
+        assertEquals(Route.Difficulty.EASY, r.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", r.notes);
+        assertNull("Favorite is not specified", r.favorite);
     }
 
     @Test
@@ -193,6 +274,7 @@ public class DatabaseInstrumentedTest {
         newEntry.evenness = Route.Evenness.EVEN_SURFACE;
         newEntry.difficulty = Route.Difficulty.MODERATE;
         newEntry.notes = "This is a pretty dope route wanna do it again";
+        newEntry.favorite = Route.Favorite.FAVORITE;
 
         Route secondEntry = new Route();
         secondEntry.name = "Hike Around The Moon";
@@ -203,6 +285,7 @@ public class DatabaseInstrumentedTest {
         secondEntry.evenness = Route.Evenness.EVEN_SURFACE;
         secondEntry.difficulty = Route.Difficulty.DIFFICULT;
         secondEntry.notes = "Ground Control to Major Tom";
+        secondEntry.favorite = Route.Favorite.NOT_FAVORITE;
 
         db.routeDao().insertAll(newEntry, secondEntry);
 
@@ -215,6 +298,7 @@ public class DatabaseInstrumentedTest {
         assertEquals(Route.Evenness.EVEN_SURFACE, firstQuery.evenness);
         assertEquals(Route.Difficulty.MODERATE, firstQuery.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", firstQuery.notes);
+        assertEquals(Route.Favorite.FAVORITE, firstQuery.favorite);
 
         Route secondQuery = db.routeDao().findName("Hike Around The Moon");
         assertEquals("Hike Around The Moon", secondQuery.name);
@@ -225,6 +309,7 @@ public class DatabaseInstrumentedTest {
         assertEquals(Route.Evenness.EVEN_SURFACE, secondQuery.evenness);
         assertEquals(Route.Difficulty.DIFFICULT, secondQuery.difficulty);
         assertEquals("Ground Control to Major Tom", secondQuery.notes);
+        assertEquals(Route.Favorite.NOT_FAVORITE, secondQuery.favorite);
     }
 
     @Test
