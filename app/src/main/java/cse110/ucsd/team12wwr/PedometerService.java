@@ -11,6 +11,7 @@ import cse110.ucsd.team12wwr.fitness.FitnessService;
 
 public class PedometerService extends Service {
     private long currentSteps;
+    private boolean engaged = true;
 
     public PedometerService() {
     }
@@ -29,6 +30,12 @@ public class PedometerService extends Service {
     }
 
 
+    public void turnOffStepTracking(){
+        engaged=false;
+    }
+    public boolean getEngaged(){
+        return engaged;
+    }
     public void beginStepTracking(FitnessService fitnessService){
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -39,6 +46,7 @@ public class PedometerService extends Service {
                 Log.i("PedometerService.beginStepTracking",
                         "VALUE STORED IN PedometerService.currentSteps IS: " + currentSteps);
                 currentSteps = fitnessService.getStepValue();
+                if(engaged)
                 handler.postDelayed(this, 5000);
             }
         }, 5000);
