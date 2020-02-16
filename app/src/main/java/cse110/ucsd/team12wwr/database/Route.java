@@ -17,6 +17,9 @@ public class Route {
     @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String startingPoint;
 
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
+    public String endingPoint;
+
     @TypeConverters(RouteType.class)
     public RouteType routeType;
     
