@@ -138,7 +138,7 @@ public class RouteInfoActivity extends AppCompatActivity {
 //        db = Room.inMemoryDatabaseBuilder(context, WWRDatabase.class).build();
         // TODO: Retrieve passed in object for route() through intent
 //        String currRouteName = (String) getIntent().getExtras().getString("route_data");
-        currRouteName = "Fun Route";
+        //currRouteName = "Fun Route";
         //System.out.println(currRouteName);
         if (currRouteName != null) {
             isNewRoute = false;
