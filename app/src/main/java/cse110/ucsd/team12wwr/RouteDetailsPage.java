@@ -55,7 +55,6 @@ public class RouteDetailsPage extends AppCompatActivity {
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
-
         startActivity(intent);
     }
 
