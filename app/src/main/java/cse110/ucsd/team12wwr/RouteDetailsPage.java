@@ -18,12 +18,14 @@ public class RouteDetailsPage extends AppCompatActivity {
     private static final String TAG = "RouteDetailsPage";
 
     // Route title
-    TextView routeTitle = findViewById(R.id.route_title_detail);
+    TextView routeTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_details_page);
+
+        routeTitle = findViewById(R.id.route_title_detail);
 
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
@@ -55,6 +57,7 @@ public class RouteDetailsPage extends AppCompatActivity {
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
+        intent.putExtra(TITLE, extractString(routeTitle));
         startActivity(intent);
     }
 

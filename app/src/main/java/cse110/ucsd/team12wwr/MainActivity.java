@@ -66,9 +66,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        launchRouteInfoActivity();
+//        launchRouteInfoActivity();
 
-//        launchRouteDetailsActivity();
+        launchRouteDetailsActivity();
 
         Log.d(TAG, "onCreate: Launched Main Page");
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
