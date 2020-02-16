@@ -447,6 +447,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/white"
             android:text="Back"
             android:textColor="@android:color/holo_red_dark"
             android:textSize="18sp" />
@@ -457,6 +458,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/white"
             android:text="Edit"
             android:textColor="@color/design_default_color_primary"
             android:textSize="18sp" />
@@ -467,6 +469,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/white"
             android:text="Start"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
