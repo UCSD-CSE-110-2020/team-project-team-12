@@ -120,6 +120,7 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
+    Route currRoute;
 
     /* Database */
     WWRDatabase db;
@@ -179,11 +180,13 @@ public class RouteInfoActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
         if ( !isNewRoute ) {
             ExecutorService dbWriteExecutor = Executors.newSingleThreadExecutor();//Executors.newFixedThreadPool(1);
+//            setThreadPriority(dbWriteExecutor.);
             dbWriteExecutor.execute(() -> {
                 WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
                 RouteDao dao = routeDb.routeDao();
 
                 Route currEntry = dao.findName(currRouteName);
+                currRoute = dao.findName(currRouteName);
                 System.out.println(currEntry.name);
                 System.out.println(currEntry.notes);
                 System.out.println(currEntry.startingPoint);
@@ -238,9 +241,91 @@ public class RouteInfoActivity extends AppCompatActivity {
                 }
                 // TODO: Favorite?
 
+                if ( !isNewRoute ) {
+                    titleField.setText(routeTitle);
+                    if (startPosition != null) {
+                        startPoint.setText(startPosition);
+                    }
+                    // TODO: Ending point
+                    if ( isLoop != null ) {
+                        if ( isLoop ) {
+                            pathSpinner.setSelection(1);
+                        } else {
+                            pathSpinner.setSelection(2);
+                        }
+                    }
+                    if ( isHilly != null ) {
+                        if ( isHilly ) {
+                            inclineSpinner.setSelection(2);
+                        } else {
+                            inclineSpinner.setSelection(1);
+                        }
+                    }
+                    if ( isStreet != null ) {
+                        if ( isStreet ) {
+                            terrainSpinner.setSelection(1);
+                        } else {
+                            terrainSpinner.setSelection(2);
+                        }
+                    }
+                    if ( isEven != null ) {
+                        if ( isEven ) {
+                            textureSpinner.setSelection(1);
+                        } else {
+                            textureSpinner.setSelection(2);
+                        }
+                    }
+                }
+
             });
 //            dbWriteExecutor.shutdown();
         }
+
+//        routeTitle = currRoute.name;
+//        startPosition = currRoute.startingPoint;
+//        System.out.println(startPosition);
+//        // TODO: get the ending point
+//        notesField = currRoute.notes;
+//        if ( currRoute.routeType != null ) {
+//            Log.d(TAG, "onCreate: setting routeType to: " + currRoute.routeType);
+//            if (currRoute.routeType == Route.RouteType.LOOP) {
+//                isLoop = true;
+//            } else {
+//                isLoop = false;
+//                System.out.println("not loop");
+//            }
+//        }
+//        if ( currRoute.hilliness != null ) {
+//            if ( currRoute.hilliness == Route.Hilliness.HILLY ) {
+//                isHilly = true;
+//            } else {
+//                isHilly = false;
+//            }
+//        }
+//        if ( currRoute.surfaceType != null ) {
+//            if ( currRoute.surfaceType == Route.SurfaceType.STREETS ) {
+//                isStreet = true;
+//            } else {
+//                isStreet = false;
+//            }
+//        }
+//        if (currRoute.evenness != null ) {
+//            if ( currRoute.evenness == Route.Evenness.EVEN_SURFACE ) {
+//                isEven = true;
+//            } else {
+//                isEven = false;
+//            }
+//        }
+//        if ( currRoute.difficulty != null ) {
+//            if ( currRoute.difficulty == Route.Difficulty.EASY ) {
+//                isEasy = true;
+//            } else if ( currRoute.difficulty == Route.Difficulty.MODERATE ) {
+//                isModerate = true;
+//            } else {
+//                isHard = true;
+//            }
+//        }
+
         Log.d(TAG, "onCreate: Page is now set up");
 
         Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
