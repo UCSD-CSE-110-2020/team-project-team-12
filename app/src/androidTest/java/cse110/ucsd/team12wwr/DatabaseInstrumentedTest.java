@@ -84,6 +84,71 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
+    public void testFindWalksGivenRouteName() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+
+        Walk firstWalk = new Walk();
+        firstWalk.time = System.currentTimeMillis();
+        firstWalk.routeName = "Mission Hills Tour";
+        firstWalk.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
+        firstWalk.steps = String.format("%d", 1337);
+        firstWalk.distance = String.format("%.2f mi", 13.09);
+
+        Walk secondWalk = new Walk();
+        secondWalk.time = System.currentTimeMillis() + 100000;
+        secondWalk.routeName = "Mission Hills Tour";
+        secondWalk.duration = String.format("%02d:%02d:%02d", 21, 43, 65);
+        secondWalk.steps = String.format("%d", 7331);
+        secondWalk.distance = String.format("%.2f mi", 31.09);
+
+        Walk thirdWalk = new Walk();
+        thirdWalk.time = System.currentTimeMillis() - 100000;
+        thirdWalk.routeName = "Mission Hills Tour";
+        thirdWalk.duration = String.format("%02d:%02d:%02d", 34, 56, 78);
+        thirdWalk.steps = String.format("%d", 888);
+        thirdWalk.distance = String.format("%.2f mi", 11.11);
+
+        db.walkDao().insertAll(firstWalk, secondWalk, thirdWalk);
+
+        List<Walk> walks = db.walkDao().findByRouteName("Mission Hills Tour");
+
+        assertEquals("7331", walks.get(0).steps);
+        assertEquals("31.09 mi", walks.get(0).distance);
+        assertEquals("21:43:65", walks.get(0).duration);
+        
+        assertEquals("1337", walks.get(1).steps);
+        assertEquals("13.09 mi", walks.get(1).distance);
+        assertEquals("12:34:56", walks.get(1).duration);
+
+        assertEquals("888", walks.get(2).steps);
+        assertEquals("11.11 mi", walks.get(2).distance);
+        assertEquals("34:56:78", walks.get(2).duration);
+    }
+
+    @Test
+    public void testFindWalksGivenNonexistentRouteName() {
+        Route missionHills = new Route();
+        missionHills.name = "Mission Hills Tour";
+        missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
+        db.routeDao().insertAll(missionHills);
+
+        Walk firstWalk = new Walk();
+        firstWalk.time = System.currentTimeMillis();
+        firstWalk.routeName = "Mission Hills Tour";
+        firstWalk.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
+        firstWalk.steps = String.format("%d", 1337);
+        firstWalk.distance = String.format("%.2f mi", 13.09);
+
+        db.walkDao().insertAll(firstWalk);
+
+        List<Walk> walks = db.walkDao().findByRouteName("Ho Ho Ho!");
+        assertEquals(0, walks.size());
+    }
+
+    @Test
     public void testInsertSingleRoute() {
         Route newEntry = new Route();
         newEntry.name = "Mission Hills Tour";
