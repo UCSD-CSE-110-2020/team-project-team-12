@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,11 +30,15 @@ import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
     /* constants */
+    private static final String TAG = "MainActivity";
+    
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
     DecimalFormat DF = new DecimalFormat("#.##");
+
     final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
@@ -60,11 +65,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        launchRouteInfoActivity();
+
+        Log.d(TAG, "onCreate: Launched Main Page");
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
-
+        
         // Launches height activity only on first start
         if(!previouslyStarted) {
+            Log.d(TAG, "onCreate: First time launching, now launching height page");
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();
@@ -76,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d(TAG, "onClick: Launching the walking activity");
                 launchActivity();
             }
         });
@@ -106,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int feet = spf.getInt(FEET_KEY, 0);
         int inches = spf.getInt(INCHES_KEY, 0);
 
-//        System.out.println("feet: " + feet + " inches: "  + inches);
+        Log.d(TAG, "onCreate: Current feet: " + feet + " inches: "  + inches);
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
@@ -114,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         spf2 = getSharedPreferences(STEP_SPF_NAME, MODE_PRIVATE);
         SharedPreferences.Editor editor = spf2.edit();
         if ( spf2.getInt(TOTAL_STEPS_KEY, 0) == 0 ) {
+            Log.d(TAG, "onCreate: First time setting sharedPreferences for totalSteps");
             editor.putInt(TOTAL_STEPS_KEY, 0);
             editor.apply();
         }
@@ -121,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         numSteps = spf2.getInt(TOTAL_STEPS_KEY, 0);
         textStep.setText(""+numSteps);
         textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
-
+        
         btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -129,27 +140,39 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 editor.apply();
                 textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
                 textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
+                Log.d(TAG, "onClick: Set the distance to: " + textDist.getText().toString());
+                Log.d(TAG, "onClick: Set the steps to: " + textStep.getText().toString());
             }
         });
     }
 
     public void launchActivity() {
+        Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
     }
 
     public void launchRoutesScreenActivity() {
+        Log.d(TAG, "launchRoutesScreenActivity: launching the routes screen");
         Intent intent = new Intent(this, RoutesScreen.class);
         startActivity(intent);
     }
 
     public void launchHeightActivity() {
+        Log.d(TAG, "launchHeightActivity: launching height start page");
         Intent intent = new Intent( this, StartPage.class );
+        startActivity(intent);
+    }
+
+    public void launchRouteInfoActivity() {
+        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
         startActivity(intent);
     }
 
     @Override
     protected void onResume() {
+        Log.d(TAG, "onResume: Walking is now resumed");
         super.onResume();
         running = true;
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
@@ -186,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onPause() {
         super.onPause();
         running = false;
+        Log.d(TAG, "onPause: walking and timing has been paused");
         // if you unregister the hardware will stop detecting steps
         // sensorManager.unregisterListener(this);
     }
