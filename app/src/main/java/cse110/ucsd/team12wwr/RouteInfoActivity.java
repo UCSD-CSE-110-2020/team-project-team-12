@@ -120,7 +120,7 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
-    Route currRoute;
+//    Route currRoute;
 
     /* Database */
     WWRDatabase db;
@@ -132,6 +132,7 @@ public class RouteInfoActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Route Information");
 
+        resetFields();
         isNewRoute = true;
 
         // Init database
@@ -180,24 +181,25 @@ public class RouteInfoActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
         if ( !isNewRoute ) {
             ExecutorService dbWriteExecutor = Executors.newSingleThreadExecutor();//Executors.newFixedThreadPool(1);
-//            setThreadPriority(dbWriteExecutor.);
             dbWriteExecutor.execute(() -> {
                 WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
                 RouteDao dao = routeDb.routeDao();
 
                 Route currEntry = dao.findName(currRouteName);
-                currRoute = dao.findName(currRouteName);
-                System.out.println(currEntry.name);
-                System.out.println(currEntry.notes);
-                System.out.println(currEntry.startingPoint);
-                System.out.println(currEntry.difficulty);
-                System.out.println(currEntry.evenness);
-                System.out.println(currEntry.hilliness);
-                System.out.println(currEntry.routeType);
-                System.out.println(currEntry.surfaceType);
+//                currRoute = dao.findName(currRouteName);
+//                System.out.println(currEntry.name);
+//                System.out.println(currEntry.notes);
+//                System.out.println(currEntry.startingPoint);
+//                System.out.println(currEntry.difficulty);
+//                System.out.println(currEntry.evenness);
+//                System.out.println(currEntry.hilliness);
+//                System.out.println(currEntry.routeType);
+//                System.out.println(currEntry.surfaceType);
                 routeTitle = currEntry.name;
                 startPosition = currEntry.startingPoint;
+
                 System.out.println(startPosition);
+
                 // TODO: get the ending point
                 notesField = currEntry.notes;
                 if ( currEntry.routeType != null ) {
@@ -244,40 +246,40 @@ public class RouteInfoActivity extends AppCompatActivity {
                 }
                 // TODO: Favorite?
 
-                if ( !isNewRoute ) {
-                    titleField.setText(routeTitle);
-                    if (startPosition != null) {
-                        startPoint.setText(startPosition);
-                    }
-                    // TODO: Ending point
-                    if ( isLoop != null ) {
-                        if ( isLoop ) {
-                            pathSpinner.setSelection(1);
-                        } else {
-                            pathSpinner.setSelection(2);
-                        }
-                    }
-                    if ( isHilly != null ) {
-                        if ( isHilly ) {
-                            inclineSpinner.setSelection(2);
-                        } else {
-                            inclineSpinner.setSelection(1);
-                        }
-                    }
-                    if ( isStreet != null ) {
-                        if ( isStreet ) {
-                            terrainSpinner.setSelection(1);
-                        } else {
-                            terrainSpinner.setSelection(2);
-                        }
-                    }
-                    if ( isEven != null ) {
-                        if ( isEven ) {
-                            textureSpinner.setSelection(1);
-                        } else {
-                            textureSpinner.setSelection(2);
-                        }
-                    }
+//                if ( !isNewRoute ) {
+//                    titleField.setText(routeTitle);
+//                    if (startPosition != null) {
+//                        startPoint.setText(startPosition);
+//                    }
+//                    // TODO: Ending point
+//                    if ( isLoop != null ) {
+//                        if ( isLoop ) {
+//                            pathSpinner.setSelection(1);
+//                        } else {
+//                            pathSpinner.setSelection(2);
+//                        }
+//                    }
+//                    if ( isHilly != null ) {
+//                        if ( isHilly ) {
+//                            inclineSpinner.setSelection(2);
+//                        } else {
+//                            inclineSpinner.setSelection(1);
+//                        }
+//                    }
+//                    if ( isStreet != null ) {
+//                        if ( isStreet ) {
+//                            terrainSpinner.setSelection(1);
+//                        } else {
+//                            terrainSpinner.setSelection(2);
+//                        }
+//                    }
+//                    if ( isEven != null ) {
+//                        if ( isEven ) {
+//                            textureSpinner.setSelection(1);
+//                        } else {
+//                            textureSpinner.setSelection(2);
+//                        }
+//                    }
 //                    if ( isEasy ) {
 //                        easyBtn.performClick();
 //                    }
@@ -287,9 +289,10 @@ public class RouteInfoActivity extends AppCompatActivity {
 //                    if (isHard) {
 //                        hardBtn.performClick();
 //                    }
-                }
+//                }
 
             });
+            while( routeTitle == null );
 //            dbWriteExecutor.shutdown();
         }
 
@@ -690,16 +693,20 @@ public class RouteInfoActivity extends AppCompatActivity {
         Log.d(TAG, "onClick: isEasy: " + isEasy);
     }
 
-    public void awaitTerminationAfterShutdown(ExecutorService threadPool) {
-        threadPool.shutdown();
-        try {
-            if (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
-                threadPool.shutdownNow();
-            }
-        } catch (InterruptedException ex) {
-            threadPool.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+    public void resetFields() {
+        isNewRoute = true;
+        isHilly = null;
+        isStreet = null;
+        isLoop = null;
+        isEven = null;
+        isFavorite = false;
+        isModerate = false;
+        isEasy = false;
+        isHard = false;
+        routeTitle = null;
+        startPosition = null;
+        endLocation = null;
+        notesField = null;
     }
 
 }
