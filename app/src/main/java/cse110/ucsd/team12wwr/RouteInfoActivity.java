@@ -340,6 +340,15 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
+        // Notes field
+        EditText notes = findViewById(R.id.notes_entry);
+        notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: Notes field is clickedg");
+            }
+        });
+
         // TODO: Save button: if object is null/no object passed, create new object to store in db
         // TODO: If object exists, just update the object's fields
 
