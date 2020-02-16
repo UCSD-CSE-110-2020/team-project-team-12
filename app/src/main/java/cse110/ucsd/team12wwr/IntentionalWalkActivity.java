@@ -1,11 +1,13 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,6 +17,8 @@ import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
+import cse110.ucsd.team12wwr.database.Route;
+import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
@@ -33,6 +37,8 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private int temporaryNumSteps;
 
     private IClock clock;
+
+    private static final String TAG = "IntentionalWalkActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +105,14 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
 
         stopButton.setOnClickListener((view) -> {
+            launchRouteInfoPage();
             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
             databaseWriteExecutor.execute(() -> {
                 WWRDatabase walkDb = WWRDatabase.getInstance(this);
                 WalkDao dao = walkDb.walkDao();
+                RouteDao rDao = walkDb.routeDao();
 
+//                Route route = rDao.findName()
                 Walk newEntry = new Walk();
                 newEntry.time = System.currentTimeMillis();
                 newEntry.duration = stopwatchText.getText().toString();
@@ -116,6 +125,12 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
             finish();
         });
+    }
+
+    private void launchRouteInfoPage() {
+        Log.d(TAG, "launchRouteInfoPage: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+        startActivity(intent);
     }
 
     protected void setClock(IClock clock) {
