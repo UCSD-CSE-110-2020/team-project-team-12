@@ -304,7 +304,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="@string/mod_mode"
-            android:textSize="15sp" />
+            android:textSize="14sp" />
 
         <Button
             android:id="@+id/hard_btn"
