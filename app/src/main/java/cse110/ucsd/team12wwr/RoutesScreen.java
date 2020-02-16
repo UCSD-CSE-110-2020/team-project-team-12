@@ -89,7 +89,7 @@ public class RoutesScreen extends AppCompatActivity {
     public void launchRoutesDetailsPage() {
         Log.d(TAG, "launchRoutesDetailsPage: launching the route details page");
         Intent intent = new Intent(this, RouteDetailsPage.class);
-//        intent.putExtra(name, routeName);
+        intent.putExtra("name", routeName);
         startActivity(intent);
     }
 }
