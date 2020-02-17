@@ -9,6 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".RoutesScreen" />
+        <activity android:name=".RouteInfoActivity"></activity>
+        <activity android:name=".RouteDetailsPage"></activity>
         <activity android:name=".DebugWalkActivity"></activity>
 
         <service

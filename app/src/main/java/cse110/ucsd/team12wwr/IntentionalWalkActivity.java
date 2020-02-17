@@ -10,11 +10,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -27,6 +28,8 @@ import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
     // TODO code repetition
+    private static final String TAG = "IntentionalWalkActivity";
+
     private final int HEIGHT_FACTOR = 12;
     private final double STRIDE_CONVERSION = 0.413;
     private final int MILE_FACTOR = 63360;
@@ -35,6 +38,8 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private AsyncTaskRunner runner;
     private int timeWhenPaused, timeElapsed;
     private double strideLength;
+    private String routeTitle;
+    private boolean isNewRoute = true;
 
     private int temporaryNumSteps;
 
@@ -99,6 +104,13 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         continueButton.setVisibility(View.GONE);
         stopButton.setVisibility(View.GONE);
         pauseButton.setVisibility(View.VISIBLE);
+
+        if ( getIntent().hasExtra("ROUTE_TITLE")) {
+            routeTitle = getIntent().getExtras().getString("ROUTE_TITLE");
+            TextView routeName = findViewById(R.id.text_route_name);
+            routeName.setText(routeTitle);
+            Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
+        }
 
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
