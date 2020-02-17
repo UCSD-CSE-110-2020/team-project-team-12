@@ -10,14 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
@@ -30,9 +29,7 @@ public class RoutesScreen extends AppCompatActivity {
     private static final String TAG = "RoutesScreen";
 
     ListView listView;
-    ArrayList<String> arrayList;
     List<Route> routeList;
-    RouteDao dao;
     String routeName;
 
     @Override
@@ -40,43 +37,38 @@ public class RoutesScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes_screen);
 
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            dao = walkDb.routeDao();
+        Button back = findViewById(R.id.back_button);
+        Button add = findViewById(R.id.add_button);
 
-            Route newRoute = new Route();
-
-            newRoute.name = Long.toString(System.currentTimeMillis());
-            newRoute.startingPoint = "Street";
-
-            dao.insertAll(newRoute);
-
-            routeList = dao.retrieveAllRoutes();
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
         });
 
-        while (routeList == null); //  makes this thread wait until databaseWriteExecutor finishes
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        WWRDatabase db = WWRDatabase.getInstance(this);
+        routeList = db.routeDao().retrieveAllRoutes();
 
         listView = findViewById(R.id.list_view);
 
-        arrayList = new ArrayList<>();
-
-        arrayList.add("Mission Bay");
-        arrayList.add("Torrey Pines Hike");
-        arrayList.add("Potato Chip Rock Hike");
-
         System.err.println(routeList);
 
-//        TODO: make sure to delete the else if statement once the route list is able to be populated
-        if (routeList != null) {
-            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
 
-            listView.setAdapter(arrayAdapter);
-        } else {
-            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-
-            listView.setAdapter(arrayAdapter);
-        }
+        listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,13 +80,15 @@ public class RoutesScreen extends AppCompatActivity {
     }
 
     public void launchRoutesDetailsPage() {
-        Log.d(TAG, "launchRoutesDetailsPage: launching the route details page");
         Intent intent = new Intent(this, RouteDetailsPage.class);
-        Log.d(TAG, "111111");
         intent.putExtra("name", routeName);
-        Log.d(TAG, "22222222");
         startActivity(intent);
-        Log.d(TAG, "33333333");
+    }
 
+    public void launchRouteInfoActivity() {
+        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+
+        startActivity(intent);
     }
 }
