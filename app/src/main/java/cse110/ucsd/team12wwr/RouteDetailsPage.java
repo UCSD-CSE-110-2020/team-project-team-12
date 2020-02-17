@@ -20,6 +20,8 @@ public class RouteDetailsPage extends AppCompatActivity {
     // Route title
     TextView routeTitle;
 
+    Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,14 +58,14 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
-        Intent intent = new Intent(this, RouteInfoActivity.class);
+        intent = new Intent(this, RouteInfoActivity.class);
         intent.putExtra(TITLE, extractString(routeTitle));
         startActivity(intent);
     }
 
     public void launchIntentionalActivity() {
         Log.d(TAG, "launchActivity: launching the walking activity");
-        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        intent = new Intent(this, IntentionalWalkActivity.class);
         intent.putExtra(TITLE, extractString(routeTitle));
         startActivity(intent);
     }
