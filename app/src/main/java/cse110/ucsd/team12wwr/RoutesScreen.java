@@ -67,6 +67,7 @@ public class RoutesScreen extends AppCompatActivity {
 
         System.err.println(routeList);
 
+//        TODO: make sure to delete the else if statement once the route list is able to be populated
         if (routeList != null) {
             ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
 
@@ -89,7 +90,11 @@ public class RoutesScreen extends AppCompatActivity {
     public void launchRoutesDetailsPage() {
         Log.d(TAG, "launchRoutesDetailsPage: launching the route details page");
         Intent intent = new Intent(this, RouteDetailsPage.class);
+        Log.d(TAG, "111111");
         intent.putExtra("name", routeName);
+        Log.d(TAG, "22222222");
         startActivity(intent);
+        Log.d(TAG, "33333333");
+
     }
 }

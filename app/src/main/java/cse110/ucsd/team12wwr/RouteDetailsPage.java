@@ -42,24 +42,10 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     private static final String TAG = "RouteDetailsPage";
 
-    // Header
-    TextView routeTitle = findViewById(R.id.route_title_detail);
-    TextView startPoint = findViewById(R.id.start_textview);
-    TextView endPoint = findViewById(R.id.end_textview);
-
-    // Metrics
-    TextView totalTime = findViewById(R.id.total_time_detail);
-    TextView totalDist = findViewById(R.id.dist_details);
-
-    // Spinner info
-    TextView path = findViewById(R.id.path_details);
-    TextView terrain = findViewById(R.id.terrain_deets);
-    TextView incline = findViewById(R.id.incline_deets);
-    TextView surface = findViewById(R.id.texture_details);
-
-    // Extra info
-    TextView difficulty = findViewById(R.id.diff_detail);
-    TextView notes = findViewById(R.id.notes_content);
+    TextView routeTitle, startPoint, endPoint;
+    TextView totalTime, totalDist;
+    TextView path, terrain, incline, surface;
+    TextView difficulty, notes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,28 +54,50 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
+            walkDb = WWRDatabase.getInstance(this);
             dao = walkDb.routeDao();
 
             routeList = dao.retrieveAllRoutes();
 
-            Intent intent = getIntent();
-            routeName = intent.getStringExtra("name");
-            System.err.print("Route Name: ");
-            System.err.println(routeName);
-
+            newRoute = walkDb.routeDao().findName(routeName);
         });
 
-        while (newRoute == null);
+        Intent intent = getIntent();
+        routeName = intent.getStringExtra("name");
+        System.err.print("Route Name: ");
+        System.err.println(routeName);
 
+        // Header
+        routeTitle = findViewById(R.id.route_title_detail);
+        startPoint = findViewById(R.id.start_textview);
+        endPoint = findViewById(R.id.end_textview);
+
+        // Metrics
+        totalTime = findViewById(R.id.total_time_detail);
+        totalDist = findViewById(R.id.dist_details);
+
+        // Spinner info
+        path = findViewById(R.id.path_details);
+        terrain = findViewById(R.id.terrain_deets);
+        incline = findViewById(R.id.incline_deets);
+        surface = findViewById(R.id.texture_details);
+
+        // Extra info
+        difficulty = findViewById(R.id.diff_detail);
+        notes = findViewById(R.id.notes_content);
 
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
             TextView textView = (TextView) findViewById(R.id.route_title_detail);
             textView.setText(routeName);
-            newRoute = walkDb.routeDao().findName(routeName);
         }
 
+        Log.d(TAG, "right before while null");
+
+        while (newRoute == null);
+
+
+        Log.d(TAG, "gets here!!!!");
 
         if (newRoute != null) {
             if (newRoute.startingPoint != null) {

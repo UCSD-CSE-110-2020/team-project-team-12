@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,7 +25,6 @@ import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import cse110.ucsd.team12wwr.database.Route;
 
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
@@ -41,13 +39,10 @@ import cse110.ucsd.team12wwr.database.WalkDao;
 public class MainActivity extends AppCompatActivity {
 
     /* constants */
-    private static final String TAG = "MainActivity";
-    
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
     DecimalFormat DF = new DecimalFormat("#.##");
-
     final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
@@ -63,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     long numSteps = 0;
 
     /* GoogleFit */
+    private static final String TAG = "MainActivity";
     private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
@@ -85,9 +81,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("MainActivity.onServiceConnected", "PedometerService Connected");
         }
         @Override
-        public void onServiceDisconnected(ComponentName name) {
-            isBound = false;
-        }
+        public void onServiceDisconnected(ComponentName name) {isBound = false;}
     };
 
     /* distance */
@@ -98,24 +92,20 @@ public class MainActivity extends AppCompatActivity {
     /* TESTING */
     public boolean testingFlag = false;
 
+    public boolean startServCalled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //launchRouteInfoActivity();
-
-//        launchRouteDetailsActivity();
-
-        Log.d(TAG, "onCreate: Launched Main Page");
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
-        
+
         // Launches height activity only on first start
         if(!previouslyStarted) {
-            Log.d(TAG, "onCreate: First time launching, now launching height page");
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();
@@ -126,13 +116,11 @@ public class MainActivity extends AppCompatActivity {
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: Launching the walking activity");
                 launchActivity();
             }
         });
 
-        Button launchRoutesScreen = findViewById(R.id.btn_to_routes_screen);
-
+        Button launchRoutesScreen = (Button) findViewById(R.id.btn_to_routes_screen);
         launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,12 +139,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        
+
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
         Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
-
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -176,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
     public void setFitnessService(FitnessService newService){
         fitnessService = newService;
@@ -198,6 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     Log.i("MainActivity.startStepUpdaterMethod", "Successful bind achieved");
                     pedService.beginStepTracking(fitnessService);
+                    startServCalled = true;
                 }
             }
         }, 1500);
@@ -210,6 +197,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity.continueStepUpdaterMethod", "continue Runner Called");
                 if(!isBound) {
                     Log.i("MainActivity.continueStepUpdaterMethod", "Still waiting for successful bind");
+                    bindCheckHandler.postDelayed(this, 2000);
+                }
+                if(!startServCalled){
+                    Log.i("MainActivity.continueStepUpdaterMethod", "beginStepTracking Uncalled");
                     bindCheckHandler.postDelayed(this, 2000);
                 }
                 else{
@@ -242,10 +233,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchActivity() {
-        Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
     }
+
+    public void launchRoutesScreenActivity() {
+        Intent intent = new Intent(this, RoutesScreen.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -255,33 +251,14 @@ public class MainActivity extends AppCompatActivity {
         unbindPedometerService();
     }
 
-    public void launchRoutesScreenActivity() {
-        Log.d(TAG, "launchRoutesScreenActivity: launching the routes screen");
-        Intent intent = new Intent(this, RoutesScreen.class);
-        startActivity(intent);
-    }
-
     public void launchHeightActivity() {
-        Log.d(TAG, "launchHeightActivity: launching height start page");
         Intent intent = new Intent( this, StartPage.class );
         startActivity(intent);
     }
 
-    public void launchRouteInfoActivity() {
-        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
-        Intent intent = new Intent(this, RouteInfoActivity.class);
-        startActivity(intent);
-    }
-
-    public void launchRouteDetailsActivity() {
-        Log.d(TAG, "launchRouteDetailsActivity: launching the route details page");
-        Intent intent = new Intent(this, RouteDetailsPage.class);
-        startActivity(intent);
-    }
 
     @Override
     protected void onResume() {
-        Log.d(TAG, "onResume: Walking is now resumed");
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
         rebindPedService();
@@ -365,5 +342,5 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onDestroy();
     }
-}
 
+}
