@@ -172,7 +172,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         // TODO: Remove Route Title 
         if (currRouteName != null ) { // && !currRouteName.equals("Route Title")) {
             isNewRoute = false;
-            Log.d(TAG, "onCreate: This is a new route we will be creating");
+            Log.d(TAG, "onCreate: This is not a new route we will be creating");
         }
 
         // Set spinners
