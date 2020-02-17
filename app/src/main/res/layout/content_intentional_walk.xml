@@ -113,27 +113,27 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btn_continue_walk"
-        android:layout_width="0dp"
-        android:layout_height="89dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="20dp"
-        android:text="CONTINUE"
-        android:textSize="45dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/distance_metrics_layout"></Button>
-
-    <Button
         android:id="@+id/btn_pause_walk"
         android:layout_width="0dp"
         android:layout_height="89dp"
         android:layout_marginStart="61dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="28dp"
         android:layout_marginEnd="61dp"
         android:text="PAUSE"
         android:textSize="45dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/distance_metrics_layout"></Button>
+
+    <Button
+        android:id="@+id/btn_continue_walk"
+        android:layout_width="0dp"
+        android:layout_height="89dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="28dp"
+        android:text="CONTINUE"
+        android:textSize="45dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/distance_metrics_layout"></Button>
 
@@ -142,13 +142,13 @@
         android:layout_width="0dp"
         android:layout_height="89dp"
         android:layout_marginStart="61dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="61dp"
+        android:layout_marginBottom="16dp"
         android:text="END"
         android:textSize="45dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_pause_walk"></Button>
+        app:layout_constraintStart_toStartOf="parent"></Button>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
