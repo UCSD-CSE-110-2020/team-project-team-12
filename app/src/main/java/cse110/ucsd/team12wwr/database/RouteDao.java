@@ -21,4 +21,7 @@ public interface RouteDao {
 
     @Query("SELECT * FROM Route r ORDER BY name ASC")
     List<Route> retrieveAllRoutes();
+
+    @Query("SELECT * FROM Route r WHERE r.name=:routeName")
+    Route findName(String routeName);
 }

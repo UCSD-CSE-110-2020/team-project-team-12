@@ -3,6 +3,10 @@ package cse110.ucsd.team12wwr;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -46,7 +50,7 @@ public class RouteInfoTests {
     private ActivityTestRule<RouteInfoActivity> routeInfoActivityActivityTestRule;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         routeIntent = new Intent(ApplicationProvider.getApplicationContext(), RouteInfoActivity.class);
         routeInfoActivityActivityTestRule = new ActivityTestRule<>(RouteInfoActivity.class);
     }
@@ -80,7 +84,7 @@ public class RouteInfoTests {
     }
 
     @Test
-    public void testDifficultyButtons() {
+    public void testEasyButton() {
         // Retrieve booleans from the page
         routeInfoActivityActivityTestRule.launchActivity(routeIntent);
         Boolean isEasy = routeInfoActivityActivityTestRule.getActivity().isEasy;
@@ -92,24 +96,91 @@ public class RouteInfoTests {
         assertFalse(isModerate);
         assertFalse(isHard);
 
+        // Test Easy Button
         easyBtn.performClick();
-        assertFalse(isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isModerate);
+        assertTrue(routeInfoActivityActivityTestRule.getActivity().isEasy);
+        assertEquals(easyBtn.getCurrentTextColor(), Color.WHITE);
+        assertEquals(((ColorDrawable) easyBtn.getBackground()).getColor(), Color.DKGRAY);
+
+        easyBtn.performClick();
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isModerate);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isEasy);
+        assertEquals(easyBtn.getCurrentTextColor(), Color.BLACK);
+        assertEquals(easyBtn.getBackground(),
+                routeInfoActivityActivityTestRule.getActivity().defaultColor);
+
+    }
+
+    @Test
+    public void testHardButton() {
+        // Retrieve booleans from the page
+        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
+        Boolean isEasy = routeInfoActivityActivityTestRule.getActivity().isEasy;
+        Boolean isModerate = routeInfoActivityActivityTestRule.getActivity().isModerate;
+        Boolean isHard = routeInfoActivityActivityTestRule.getActivity().isHard;
+
+        Button hardBtn = routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.hard_btn);
+        assertFalse(isEasy);
         assertFalse(isModerate);
-//        assertTrue(isEasy);
-        assertEquals(easyBtn.getTextColors(), "#000000");
-//        ActivityScenario<RouteInfoActivity> scenario = ActivityScenario.launch(routeIntent);
-//        scenario.onActivity(activity -> {
-//            /* Default should be all false */
-//            assertFalse(isEasy);
-//            assertFalse(isModerate);
-//            assertFalse(isHard);
-//
-//            Button easyBtn = activity.findViewById(R.id.easy_btn);
-//            easyBtn.performClick();
-//            assertFalse(isHard);
-//            assertFalse(isModerate);
-//            assertTrue(isEasy);
-//            assertEquals(easyBtn.getTextColors(), "#000000");
-//        });
+        assertFalse(isHard);
+
+        // Test Hard Button
+        hardBtn.performClick();
+        assertTrue(routeInfoActivityActivityTestRule.getActivity().isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isModerate);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isEasy);
+        assertEquals(hardBtn.getCurrentTextColor(), Color.WHITE);
+        assertEquals(((ColorDrawable) hardBtn.getBackground()).getColor(), Color.DKGRAY);
+
+        hardBtn.performClick();
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isModerate);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isEasy);
+        assertEquals(hardBtn.getCurrentTextColor(), Color.BLACK);
+        assertEquals(hardBtn.getBackground(),
+                routeInfoActivityActivityTestRule.getActivity().defaultColor);
+
+    }
+
+    @Test
+    public void testModerateButton() {
+        // Retrieve booleans from the page
+        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
+        Boolean isEasy = routeInfoActivityActivityTestRule.getActivity().isEasy;
+        Boolean isModerate = routeInfoActivityActivityTestRule.getActivity().isModerate;
+        Boolean isHard = routeInfoActivityActivityTestRule.getActivity().isHard;
+
+        Button modBtn = routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.hard_btn);
+        assertFalse(isEasy);
+        assertFalse(isModerate);
+        assertFalse(isHard);
+
+        // Test Hard Button
+        modBtn.performClick();
+        assertTrue(routeInfoActivityActivityTestRule.getActivity().isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isModerate);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isEasy);
+        assertEquals(modBtn.getCurrentTextColor(), Color.WHITE);
+        assertEquals(((ColorDrawable) modBtn.getBackground()).getColor(), Color.DKGRAY);
+
+        modBtn.performClick();
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isHard);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isModerate);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isEasy);
+        assertEquals(modBtn.getCurrentTextColor(), Color.BLACK);
+        assertEquals(modBtn.getBackground(),
+                routeInfoActivityActivityTestRule.getActivity().defaultColor);
+    }
+
+    @Test
+    public void testFavoriteButton() {
+        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
+        Button isFav = (Button) routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.favoriteCheckBtn);
+        assertFalse(routeInfoActivityActivityTestRule.getActivity().isFavorite);
+        isFav.performClick();
+        assertTrue(routeInfoActivityActivityTestRule.getActivity().isFavorite);
     }
 }

@@ -3,6 +3,7 @@ package cse110.ucsd.team12wwr.database;
 import android.view.Surface;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverter;
@@ -10,10 +11,14 @@ import androidx.room.TypeConverters;
 
 @Entity
 public class Route {
-    @PrimaryKey @NonNull
+    @PrimaryKey @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String name;
 
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String startingPoint;
+
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
+    public String endingPoint;
 
     @TypeConverters(RouteType.class)
     public RouteType routeType;
@@ -31,6 +36,9 @@ public class Route {
     public Difficulty difficulty;
 
     public String notes;
+
+    @TypeConverters(Favorite.class)
+    public Favorite favorite;
 
     public enum RouteType {
         LOOP(0),
@@ -193,6 +201,7 @@ public class Route {
             return null;
         }
 
+
         @TypeConverter
         public static int getEnumCode(Difficulty d) {
             if (d == null) {
@@ -200,6 +209,40 @@ public class Route {
             }
 
             return d.code;
+        }
+    }
+
+    public enum Favorite {
+        FAVORITE(0),
+        NOT_FAVORITE(1);
+
+        private int code;
+
+        Favorite(int code) {
+            this.code = code;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        @TypeConverter
+        public static Favorite getFavorite(int code) {
+            for(Favorite f : values()) {
+                if (f.code == code) {
+                    return f;
+                }
+            }
+            return null;
+        }
+
+        @TypeConverter
+        public static int getEnumCode(Favorite f) {
+            if (f == null) {
+                return -1;
+            }
+
+            return f.code;
         }
     }
 }
