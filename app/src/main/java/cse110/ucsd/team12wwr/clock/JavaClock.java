@@ -1,6 +1,6 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.clock;
 
-public class JavaClock implements iClock {
+public class JavaClock implements IClock {
     @Override
     public int getCurrentClock() {
         return (int)(System.currentTimeMillis() / 1000);

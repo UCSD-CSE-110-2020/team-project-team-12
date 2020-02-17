@@ -8,7 +8,6 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main">
 
-
     <TextView
         android:id="@+id/previous_walk"
         android:layout_width="0dp"
@@ -23,7 +22,8 @@
         app:layout_constraintBottom_toBottomOf="@+id/steps"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/miles_word" />
+        app:layout_constraintTop_toTopOf="@+id/miles_word"
+        />
 
     <TextView
         android:id="@+id/today"

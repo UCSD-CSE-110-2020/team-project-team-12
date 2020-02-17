@@ -1,9 +1,11 @@
-package cse110.ucsd.team12wwr;
+package cse110.ucsd.team12wwr.database;
 
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import java.util.List;
 
 @Dao
 public interface WalkDao {
@@ -15,5 +17,8 @@ public interface WalkDao {
 
     @Query("SELECT * FROM Walk w WHERE NOT EXISTS (SELECT a.time FROM Walk a WHERE a.time > w.time)")
     Walk findNewestEntry();
+
+    @Query("SELECT * FROM Walk w WHERE w.routeName=:routeName ORDER BY time DESC")
+    List<Walk> findByRouteName(String routeName);
 }
 

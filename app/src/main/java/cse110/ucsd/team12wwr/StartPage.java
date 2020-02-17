@@ -16,7 +16,15 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import cse110.ucsd.team12wwr.fitness.FitnessService;
+import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
+import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
+
 public class StartPage extends AppCompatActivity {
+
+    final String HEIGHT_SPF_NAME = "HEIGHT";
+    final String FEET_KEY = "FEET";
+    final String INCHES_KEY = "INCHES";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,14 +40,12 @@ public class StartPage extends AppCompatActivity {
         ArrayAdapter<Integer> feet_adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, foot_items);
         foot_dropdown.setAdapter(feet_adapter);
         foot_dropdown.setSelection(0);
-        //foot_dropdown.setPrompt("0");
 
         final Spinner inch_dropdown = findViewById(R.id.inch_spinner);
         final Integer[] inch_items = new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         ArrayAdapter<Integer> inch_adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item, inch_items);
         inch_dropdown.setAdapter(inch_adapter);
         inch_dropdown.setSelection(0);
-        //inch_dropdown.setPrompt("0");
 
         // Button to launch new page
         Button launchMainPage = (Button) findViewById(R.id.enter_button);
@@ -55,22 +61,25 @@ public class StartPage extends AppCompatActivity {
                 if ( feetValue == 0 && inchValue == 0 ) {
                     Toast.makeText(StartPage.this, "You can't be 0 feet and 0 inches! Impossible!", Toast.LENGTH_SHORT).show();
                 } else {
-                    SharedPreferences sharedPreferences = getSharedPreferences("height", MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                    editor.putInt("feet", feetValue);
-                    editor.putInt("inches", inchValue);
+                    editor.putInt(FEET_KEY, feetValue);
+                    editor.putInt(INCHES_KEY, inchValue);
                     editor.apply();
 
-                    launchMainActivity();
+                    finish();
                 }
             }
         });
-    }
 
-    public void launchMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+
+        /*FitnessServiceFactory.put("GOOGLE_FIT", new FitnessServiceFactory.BluePrint() {
+            @Override
+            public FitnessService create(MainActivity mainActivity) {
+                return new GoogleFitAdapter(mainActivity);
+            }
+        });*/
     }
 
 }
