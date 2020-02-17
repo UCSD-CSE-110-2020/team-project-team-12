@@ -31,9 +31,7 @@ public class RoutesScreen extends AppCompatActivity {
     private static final String TAG = "RoutesScreen";
 
     ListView listView;
-    ArrayList<String> arrayList;
     List<Route> routeList;
-    RouteDao dao;
     String routeName;
 
     @Override
@@ -63,17 +61,8 @@ public class RoutesScreen extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            dao = walkDb.routeDao();
-
-//            Route newRoute = new Route();
-//
-//            dao.insertAll(newRoute);
-
-            routeList = dao.retrieveAllRoutes();
-        });
+        WWRDatabase db = WWRDatabase.getInstance(this);
+        routeList = db.routeDao().retrieveAllRoutes();
 
         while (routeList == null); //  makes this thread wait until databaseWriteExecutor finishes
 
