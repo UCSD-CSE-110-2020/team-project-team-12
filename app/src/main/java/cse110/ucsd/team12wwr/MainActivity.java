@@ -92,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 launchActivity();
             }
         });
+
+        Button launchRoutesPageActivity = (Button) findViewById(R.id.routes_list_button);
+
         
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
-        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -125,18 +127,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         numSteps = spf2.getInt(TOTAL_STEPS_KEY, 0);
         textStep.setText(""+numSteps);
         textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
-        
-        btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editor.putInt(TOTAL_STEPS_KEY, numSteps+=100);
-                editor.apply();
-                textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
-                textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
-                Log.d(TAG, "onClick: Set the distance to: " + textDist.getText().toString());
-                Log.d(TAG, "onClick: Set the steps to: " + textStep.getText().toString());
-            }
-        });
+
     }
 
     public void launchActivity() {
