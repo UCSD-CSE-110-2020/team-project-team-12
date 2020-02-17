@@ -16,7 +16,9 @@
         <TableRow
             android:id="@+id/route_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/title_text_view"
@@ -29,15 +31,17 @@
                 android:id="@+id/title_text"
                 android:layout_width="234dp"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="@string/route_edit_hint"/>
+                android:hint="@string/route_edit_hint"
+                android:inputType="text" />
 
         </TableRow>
 
         <TableRow
             android:id="@+id/starting_row"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/start_textview"
@@ -48,25 +52,27 @@
             <EditText
                 android:id="@+id/start_text"
                 android:layout_width="253dp"
-                android:inputType="text"
-                android:hint="@string/start_edit_hint"/>
+                android:hint="@string/start_edit_hint"
+                android:inputType="text" />
 
         </TableRow>
 
         <TableRow
-            android:id="@+id/stop_row">
+            android:id="@+id/stop_row"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp">
 
             <TextView
                 android:id="@+id/stop_textView"
                 android:layout_width="wrap_content"
                 android:text="@string/stop_location"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/stop_text"
                 android:layout_width="wrap_content"
-                android:inputType="text"
-                android:hint="@string/end_edit_hint"/>
+                android:hint="@string/end_edit_hint"
+                android:inputType="text" />
 
         </TableRow>
 
@@ -132,7 +138,7 @@
             android:id="@+id/add_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
+            android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:text="@string/additional_info"
             android:textSize="18sp"
@@ -155,7 +161,8 @@
             android:id="@+id/path_textView"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:text="@string/path_text"
             android:textSize="18sp"
@@ -190,7 +197,8 @@
             android:id="@+id/incline_text"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:text="@string/incline_text"
             android:textSize="18sp"
@@ -221,7 +229,8 @@
             android:id="@+id/terrain_text"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:text="@string/terrain_text"
             android:textSize="18sp"
@@ -243,7 +252,7 @@
         android:id="@+id/texture_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -254,7 +263,8 @@
             android:id="@+id/texture_textView"
             android:layout_width="61dp"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:text="@string/texture_text"
             android:textSize="18sp"

@@ -225,10 +225,10 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                     dao.insertAll(newEntry);
                 });
 
-                this.finish();
+                finish();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
+                finish();
             }
         }
     }

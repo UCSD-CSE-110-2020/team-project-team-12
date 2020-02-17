@@ -142,6 +142,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         EditText titleField = findViewById(R.id.title_text);
         EditText startPoint = findViewById(R.id.start_text);
         EditText endPoint = findViewById(R.id.stop_text);
+        EditText notesEntry = findViewById(R.id.notes_entry);
         TextView totalDistText = findViewById(R.id.dist_textEdit);
         TextView totalTimeText = findViewById(R.id.totalTime_textEdit);
         CheckBox favoriteBtn = findViewById(R.id.favoriteCheckBtn);
@@ -169,7 +170,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         }
 
         // TODO: Remove Route Title 
-        if (currRouteName != null || !currRouteName.equals("Route Title")) {
+        if (currRouteName != null ) { // && !currRouteName.equals("Route Title")) {
             isNewRoute = false;
             Log.d(TAG, "onCreate: This is a new route we will be creating");
         }
@@ -210,8 +211,14 @@ public class RouteInfoActivity extends AppCompatActivity {
                 startPosition = currEntry.startingPoint;
                 endLocation = currEntry.endingPoint;
                 notesField = currEntry.notes;
-                totalDistance = currWalk.get(0).distance;
-                totalTime = currWalk.get(0).duration;
+                if ( currWalk.size() > 0 ) {
+                    if (currWalk.get(0).distance != null) {
+                        totalDistance = currWalk.get(0).distance;
+                    }
+                    if (currWalk.get(0).duration != null) {
+                        totalTime = currWalk.get(0).duration;
+                    }
+                }
 
                 if ( currEntry.routeType != null ) {
                     Log.d(TAG, "onCreate: setting routeType to: " + currEntry.routeType);
@@ -317,6 +324,9 @@ public class RouteInfoActivity extends AppCompatActivity {
             if ( totalDistance != null ) {
                 totalDistText.setText(totalDistance);
             }
+            if ( notesField != null ) {
+                notesEntry.setText(notesField);
+            }
         }
 
         // TODO: Set up the favorite button to be whatever favorite is passed in
@@ -330,6 +340,27 @@ public class RouteInfoActivity extends AppCompatActivity {
                 } else {
                     isFavorite = false;
                     Log.d(TAG, "onClick: isFavorite: " + isFavorite);
+                }
+            }
+        });
+
+
+        // Cancel Button
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: Save Button is clicked");
+                // Make sure it is not null
+                if ( TextUtils.isEmpty(titleField.getText()) ) {
+                    Log.d(TAG, "onClick: Title field is null, save not finished");
+                    titleField.setError("You must enter a title for your route!");
                 }
             }
         });
@@ -405,7 +436,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                             setEvenness(newEntry, textureSpinner);
                             setDifficulty(newEntry);
                             // TODO: Set notes
-                            setNotes(newEntry, "");
+                            setNotes(newEntry, notesEntry.getText().toString());
 
                             try {
                                 dao.insertAll(newEntry);
@@ -443,7 +474,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                             setEvenness(newEntry, textureSpinner);
                             setDifficulty(newEntry);
                             // TODO: Fix notes
-                            setNotes(newEntry, "");
+                            setNotes(newEntry, notesEntry.getText().toString());
                             dao.update(newEntry);
                             Log.d(TAG, "onClick: Updated route information for old route");
 
@@ -451,7 +482,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     } // End inner else ( if not a new route )
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("routeTitle", titleField.getText().toString());
-                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle")) ;
+                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } // End else
@@ -533,7 +564,11 @@ public class RouteInfoActivity extends AppCompatActivity {
     }
 
     public void setNotes(Route route, String msg) {
-        route.notes = msg;
+        if ( msg != null ) {
+            route.notes = msg;
+        } else {
+            route.notes = "";
+        }
     }
 
     public void setEasyButton(Button easyBtn, Button moderateBtn, Button hardBtn) {
