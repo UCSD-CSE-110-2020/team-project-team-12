@@ -51,9 +51,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
         result = null;
         // TODO this is code repetition, should just declare getStrideLength() somewhere
-        SharedPreferences spf = getSharedPreferences("height", MODE_PRIVATE);
-        int feet = spf.getInt("feet", 0);
-        int inches = spf.getInt("inches", 0);
+        SharedPreferences spf = getSharedPreferences("HEIGHT", MODE_PRIVATE);
+        int feet = spf.getInt("FEET", 0);
+        int inches = spf.getInt("INCHES", 0);
         int totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
