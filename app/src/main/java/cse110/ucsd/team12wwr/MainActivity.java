@@ -101,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
 
 //      launchRouteInfoActivity();
 
-        launchRouteDetailsActivity();
+//        launchRouteDetailsActivity();
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -243,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RoutesScreen.class);
         startActivity(intent);
     }
+
+
 
     @Override
     protected void onPause() {

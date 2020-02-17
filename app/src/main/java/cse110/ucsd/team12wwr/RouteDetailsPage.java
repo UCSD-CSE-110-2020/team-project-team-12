@@ -185,14 +185,14 @@ public class RouteDetailsPage extends AppCompatActivity {
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
-        intent.putExtra(TITLE, extractString(routeTitle));
+        intent.putExtra(TITLE, routeName);
         startActivity(intent);
     }
 
     public void launchIntentionalActivity() {
         Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
-        intent.putExtra(TITLE, extractString(routeTitle));
+        intent.putExtra(TITLE, routeName);
         startActivity(intent);
     }
 
