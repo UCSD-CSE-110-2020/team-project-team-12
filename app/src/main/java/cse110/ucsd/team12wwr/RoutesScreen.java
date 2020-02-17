@@ -41,6 +41,28 @@ public class RoutesScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes_screen);
 
+        Button back = findViewById(R.id.back_button);
+        Button add = findViewById(R.id.add_button);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
             WWRDatabase walkDb = WWRDatabase.getInstance(this);
@@ -68,23 +90,6 @@ public class RoutesScreen extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 routeName = routeList.get(position).name;
                 launchRoutesDetailsPage();
-            }
-        });
-
-        Button back = findViewById(R.id.back_button);
-        Button add = findViewById(R.id.add_button);
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchRouteInfoActivity();
             }
         });
     }
