@@ -13,7 +13,6 @@ import java.util.concurrent.Executors;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
@@ -92,12 +91,7 @@ public class RouteDetailsPage extends AppCompatActivity {
             textView.setText(routeName);
         }
 
-        Log.d(TAG, "right before while null");
-
         while (newRoute == null);
-
-
-        Log.d(TAG, "gets here!!!!");
 
         if (newRoute != null) {
             if (newRoute.startingPoint != null) {
@@ -168,7 +162,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         }
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
-        Button start = findViewById(R.id.start_button);
+        Button start = findViewById(R.id.add_button);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -196,7 +190,7 @@ public class RouteDetailsPage extends AppCompatActivity {
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
-
+        intent.putExtra(TITLE, extractString(routeTitle));
         startActivity(intent);
     }
 

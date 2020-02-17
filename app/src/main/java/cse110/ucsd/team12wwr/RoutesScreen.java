@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -45,12 +46,9 @@ public class RoutesScreen extends AppCompatActivity {
             WWRDatabase walkDb = WWRDatabase.getInstance(this);
             dao = walkDb.routeDao();
 
-            Route newRoute = new Route();
-
-            newRoute.name = Long.toString(System.currentTimeMillis());
-            newRoute.startingPoint = "Street";
-
-            dao.insertAll(newRoute);
+//            Route newRoute = new Route();
+//
+//            dao.insertAll(newRoute);
 
             routeList = dao.retrieveAllRoutes();
         });
@@ -59,24 +57,11 @@ public class RoutesScreen extends AppCompatActivity {
 
         listView = findViewById(R.id.list_view);
 
-        arrayList = new ArrayList<>();
-
-        arrayList.add("Mission Bay");
-        arrayList.add("Torrey Pines Hike");
-        arrayList.add("Potato Chip Rock Hike");
-
         System.err.println(routeList);
 
-//        TODO: make sure to delete the else if statement once the route list is able to be populated
-        if (routeList != null) {
-            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
 
-            listView.setAdapter(arrayAdapter);
-        } else {
-            ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, arrayList);
-
-            listView.setAdapter(arrayAdapter);
-        }
+        listView.setAdapter(arrayAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -85,16 +70,35 @@ public class RoutesScreen extends AppCompatActivity {
                 launchRoutesDetailsPage();
             }
         });
+
+        Button back = findViewById(R.id.back_button);
+        Button add = findViewById(R.id.add_button);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
     }
 
     public void launchRoutesDetailsPage() {
-        Log.d(TAG, "launchRoutesDetailsPage: launching the route details page");
         Intent intent = new Intent(this, RouteDetailsPage.class);
-        Log.d(TAG, "111111");
         intent.putExtra("name", routeName);
-        Log.d(TAG, "22222222");
         startActivity(intent);
-        Log.d(TAG, "33333333");
+    }
 
+    public void launchRouteInfoActivity() {
+        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+
+        startActivity(intent);
     }
 }
