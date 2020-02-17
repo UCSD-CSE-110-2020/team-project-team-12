@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
@@ -63,8 +61,6 @@ public class RoutesScreen extends AppCompatActivity {
 
         WWRDatabase db = WWRDatabase.getInstance(this);
         routeList = db.routeDao().retrieveAllRoutes();
-
-        while (routeList == null); //  makes this thread wait until databaseWriteExecutor finishes
 
         listView = findViewById(R.id.list_view);
 

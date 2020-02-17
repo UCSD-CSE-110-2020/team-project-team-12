@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import android.util.Log;
 import android.view.View;
@@ -41,15 +39,13 @@ public class RouteDetailsPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_details_page);
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            walkDb = WWRDatabase.getInstance(this);
-            dao = walkDb.routeDao();
 
-            routeList = dao.retrieveAllRoutes();
+        walkDb = WWRDatabase.getInstance(this);
+        dao = walkDb.routeDao();
 
-            newRoute = walkDb.routeDao().findName(routeName);
-        });
+        routeList = dao.retrieveAllRoutes();
+
+        newRoute = walkDb.routeDao().findName(routeName);
 
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
@@ -82,9 +78,6 @@ public class RouteDetailsPage extends AppCompatActivity {
         }
 
         Log.d(TAG, "right before while null");
-
-        while (newRoute == null);
-
 
         Log.d(TAG, "gets here!!!!");
 

@@ -29,8 +29,6 @@ import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static android.os.Process.setThreadPriority;
@@ -147,8 +145,6 @@ public class RouteInfoActivity extends AppCompatActivity {
 
             newRoute = routeDb.routeDao().findName(currRouteName);
             currWalk = walkDao.findByRouteName(currRouteName);
-
-            while (newRoute == null) ;
 
             if ( newRoute != null ) {
                 titleField.setText(newRoute.name);
