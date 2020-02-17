@@ -31,14 +31,14 @@ import static org.junit.Assert.*;
 public class StrideDistanceTests {
     
     private Intent intent, mainIntent;
-    private ActivityTestRule<MainActivity> mainActivityTestRule;
+    private ActivityTestRule<mockMainActivity> mainActivityTestRule;
 
     @Before
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
-        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);
         intent.putExtras(mainIntent);
-        mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+        mainActivityTestRule = new ActivityTestRule<>(mockMainActivity.class);
 
     }
 
@@ -94,24 +94,26 @@ public class StrideDistanceTests {
         editor.putInt("INCHES", 4);
         editor.apply();
 
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
+        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
+            //Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
             assertEquals(spf.getInt("FEET", 0), 5);
             assertEquals(spf.getInt("INCHES", 0), 4);
 
-            System.out.print(spf.getInt("INCHES", 0));
-            assertNotNull(takeStep);
+            //System.out.print(spf.getInt("INCHES", 0));
+            //assertNotNull(takeStep);
 
-            takeStep.performClick();
+            //takeStep.performClick();
+            activity.setStepCount(100);
             assertEquals(step.getText().toString(), "100");
             assertEquals(dist.getText().toString(), "0.04");
 
-            takeStep.performClick();
+            //takeStep.performClick();
+            activity.setStepCount(200);
             assertEquals(step.getText().toString(), "200");
             assertEquals(dist.getText().toString(), "0.08");
 
@@ -130,23 +132,25 @@ public class StrideDistanceTests {
         editor.putInt("INCHES", 11);
         editor.apply();
 
-        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
+        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
-            Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
+            //Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
             TextView dist = (TextView) activity.findViewById(R.id.num_miles);
             TextView step = (TextView) activity.findViewById(R.id.num_steps);
 
             assertEquals(spf.getInt("FEET", 0), 6);
             assertEquals(spf.getInt("INCHES", 0), 11);
 
-            assertNotNull(takeStep);
+            //assertNotNull(takeStep);
 
-            takeStep.performClick();
+            //takeStep.performClick();
+            activity.setStepCount(100);
             assertEquals(step.getText().toString(), "100");
             assertEquals(dist.getText().toString(), "0.05");
 
-            takeStep.performClick();
+            //takeStep.performClick();
+            activity.setStepCount(200);
             assertEquals(step.getText().toString(), "200");
             assertEquals(dist.getText().toString(), "0.11");
 
