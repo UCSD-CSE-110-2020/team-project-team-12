@@ -40,6 +40,11 @@ public class Route {
     @TypeConverters(Favorite.class)
     public Favorite favorite;
 
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
     public enum RouteType {
         LOOP(0),
         OUT_AND_BACK(1);
