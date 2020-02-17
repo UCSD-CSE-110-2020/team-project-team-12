@@ -139,6 +139,13 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
 
         stopButton.setOnClickListener((view) -> {
+
+//            timeWhenPaused += timeElapsed;
+//            if (runner != null) {
+//                runner.cancel(true);
+//            }
+
+
             launchRouteInfoPage();
 
             // TODO: Help me

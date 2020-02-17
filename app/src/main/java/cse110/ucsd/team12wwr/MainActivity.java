@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* constants */
     private static final String TAG = "MainActivity";
-    
+
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
@@ -102,14 +102,14 @@ public class MainActivity extends AppCompatActivity {
 
 //        launchRouteInfoActivity();
 
-        // launchRouteDetailsActivity();
+         launchRouteDetailsActivity();
 
         Log.d(TAG, "onCreate: Launched Main Page");
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
-        
+
         // Launches height activity only on first start
         if(!previouslyStarted) {
             Log.d(TAG, "onCreate: First time launching, now launching height page");
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
                 launchActivity();
             }
         });
-        
+
         Toolbar toolbar = findViewById(R.id.toolbar);
 
 
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        
+
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
@@ -168,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         // numSteps = spf2.getInt(TOTAL_STEPS_KEY, 0);
         // textStep.setText(""+numSteps);
         // textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
-        
+
         // btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
         //     @Override
         //     public void onClick(View view) {
@@ -408,3 +408,254 @@ public class MainActivity extends AppCompatActivity {
 
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//package cse110.ucsd.team12wwr;
+//
+//import android.content.Intent;
+//import android.content.SharedPreferences;
+//import android.content.Context;
+//import android.hardware.Sensor;
+//import android.hardware.SensorEvent;
+//import android.hardware.SensorEventListener;
+//import android.hardware.SensorManager;
+//import android.os.Bundle;
+//
+//import androidx.appcompat.app.AppCompatActivity;
+//import androidx.appcompat.widget.Toolbar;
+//
+//import android.preference.PreferenceManager;
+//import android.util.Log;
+//import android.view.Menu;
+//import android.view.MenuItem;
+//import android.view.View;
+//import android.widget.Button;
+//import android.widget.TextView;
+//import android.widget.Toast;
+//
+//import java.text.DecimalFormat;
+//import java.util.concurrent.ExecutorService;
+//import java.util.concurrent.Executors;
+//
+//import cse110.ucsd.team12wwr.database.Route;
+//import cse110.ucsd.team12wwr.database.WWRDatabase;
+//import cse110.ucsd.team12wwr.database.Walk;
+//import cse110.ucsd.team12wwr.database.WalkDao;
+//
+//public class MainActivity extends AppCompatActivity implements SensorEventListener {
+//
+//    /* constants */
+//    private static final String TAG = "MainActivity";
+//
+//    final int HEIGHT_FACTOR = 12;
+//    final double STRIDE_CONVERSION = 0.413;
+//    final int MILE_FACTOR = 63360;
+//    DecimalFormat DF = new DecimalFormat("#.##");
+//
+//    final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
+//    final String HEIGHT_SPF_NAME = "HEIGHT";
+//    final String FEET_KEY = "FEET";
+//    final String INCHES_KEY = "INCHES";
+//    final String STEP_SPF_NAME = "TOTAL_DIST_STEP";
+//    final String TOTAL_STEPS_KEY = "totalSteps";
+//
+//    /* height */
+//    SharedPreferences spf, spf2, prefs;
+//
+//    /* steps */
+//    SensorManager sensorManager;
+//    boolean running = false;
+//    TextView textStep;
+//    int numSteps;
+//
+//    /* distance */
+//    TextView textDist;
+//    int totalHeight;
+//    double strideLength;
+//
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.activity_main);
+//
+////        launchRouteInfoActivity();
+//
+//        launchRouteDetailsActivity();
+//
+//        Log.d(TAG, "onCreate: Launched Main Page");
+//        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+//        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
+//
+//        // Launches height activity only on first start
+//        if(!previouslyStarted) {
+//            Log.d(TAG, "onCreate: First time launching, now launching height page");
+//            SharedPreferences.Editor edit = prefs.edit();
+//            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
+//            edit.commit();
+//            launchHeightActivity();
+//        }
+//
+//        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
+//
+//        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d(TAG, "onClick: Launching the walking activity");
+//                launchActivity();
+//            }
+//        });
+//
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//
+//        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+//
+//        textDist = findViewById(R.id.num_miles);
+//        textStep = findViewById(R.id.num_steps);
+//
+//        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
+//        setSupportActionBar(toolbar);
+//        closeOptionsMenu();
+//
+//        // Collect the height from the height page
+//        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+//        int feet = spf.getInt(FEET_KEY, 0);
+//        int inches = spf.getInt(INCHES_KEY, 0);
+//
+//        Log.d(TAG, "onCreate: Current feet: " + feet + " inches: "  + inches);
+//
+//        totalHeight = inches + ( HEIGHT_FACTOR * feet );
+//        strideLength = totalHeight * STRIDE_CONVERSION;
+//
+//        spf2 = getSharedPreferences(STEP_SPF_NAME, MODE_PRIVATE);
+//        SharedPreferences.Editor editor = spf2.edit();
+//        if ( spf2.getInt(TOTAL_STEPS_KEY, 0) == 0 ) {
+//            Log.d(TAG, "onCreate: First time setting sharedPreferences for totalSteps");
+//            editor.putInt(TOTAL_STEPS_KEY, 0);
+//            editor.apply();
+//        }
+//
+//        numSteps = spf2.getInt(TOTAL_STEPS_KEY, 0);
+//        textStep.setText(""+numSteps);
+//        textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
+//
+//        btnDebugIncSteps.setOnClickListener( new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                editor.putInt(TOTAL_STEPS_KEY, numSteps+=100);
+//                editor.apply();
+//                textDist.setText(DF.format((strideLength / MILE_FACTOR) * numSteps));
+//                textStep.setText(""+spf2.getInt(TOTAL_STEPS_KEY, 0));
+//                Log.d(TAG, "onClick: Set the distance to: " + textDist.getText().toString());
+//                Log.d(TAG, "onClick: Set the steps to: " + textStep.getText().toString());
+//            }
+//        });
+//    }
+//
+//    public void launchActivity() {
+//        Log.d(TAG, "launchActivity: launching the walking activity");
+//        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+//        startActivity(intent);
+//    }
+//
+//    public void launchHeightActivity() {
+//        Log.d(TAG, "launchHeightActivity: launching height start page");
+//        Intent intent = new Intent( this, StartPage.class );
+//        startActivity(intent);
+//    }
+//
+//    public void launchRouteInfoActivity() {
+//        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
+//        Intent intent = new Intent(this, RouteInfoActivity.class);
+//        startActivity(intent);
+//    }
+//
+//    public void launchRouteDetailsActivity() {
+//        Log.d(TAG, "launchRouteDetailsActivity: launching the route details page");
+//        Intent intent = new Intent(this, RouteDetailsPage.class);
+//        startActivity(intent);
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        Log.d(TAG, "onResume: Walking is now resumed");
+//        super.onResume();
+//        running = true;
+//        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+//        if(countSensor != null) {
+//            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+//        } else {
+//            Toast.makeText(this, "Sensor not found", Toast.LENGTH_SHORT).show();
+//        }
+//
+//        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+//        databaseWriteExecutor.execute(() -> {
+//            WWRDatabase walkDb = WWRDatabase.getInstance(this);
+//            WalkDao dao = walkDb.walkDao();
+//
+//            Walk newestWalk = dao.findNewestEntry();
+//            if (newestWalk != null) {
+//                runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
+//                        TextView distWalkText = findViewById(R.id.text_distance_value);
+//                        TextView timeWalkText = findViewById(R.id.text_time_value);
+//
+//                        stepsWalkText.setText(newestWalk.steps);
+//                        distWalkText.setText(newestWalk.distance);
+//                        timeWalkText.setText(newestWalk.duration);
+//                    }
+//                });
+//            }
+//        });
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        running = false;
+//        Log.d(TAG, "onPause: walking and timing has been paused");
+//        // if you unregister the hardware will stop detecting steps
+//        // sensorManager.unregisterListener(this);
+//    }
+//
+//    @Override
+//    public void onSensorChanged(SensorEvent event) {
+//        if(running) {
+//            textStep.setText(String.valueOf(event.values[0]));
+//        }
+//    }
+//
+//    @Override
+//    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+//
+//    }
+//
+//    @Override
+//    protected void onPostCreate(Bundle savedInstanceState) {
+//        super.onPostCreate(savedInstanceState);
+//
+//    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//}

@@ -449,13 +449,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                             }
                         });
 
-//                        if ( dupeTitle[0] ) {
-//                            titleField.setError("Route already exists, use another name!");
-//                            Log.d(TAG, "onClick: did not insert route into database");
-//                            return;
-//                        } else {
-//                            Log.d(TAG, "onClick: inserted a route into database");
-//                        }
                     } else {
                         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
                         databaseWriteExecutor.execute(() -> {

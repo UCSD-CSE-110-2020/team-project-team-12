@@ -183,4 +183,6 @@ public class RouteInfoTests {
         isFav.performClick();
         assertTrue(routeInfoActivityActivityTestRule.getActivity().isFavorite);
     }
+
+
 }
