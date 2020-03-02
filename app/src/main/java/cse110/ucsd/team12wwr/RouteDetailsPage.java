@@ -41,17 +41,17 @@ public class RouteDetailsPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_details_page);
 
+        Intent intent = getIntent();
+        routeName = intent.getStringExtra("name");
+        System.err.print("Route Name: ");
+        System.err.println(routeName);
+
         walkDb = WWRDatabase.getInstance(this);
         dao = walkDb.routeDao();
 
         routeList = dao.retrieveAllRoutes();
 
         newRoute = walkDb.routeDao().findName(routeName);
-
-        Intent intent = getIntent();
-        routeName = intent.getStringExtra("name");
-        System.err.print("Route Name: ");
-        System.err.println(routeName);
 
         // Header
         routeTitle = findViewById(R.id.route_title_detail);
