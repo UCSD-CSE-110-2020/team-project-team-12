@@ -146,9 +146,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         }
 
         CheckBox star = findViewById(R.id.favorited_details);
-        star.setOnCheckedChangeListener((btn, isChecked) -> {
-            btn.toggle();
-        });
+        star.setEnabled(false);
 
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
