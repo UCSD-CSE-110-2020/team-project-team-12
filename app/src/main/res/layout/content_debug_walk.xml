@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".DebugWalkActivity"
+    tools:showIn="@layout/activity_debug_walk">
+
+    <TextView
+        android:id="@+id/text_route_name"
+        android:layout_width="411dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="4dp"
+        android:text="NEW ROUTE"
+        android:textAlignment="center"
+        android:textSize="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
+
+    <TextView
+        android:id="@+id/text_current_stats_title"
+        android:layout_width="413dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="20dp"
+        android:text="CURRENT STATS:"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_route_name"></TextView>
+
+    <!--    TODO: Current is still hardcoded rn -->
+
+    <LinearLayout
+        android:id="@+id/mock_buttons_layout"
+        android:layout_width="417dp"
+        android:layout_height="249dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btn_continue_walk"
+            android:layout_width="match_parent"
+            android:layout_height="89dp"
+            android:layout_marginStart="61dp"
+            android:layout_marginEnd="61dp"
+            android:text="STEP UP"
+            android:textSize="45dp"></Button>
+
+        <Button
+            android:id="@+id/btn_stop_walk"
+            android:layout_width="match_parent"
+            android:layout_height="89dp"
+            android:layout_marginStart="61dp"
+            android:layout_marginEnd="61dp"
+            android:layout_marginBottom="32dp"
+            android:text="END"
+            android:textSize="45dp"></Button>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mock_steps_layout"
+        android:layout_width="411dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mock_time_layout">
+
+        <TextView
+            android:id="@+id/text_steps_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="Steps: "
+            android:textSize="30dp"></TextView>
+
+        <TextView
+            android:id="@+id/text_steps_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:text="0"
+            android:textSize="30dp"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mock_time_layout"
+        android:layout_width="413dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="68dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_current_stats_title">
+
+        <TextView
+            android:id="@+id/text_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="@string/intentional_walk_time"
+            android:textSize="30dp"></TextView>
+
+        <TextView
+            android:id="@+id/text_time_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginTop="0dp"
+            android:text="00:00:00"
+            android:textSize="30dp"></TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mock_dist_layout"
+        android:layout_width="416dp"
+        android:layout_height="39dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mock_steps_layout">
+
+        <TextView
+            android:id="@+id/text_distance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:text="@string/intentional_walk_distance"
+            android:textSize="30dp"></TextView>
+
+        <TextView
+            android:id="@+id/text_distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="0dp"
+            android:text="0 mi"
+            android:textSize="30dp"></TextView>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -147,7 +147,7 @@
             android:id="@+id/add_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="5dp"
+            android:paddingStart="10dp"
             android:paddingEnd="5dp"
             android:text="@string/additional_info"
             android:textSize="18sp"
@@ -351,34 +351,64 @@
 
     <LinearLayout
         android:id="@+id/save_cancel_buttons"
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/difficulty_buttons"
+        app:layout_constraintTop_toBottomOf="@+id/notes_field"
         app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="0dp"
-        style="?android:attr/buttonBarStyle">
+        tools:layout_editor_absoluteX="0dp">
 
         <Button
             android:id="@+id/cancel_btn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="@string/cancel_text"
-            android:textSize="15sp"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:textSize="15sp" />
 
         <Button
             android:id="@+id/save_btn"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:text="@string/save_text"
             android:textColor="@color/colorPrimary"
-            android:textSize="15sp"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notes_field"
+        android:layout_width="411dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/difficulty_buttons">
+
+        <TextView
+            android:id="@+id/notes_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Notes"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/notes_entry"
+            android:layout_width="391dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:ems="10"
+            android:hint="Enter notes here..."
+            android:inputType="textMultiLine|textCapSentences"
+            android:maxLength="2000"
+            android:maxLines="5" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,17 @@
 package cse110.ucsd.team12wwr;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
+import cse110.ucsd.team12wwr.database.Route;
+import cse110.ucsd.team12wwr.database.RouteDao;
+import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
 
+import android.app.Activity;
+import android.app.Instrumentation;
+import android.content.Intent;
+import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -15,8 +25,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static android.os.Process.setThreadPriority;
 
 public class RouteInfoActivity extends AppCompatActivity {
 
@@ -31,16 +46,30 @@ public class RouteInfoActivity extends AppCompatActivity {
     final String EVEN = "Even Surface";
     final String UNEVEN = "Uneven Surface";
     final String NONETYPE = "";
-
+    final int threadID = android.os.Process.getThreadPriority(android.os.Process.myTid());
+    final Thread currThread = Thread.currentThread();
     /* Favorite button */
     boolean isFavorite = false;
 
-    /* Difficult */
+    /* Setting spinners and textfields */
+    String routeTitle, startPosition, endLocation, notesField, totalDistance, totalTime;
+    Boolean isHilly, isStreet, isEven, isLoop;
+
+    /* Difficulty */
     boolean isEasy = false;
     boolean isModerate = false;
     boolean isHard = false;
 
+    /* New or old route */
+    boolean isNewRoute = true;
+
     Drawable defaultColor;
+    String currRouteName;
+    Route newRoute;
+    List<Walk> currWalk;
+
+    /* Database */
+    WWRDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +77,44 @@ public class RouteInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_route_info);
 
         getSupportActionBar().setTitle("Route Information");
+
+        resetFields();
+
+        EditText titleField = findViewById(R.id.title_text);
+        EditText startPoint = findViewById(R.id.start_text);
+        EditText endPoint = findViewById(R.id.stop_text);
+        EditText notesEntry = findViewById(R.id.notes_entry);
+        TextView totalDistText = findViewById(R.id.dist_textEdit);
+        TextView totalTimeText = findViewById(R.id.totalTime_textEdit);
+        CheckBox favoriteBtn = findViewById(R.id.favoriteCheckBtn);
+        Button cancelBtn = findViewById(R.id.cancel_btn);
+        Button saveBtn = findViewById(R.id.save_btn);
+        Button easyBtn = findViewById(R.id.easy_btn);
+        Button moderateBtn = findViewById(R.id.moderate_btn);
+        Button hardBtn = findViewById(R.id.hard_btn);
+
+
+        // TODO: Retrieve passed in object for route() through intent
+        if ( getIntent().hasExtra("ROUTE_TITLE")) {
+            currRouteName = getIntent().getExtras().getString("ROUTE_TITLE");
+            Log.d(TAG, "onCreate: currentRouteName: " + currRouteName);
+        }
+        if ( getIntent().hasExtra("distance") ) {
+            totalDistance = getIntent().getExtras().getString("distance");
+            Log.d(TAG, "onCreate: totalDistance passed in: " + totalDistance);
+            totalDistText.setText(totalDistance);
+        }
+        if (getIntent().hasExtra("duration") ) {
+            totalTime = (String) getIntent().getExtras().getString("duration");
+            totalTimeText.setText(totalTime);
+            Log.d(TAG, "onCreate: totalTime passed in: " + totalTime);
+        }
+
+        // TODO: Remove Route Title
+        if (currRouteName != null ) { // && !currRouteName.equals("Route Title")) {
+            isNewRoute = false;
+            Log.d(TAG, "onCreate: This is not a new route we will be creating");
+        }
 
         // Set spinners
         final Spinner pathSpinner = findViewById(R.id.path_spinner);
@@ -70,13 +137,99 @@ public class RouteInfoActivity extends AppCompatActivity {
         ArrayAdapter<String> texture_adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, textureItems);
         textureSpinner.setAdapter(texture_adapter);
 
+        Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
+        if ( !isNewRoute ) {
+            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+            RouteDao routeDao = routeDb.routeDao();
+            WalkDao walkDao = routeDb.walkDao();
+
+            newRoute = routeDb.routeDao().findName(currRouteName);
+            currWalk = walkDao.findByRouteName(currRouteName);
+
+            if ( newRoute != null ) {
+                titleField.setText(newRoute.name);
+            }
+            if (newRoute.startingPoint != null) {
+                startPoint.setText(newRoute.startingPoint);
+            }
+
+            if (newRoute.endingPoint != null) {
+                endPoint.setText(newRoute.endingPoint);
+            }
+
+            if (newRoute.difficulty != null) {
+                if (newRoute.difficulty == Route.Difficulty.EASY) {
+                    setEasyButton(easyBtn, moderateBtn, hardBtn);
+                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                    setModerateButton(easyBtn, moderateBtn, hardBtn);
+                } else {
+                    setHardButton(easyBtn, moderateBtn, hardBtn);
+                }
+            }
+
+            if (newRoute.evenness != null) {
+                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                    textureSpinner.setSelection(1);
+                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                    textureSpinner.setSelection(2);
+                }
+            }
+
+            if (newRoute.hilliness != null) {
+                if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                    inclineSpinner.setSelection(1);
+                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                    inclineSpinner.setSelection(2);
+                }
+            }
+
+            if (newRoute.routeType != null) {
+                if (newRoute.routeType == Route.RouteType.LOOP) {
+                    pathSpinner.setSelection(1);
+                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                    pathSpinner.setSelection(2);
+                }
+            }
+
+            if (newRoute.surfaceType != null) {
+                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                    terrainSpinner.setSelection(1);
+                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                    terrainSpinner.setSelection(2);
+                }
+            }
+
+            if ( newRoute.favorite != null ) {
+                if ( newRoute.favorite == Route.Favorite.FAVORITE) {
+                    favoriteBtn.performClick();
+                }
+            }
+
+            if ( newRoute.notes != null ) {
+                notesEntry.setText(newRoute.notes);
+            }
+
+            if ( currWalk.size() > 0 ) {
+                if ( currWalk.get(0) != null ) {
+                    totalDistText.setText(currWalk.get(0).distance);
+                    totalTimeText.setText(currWalk.get(0).duration);
+                }
+            }
+
+        }
+
         Log.d(TAG, "onCreate: Page is now set up");
+
+        Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
+        Log.d(TAG, "onCreate: startPosition: " + startPosition);
+        Log.d(TAG, "onCreate: isLoop: " + isLoop);
+        Log.d(TAG, "onCreate: notesField: " + notesField);
+
         // Favorite button
-        CheckBox favoriteBtn = findViewById(R.id.favoriteCheckBtn);
         favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( favoriteBtn.isChecked() ) {
+                if (favoriteBtn.isChecked()) {
                     isFavorite = true;
                     Log.d(TAG, "onClick: isFavorite: " + isFavorite);
                 } else {
@@ -87,7 +240,6 @@ public class RouteInfoActivity extends AppCompatActivity {
         });
 
         // Cancel Button
-        Button cancelBtn = findViewById(R.id.cancel_btn);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,10 +247,6 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
-        // Title Field
-        EditText titleField = findViewById(R.id.title_text);
-        // Save Button
-        Button saveBtn = findViewById(R.id.save_btn);
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -110,10 +258,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Button easyBtn = findViewById(R.id.easy_btn);
-        Button moderateBtn = findViewById(R.id.moderate_btn);
-        Button hardBtn = findViewById(R.id.hard_btn);
 
         defaultColor = (Drawable) easyBtn.getBackground();
 
@@ -144,6 +288,159 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
+        // Cancel Button
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        // Save Button
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: Save Button is clicked");
+                // Make sure it is not null
+                if (TextUtils.isEmpty(titleField.getText())) {
+                    Log.d(TAG, "onClick: Title field is null");
+                    titleField.setError("You must enter a title for your route!");
+                } else {
+                    final boolean[] dupeTitle = {false};
+                    Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
+                    if (isNewRoute) {
+                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                        RouteDao dao = routeDb.routeDao();
+
+                        Route newEntry = new Route();
+                        newEntry.name = titleField.getText().toString();
+                        newEntry.startingPoint = startPoint.getText().toString();
+                        newEntry.endingPoint = endPoint.getText().toString();
+                        setFavorite(newEntry, isFavorite);
+                        setRouteType(newEntry, pathSpinner);
+                        setHilliness(newEntry, inclineSpinner);
+                        setSurfaceType(newEntry, terrainSpinner);
+                        setEvenness(newEntry, textureSpinner);
+                        setDifficulty(newEntry);
+                        setNotes(newEntry, notesEntry.getText().toString());
+
+                        try {
+                            dao.insertAll(newEntry);
+                            Log.d(TAG, "onClick: added entry");
+                        } catch (SQLiteConstraintException e) {
+                            Log.d(TAG, "onClick: Title already in use");
+                            dupeTitle[0] = true;
+                            return;
+                        }
+                    } else {
+
+                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                        RouteDao dao = routeDb.routeDao();
+
+                        Route newEntry = dao.findName(currRouteName);
+                        newEntry.name = titleField.getText().toString();
+                        newEntry.startingPoint = startPoint.getText().toString();
+                        newEntry.endingPoint = endPoint.getText().toString();
+                        setFavorite(newEntry, isFavorite);
+                        setRouteType(newEntry, pathSpinner);
+                        setHilliness(newEntry, inclineSpinner);
+                        setSurfaceType(newEntry, terrainSpinner);
+                        setEvenness(newEntry, textureSpinner);
+                        setDifficulty(newEntry);
+                        setNotes(newEntry, notesEntry.getText().toString());
+                        dao.update(newEntry);
+                        Log.d(TAG, "onClick: Updated route information for old route");
+                    } // End inner else ( if not a new route )
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("routeTitle", titleField.getText().toString());
+                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
+                } // End else
+
+
+            } // End onClick()
+        }); // End setOnClickListener()
+    }
+
+    public void setFavorite( Route route, Boolean isFavorite ) {
+        if ( isFavorite ) {
+            route.favorite = Route.Favorite.FAVORITE;
+        } else {
+            route.favorite = Route.Favorite.NOT_FAVORITE;
+        }
+    }
+
+    public void setRouteType( Route route, Spinner spinner ) {
+        if ( spinner.getSelectedItem() == LOOP ) {
+            route.routeType = Route.RouteType.LOOP;
+            Log.d(TAG, "setRouteType: loop");
+        } else if ( spinner.getSelectedItem() == OUT_N_BACK ) {
+            route.routeType = Route.RouteType.OUT_AND_BACK;
+            Log.d(TAG, "setRouteType: out and back");
+        } else {
+            Log.d(TAG, "setRouteType: None set");
+        }
+    }
+
+    public void setHilliness( Route route, Spinner spinner ) {
+        if ( spinner.getSelectedItem() == FLAT ) {
+            route.hilliness = Route.Hilliness.FLAT;
+            Log.d(TAG, "setHilliness: flat");
+        } else if ( spinner.getSelectedItem() == HILLY ) {
+            route.hilliness = Route.Hilliness.HILLY;
+            Log.d(TAG, "setHilliness: hilly");
+        } else {
+            Log.d(TAG, "setHilliness: None set");
+        }
+    }
+
+    public void setSurfaceType(Route route, Spinner spinner) {
+        if ( spinner.getSelectedItem() == STREET ) {
+            route.surfaceType = Route.SurfaceType.STREETS;
+            Log.d(TAG, "setSurfaceType: streets");
+        } else if ( spinner.getSelectedItem() == TRAIL ) {
+            route.surfaceType = Route.SurfaceType.TRAIL;
+            Log.d(TAG, "setSurfaceType: trail");
+        } else {
+            Log.d(TAG, "setSurfaceType: None set");
+        }
+    }
+
+    public void setEvenness(Route route, Spinner spinner) {
+        if ( spinner.getSelectedItem() == EVEN ) {
+            route.evenness = Route.Evenness.EVEN_SURFACE;
+            Log.d(TAG, "setEvenness: even");
+        } else if ( spinner.getSelectedItem() == UNEVEN ) {
+            route.evenness = Route.Evenness.UNEVEN_SURFACE;
+            Log.d(TAG, "setEvenness: uneven");
+        } else {
+            Log.d(TAG, "setEvenness: None set");
+        }
+    }
+
+    public void setDifficulty(Route route) {
+        if ( isEasy ) {
+            route.difficulty = Route.Difficulty.EASY;
+            Log.d(TAG, "setDifficulty: easy");
+        } else if ( isModerate ) {
+            route.difficulty = Route.Difficulty.MODERATE;
+            Log.d(TAG, "setDifficulty: moderate");
+        } else if ( isHard ) {
+            route.difficulty = Route.Difficulty.DIFFICULT;
+            Log.d(TAG, "setDifficulty: hard");
+        } else {
+            Log.d(TAG, "setDifficulty: None set");
+        }
+    }
+
+    public void setNotes(Route route, String msg) {
+        if ( msg != null ) {
+            route.notes = msg;
+        } else {
+            route.notes = "";
+        }
     }
 
     public void setEasyButton(Button easyBtn, Button moderateBtn, Button hardBtn) {
@@ -207,6 +504,24 @@ public class RouteInfoActivity extends AppCompatActivity {
         Log.d(TAG, "onClick: isHard: " + isHard );
         Log.d(TAG, "onClick: isModerate: " + isModerate);
         Log.d(TAG, "onClick: isEasy: " + isEasy);
+    }
+
+    public void resetFields() {
+        isNewRoute = true;
+        isHilly = null;
+        isStreet = null;
+        isLoop = null;
+        isEven = null;
+        isFavorite = false;
+        isModerate = false;
+        isEasy = false;
+        isHard = false;
+        routeTitle = null;
+        startPosition = null;
+        endLocation = null;
+        notesField = null;
+        totalDistance = null;
+        totalTime = null;
     }
 
 }
