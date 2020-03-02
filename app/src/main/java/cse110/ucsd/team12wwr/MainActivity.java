@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//      launchRouteInfoActivity();
+
+//        launchRouteDetailsActivity();
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -120,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button launchRoutesScreen = (Button) findViewById(R.id.btn_to_routes_screen);
+        Button launchRoutesScreen = (Button) findViewById(R.id.routes_list_button);
         launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
-        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -241,6 +243,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RoutesScreen.class);
         startActivity(intent);
     }
+
+
 
     @Override
     protected void onPause() {

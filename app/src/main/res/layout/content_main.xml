@@ -12,205 +12,210 @@
         android:id="@+id/previous_walk"
         android:layout_width="0dp"
         android:layout_height="57dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="51dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="51dp"
+        android:layout_marginTop="20dp"
         android:text="@string/prev_Walk"
         android:textAlignment="center"
-        android:textSize="45dp"
-        app:layout_constraintBottom_toBottomOf="@+id/steps"
+        android:textSize="45sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/miles_word" />
+        app:layout_constraintTop_toBottomOf="@+id/total_dist_display" />
 
     <TextView
         android:id="@+id/today"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginStart="67dp"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="67dp"
-        android:layout_marginBottom="27dp"
+        android:layout_marginTop="16dp"
         android:text="@string/today"
         android:textAlignment="center"
-        android:textSize="45dp"
-        app:layout_constraintBottom_toBottomOf="@+id/steps_word"
+        android:textSize="45sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/steps_take"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="90dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="310dp"
-        android:text="@string/totalStepsTaken"
-        android:textAlignment="center"
-        android:textSize="27dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_to_routes_screen"
-        app:layout_constraintEnd_toStartOf="@+id/num_steps"
+    <LinearLayout
+        android:id="@+id/total_steps_display"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/today">
 
-    <TextView
-        android:id="@+id/miles_word"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/steps_take"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:layout_marginStart="31dp"
+            android:layout_marginEnd="9dp"
+            android:text="@string/totalStepsTaken"
+            android:textAlignment="center"
+            android:textSize="27sp" />
+
+        <TextView
+            android:id="@+id/num_steps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="9dp"
+            android:text="0"
+            android:textSize="27sp" />
+
+        <TextView
+            android:id="@+id/steps_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/step"
+            android:textSize="27sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/total_dist_display"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="34dp"
-        android:text="@string/mile_name"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/num_miles" />
+        android:layout_marginTop="28dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/total_steps_display">
 
-    <TextView
-        android:id="@+id/dist"
-        android:layout_width="115dp"
-        android:layout_height="33dp"
-        android:text="@string/dist"
-        android:textAlignment="center"
-        android:textSize="27dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/steps"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/home_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="31dp"
+            android:text="@string/totalDist"
+            android:textSize="27sp" />
 
-    <TextView
-        android:id="@+id/text_distance_value"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/num_miles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:text="0"
+            android:textSize="27sp" />
+
+        <TextView
+            android:id="@+id/miles_word"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_marginEnd="34dp"
+            android:text="@string/mile_name"
+            android:textSize="27sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/steps_display_main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="0 mi"
-        android:textSize="27dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/dist"
-        app:layout_constraintStart_toStartOf="@+id/text_steps_value"></TextView>
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/previous_walk">
 
-    <TextView
-        android:id="@+id/num_miles"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/steps"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:text="@string/steps"
+            android:textSize="27dp" />
+
+        <TextView
+            android:id="@+id/text_steps_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:text="0"
+            android:textSize="27dp"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dist_display_main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="0"
-        android:textSize="20dp"
-        app:layout_constraintStart_toEndOf="@+id/steps_take"
-        app:layout_constraintTop_toBottomOf="@+id/steps_take" />
-
-    <TextView
-        android:id="@+id/num_steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="40dp"
-        android:text="0"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/steps_word"
-        app:layout_constraintStart_toEndOf="@+id/steps_take"
-        app:layout_constraintTop_toBottomOf="@+id/today" />
-
-    <TextView
-        android:id="@+id/home_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="31dp"
-        android:layout_marginTop="145dp"
-        android:text="@string/totalDist"
-        android:textSize="27dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/steps_display_main">
 
-    <TextView
-        android:id="@+id/time"
-        android:layout_width="76dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="86dp"
-        android:layout_marginBottom="88dp"
-        android:text="@string/time"
-        android:textAlignment="center"
-        android:textSize="27dp"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_start_walk"
-        app:layout_constraintStart_toStartOf="@+id/dist"
-        app:layout_constraintTop_toTopOf="@+id/steps"
-        app:layout_constraintVertical_bias="0.0" />
+        <TextView
+            android:id="@+id/dist"
+            android:layout_width="115dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:text="@string/dist"
+            android:textAlignment="center"
+            android:textSize="27sp" />
 
-    <TextView
-        android:id="@+id/text_time_value"
-        android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/text_distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:text="0 mi"
+            android:textSize="27dp"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/time_display_main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="7dp"
-        android:text="00:00:00"
-        android:textSize="27dp"
-        app:layout_constraintEnd_toEndOf="@+id/text_distance_value"
-        app:layout_constraintStart_toEndOf="@+id/text_distance_value"
-        app:layout_constraintTop_toBottomOf="@+id/text_distance_value"></TextView>
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dist_display_main">
 
-    <TextView
-        android:id="@+id/steps_word"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/step"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/num_steps"
-        app:layout_constraintTop_toTopOf="parent" />
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="76dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:text="@string/time"
+            android:textAlignment="center"
+            android:textSize="27sp" />
 
-    <TextView
-        android:id="@+id/steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="38dp"
-        android:layout_marginBottom="7dp"
-        android:text="@string/steps"
-        android:textSize="27dp"
-        app:layout_constraintBottom_toTopOf="@+id/dist"
-        app:layout_constraintStart_toStartOf="@+id/previous_walk" />
+        <TextView
+            android:id="@+id/text_time_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:text="00:00:00"
+            android:textSize="27sp"></TextView>
+    </LinearLayout>
 
-    <TextView
-        android:id="@+id/text_steps_value"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/button_bar_main"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="7dp"
-        android:layout_marginBottom="7dp"
-        android:text="0"
-        android:textSize="27dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_distance_value"
-        app:layout_constraintStart_toEndOf="@+id/dist"></TextView>
-
-    <Button
-        android:id="@+id/btn_start_walk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginBottom="168dp"
-        android:text="Start Walk Now"
-        android:textSize="25dp"
+        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/time"></Button>
+        app:layout_constraintStart_toStartOf="parent">
 
-    <Button
-        android:id="@+id/btn_debug_increment_steps"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:layout_marginEnd="24dp"
-        android:text="Take 100 Steps"
-        android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="@+id/btn_start_walk"
-        app:layout_constraintTop_toBottomOf="@+id/btn_start_walk" />
+        <Button
+            android:id="@+id/routes_list_button"
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.5"
+            android:background="@android:color/black"
+            android:text="Routes"
+            android:textColor="#CACACA"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btn_to_routes_screen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="113dp"
-        android:text="Routes Screen"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/btn_debug_increment_steps"
-        app:layout_constraintTop_toBottomOf="@+id/steps_take" />
+        <Button
+            android:id="@+id/btn_start_walk"
+            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/black"
+            android:text="Start Walk"
+            android:textColor="#CACACA"
+            android:textSize="18sp"
+            android:textStyle="bold"></Button>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

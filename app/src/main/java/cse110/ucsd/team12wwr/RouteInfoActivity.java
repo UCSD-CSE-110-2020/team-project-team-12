@@ -29,70 +29,9 @@ import android.widget.TextView;
 
 import java.lang.reflect.Array;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static android.os.Process.setThreadPriority;
-
-
-/**
- * If you need to save a route, you first create a Route object
- *
- * Route thingToInsert = new Route();
- * thingToInsert.name = name of the route;
- * thingToInsert.startingPoint = blabla;
- * etcetc (you can look at what fields are available in Route.java)
- *
- * Then, you call the RouteDao from the database. Dao is the Data Access Object. Should be something like
- * RouteDao dao = db.routeDao();
- *
- * And then, I think it's
- * dao.insertAll(thingToInsert);
- *
- *
- * 1. Route is what the database looks like. Every single variable there represents a "column" in the table
- * 2. You use the RouteDao to interact with the database. When you try to get stuff from the database, you call
- *    the methods inside RouteDao (e.g. retrieveAllRoutes), and you'll receive a Route object. All the informations
- *    you need will be in the Route object.
- * 3. Similarly, if you use the RouteDao object to insert stuff into the database. You first create a new Route
- *    object, and then fill out the variables with the information you want to insert. Then, you just call insertAll
- *    in the RouteDao.
- * 4. You CANNOT access the database in the UI thread, because it'll throw an exception. Use an
- *    ExecutorService instead. You should look at my code in MainActivity for getting stuff from the DB,
- *    or IntentionalWalkActivity for putting stuff into the DB
- *
- * i think the method to find the routes by name is RouteDao.findName(String name) or something lke that
- *
- *         stopButton.setOnClickListener((view) -> {
- *             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
- *             databaseWriteExecutor.execute(() -> {
- *                 WWRDatabase walkDb = WWRDatabase.getInstance(this);
- *                 WalkDao dao = walkDb.walkDao();
- *
- *                 Walk newEntry = new Walk();
- *                 newEntry.time = System.currentTimeMillis();
- *                 newEntry.duration = stopwatchText.getText().toString();
- *                 newEntry.steps = stepsText.getText().toString();
- *                 newEntry.distance = distanceText.getText().toString();
- *
- *                 dao.insertAll(newEntry);
- *             });
- *
- *             finish();
- *         });
- *
- *         Route newEntry = new Route();
- *         newEntry.name = "Mission Hills Tour";
- *         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
- *         newEntry.routeType = Route.RouteType.LOOP;
- *         newEntry.hilliness = Route.Hilliness.FLAT;
- *         newEntry.surfaceType = Route.SurfaceType.STREETS;
- *         newEntry.evenness = Route.Evenness.EVEN_SURFACE;
- *         newEntry.difficulty = Route.Difficulty.MODERATE;
- *         newEntry.notes = "This is a pretty dope route wanna do it again";
- *         db.routeDao().insertAll(newEntry);
- */
 
 public class RouteInfoActivity extends AppCompatActivity {
 
@@ -206,8 +145,6 @@ public class RouteInfoActivity extends AppCompatActivity {
 
             newRoute = routeDb.routeDao().findName(currRouteName);
             currWalk = walkDao.findByRouteName(currRouteName);
-
-            while (newRoute == null) ;
 
             if ( newRoute != null ) {
                 titleField.setText(newRoute.name);
