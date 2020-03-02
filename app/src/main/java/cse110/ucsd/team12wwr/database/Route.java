@@ -11,10 +11,6 @@ import androidx.room.TypeConverters;
 
 @Entity
 public class Route {
-    @Override
-    public String toString() {
-        return this.name;
-    }
     @PrimaryKey @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String name;
 

@@ -50,11 +50,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private String result;
     private static int LAUNCH_SECOND_ACTIVITY = 1;
 
-
-    private String result;
-    private static final String TAG = "IntentionalWalkActivity";
-    private static int LAUNCH_SECOND_ACTIVITY = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -233,34 +228,34 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        if (requestCode == LAUNCH_SECOND_ACTIVITY) {
-            if(resultCode == Activity.RESULT_OK){
-                result = data.getExtras().getString("routeTitle");
-                System.out.println("RESULT IS: " + result);
-                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-                databaseWriteExecutor.execute(() -> {
-                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
-                    WalkDao dao = walkDb.walkDao();
-                    RouteDao rDao = walkDb.routeDao();
-
-                    Walk newEntry = new Walk();
-                    newEntry.time = System.currentTimeMillis();
-                    newEntry.duration = stopwatchText.getText().toString();
-                    newEntry.steps = stepsText.getText().toString();
-                    newEntry.distance = distanceText.getText().toString();
-                    newEntry.routeName = result;
-
-                    dao.insertAll(newEntry);
-                });
-
-                finish();
-            }
-            if (resultCode == Activity.RESULT_CANCELED) {
-                finish();
-            }
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//
+//        if (requestCode == LAUNCH_SECOND_ACTIVITY) {
+//            if(resultCode == Activity.RESULT_OK){
+//                result = data.getExtras().getString("routeTitle");
+//                System.out.println("RESULT IS: " + result);
+//                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+//                databaseWriteExecutor.execute(() -> {
+//                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
+//                    WalkDao dao = walkDb.walkDao();
+//                    RouteDao rDao = walkDb.routeDao();
+//
+//                    Walk newEntry = new Walk();
+//                    newEntry.time = System.currentTimeMillis();
+//                    newEntry.duration = stopwatchText.getText().toString();
+//                    newEntry.steps = stepsText.getText().toString();
+//                    newEntry.distance = distanceText.getText().toString();
+//                    newEntry.routeName = result;
+//
+//                    dao.insertAll(newEntry);
+//                });
+//
+//                finish();
+//            }
+//            if (resultCode == Activity.RESULT_CANCELED) {
+//                finish();
+//            }
+//        }
+//    }
 }
