@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,7 +20,6 @@ import cse110.ucsd.team12wwr.database.WWRDatabase;
 public class RouteDetailsPage extends AppCompatActivity {
 
     String routeName;
-    List<Route> routeList;
     RouteDao dao;
     WWRDatabase walkDb;
     Route newRoute;
@@ -48,8 +48,6 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         walkDb = WWRDatabase.getInstance(this);
         dao = walkDb.routeDao();
-
-        routeList = dao.retrieveAllRoutes();
 
         newRoute = walkDb.routeDao().findName(routeName);
 
@@ -136,15 +134,22 @@ public class RouteDetailsPage extends AppCompatActivity {
                 }
             }
 
-//            if (newRoute.favorite != null) {
-//                TextView textView = (TextView) findViewById(R.id.favorited_details);
-//                if (newRoute.favorite == Route.Favorite.FAVORITE) {
-//                    textView.setText("Surface: Even");
-//                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
-//                    textView.setText("Surface: Uneven");
-//                }
-//            }
+            if (newRoute.favorite != null) {
+
+                CheckBox star = (CheckBox) findViewById(R.id.favorited_details);
+                if (newRoute.favorite == Route.Favorite.FAVORITE) {
+                    star.setChecked(true);
+                } else {
+                    star.setChecked(false);
+                }
+            }
         }
+
+        CheckBox star = findViewById(R.id.favorited_details);
+        star.setOnCheckedChangeListener((btn, isChecked) -> {
+            btn.toggle();
+        });
+
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
         Button start = findViewById(R.id.add_button);
