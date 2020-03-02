@@ -17,6 +17,7 @@
     <string name="time">Time:</string>
     <string name="today">Today</string>
     <string name="prev_Walk">Previous Walk</string>
+    <string name="title_activity_route_screen">RouteScreen</string>
 
     <string name="enter_height">Please enter your height:</string>
     <string name="feet_text">feet</string>

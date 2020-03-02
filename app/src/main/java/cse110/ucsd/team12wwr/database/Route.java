@@ -11,6 +11,10 @@ import androidx.room.TypeConverters;
 
 @Entity
 public class Route {
+    @Override
+    public String toString() {
+        return this.name;
+    }
     @PrimaryKey @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String name;
 
@@ -39,6 +43,11 @@ public class Route {
 
     @TypeConverters(Favorite.class)
     public Favorite favorite;
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
     public enum RouteType {
         LOOP(0),
@@ -200,6 +209,7 @@ public class Route {
             }
             return null;
         }
+
 
         @TypeConverter
         public static int getEnumCode(Difficulty d) {

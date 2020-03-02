@@ -11,11 +11,12 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +31,8 @@ import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
     // TODO code repetition
+    private static final String TAG = "IntentionalWalkActivity";
+
     private final int HEIGHT_FACTOR = 12;
     private final double STRIDE_CONVERSION = 0.413;
     private final int MILE_FACTOR = 63360;
@@ -38,39 +41,23 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private AsyncTaskRunner runner;
     private int timeWhenPaused, timeElapsed;
     private double strideLength;
+    private String routeTitle;
+    private boolean isNewRoute = true;
 
     private int temporaryNumSteps;
 
     private IClock clock;
+    private String result;
+    private static int LAUNCH_SECOND_ACTIVITY = 1;
 
     private String result;
     private static final String TAG = "IntentionalWalkActivity";
     private static int LAUNCH_SECOND_ACTIVITY = 1;
     //private long stepsFromService = -1;
 
-    /*
-    private PedometerService pedoService;
-    private boolean isBound;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service){
-            PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            pedoService = localService.getService();
-            isBound = true;
-            stepsFromService = pedoService.getCurrentSteps();
-            Log.i("onServiceConnected", "Current Step Count is " + stepsFromService);
-
-            //pedoService.gimmethemsteppies(fitnessService);
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {isBound = false;}
-    };
-
-    public void bindTheThing(){
-        Intent intent = new Intent(this, PedometerService.class);
-        Log.i("Intentional Walk Activity", "COMMENCE THE BINDING");
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }*/
+    private String result;
+    private static final String TAG = "IntentionalWalkActivity";
+    private static int LAUNCH_SECOND_ACTIVITY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +94,13 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         stopButton.setVisibility(View.GONE);
         pauseButton.setVisibility(View.VISIBLE);
 
+        if ( getIntent().hasExtra("ROUTE_TITLE")) {
+            routeTitle = getIntent().getExtras().getString("ROUTE_TITLE");
+            TextView routeName = findViewById(R.id.text_route_name);
+            routeName.setText(routeTitle);
+            Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
+        }
+
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,34 +133,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
 
         stopButton.setOnClickListener((view) -> {
-
-//            timeWhenPaused += timeElapsed;
-//            if (runner != null) {
-//                runner.cancel(true);
-//            }
-
-
             launchRouteInfoPage();
-
-            // TODO: Help me
-//            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-//            databaseWriteExecutor.execute(() -> {
-//                WWRDatabase walkDb = WWRDatabase.getInstance(this);
-//                WalkDao dao = walkDb.walkDao();
-//                RouteDao rDao = walkDb.routeDao();
-//
-//                //Route route = rDao.findName(result);
-//                Walk newEntry = new Walk();
-//                newEntry.time = System.currentTimeMillis();
-//                newEntry.duration = stopwatchText.getText().toString();
-//                newEntry.steps = stepsText.getText().toString();
-//                newEntry.distance = distanceText.getText().toString();
-//                newEntry.routeName = result;//route.name;
-//
-//                dao.insertAll(newEntry);
-//            });
-//
-//            finish();
         });
     }
 
@@ -237,6 +204,37 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == LAUNCH_SECOND_ACTIVITY) {
+            if(resultCode == Activity.RESULT_OK){
+                result = data.getExtras().getString("routeTitle");
+                System.out.println("RESULT IS: " + result);
+                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+                databaseWriteExecutor.execute(() -> {
+                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
+                    WalkDao dao = walkDb.walkDao();
+                    RouteDao rDao = walkDb.routeDao();
+
+                    Walk newEntry = new Walk();
+                    newEntry.time = System.currentTimeMillis();
+                    newEntry.duration = stopwatchText.getText().toString();
+                    newEntry.steps = stepsText.getText().toString();
+                    newEntry.distance = distanceText.getText().toString();
+                    newEntry.routeName = result;
+
+                    dao.insertAll(newEntry);
+                });
+
+                finish();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                finish();
+            }
+        }
     }
 
     @Override
