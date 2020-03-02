@@ -21,20 +21,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
-import cse110.ucsd.team12wwr.fitness.FitnessService;
-import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
-import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
-
-
-
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
+import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,50 +61,33 @@ public class MainActivity extends AppCompatActivity {
 
     /* GoogleFit */
     private static final String TAG = "MainActivity";
-    private FitnessService fitnessService;
+    //private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
-
-
-    /*SERVICE*/
-    private PedometerService pedService;
-    private boolean isBound = false;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service){
-            Log.i("MainActivity.onServiceConnected", "PedometerService Connection Initializing");
-            PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            try {
-                pedService = localService.getService();
-            }
-            catch(Exception e){
-                Log.i("Not real", "NOT REAL THIS DOESN'T HAPPEN");
-            }
-            isBound = true;
-            Log.i("MainActivity.onServiceConnected", "PedometerService Connected");
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {isBound = false;}
-    };
 
     /* distance */
     TextView textDist;
     int totalHeight;
     double strideLength;
 
-    /* TESTING */
-    public boolean testingFlag = false;
-
-    public boolean startServCalled = false;
+    /* GoogleFit Refactor */
+    int RC_SIGN_IN = 4;
+    GoogleFitUtility gFitUtil;
+    public boolean googleSubscribedStatus = false;
+    public boolean gFitUtilLifecycleFlag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i("MainActivity.onCreate", "onCreate() called");
 
-//      launchRouteInfoActivity();
-
-//        launchRouteDetailsActivity();
-        setTestingFlag(true);
+        /* START GOOGLE LOGIN */
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
@@ -134,14 +119,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
 
-        // Create and adapt the FitnessService
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(MainActivity mainActivity) {
-                return new GoogleFitAdapter(mainActivity);
-            }
-        });
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+
 
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
@@ -158,81 +136,42 @@ public class MainActivity extends AppCompatActivity {
         strideLength = totalHeight * STRIDE_CONVERSION;
 
         /* PEDOMETER START */
-        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
-        if(testingFlag) {
-            fitnessService.setup();
-            startStepUpdaterMethod();
+        gFitUtil = new GoogleFitUtility(this);
+        gFitUtil.init();
+        final Handler checkSubscription = new Handler();
+        checkSubscription.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!gFitUtil.getSubscribed()) {
+                    Log.i("checkSubscription", "Not yet subscribed, trying again in 2 seconds");
+                    checkSubscription.postDelayed(this, 2000);
+                }
+                else{
+                    Log.i("checkSubscription", "Ending handler.run");
+                    googleSubscribedStatus = true;
+                }
+            }
+        }, 1500);
+
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        String test = "account not retrieved";
+        try{
+            test = account.getEmail();
         }
+        catch(NullPointerException e){
+            Log.i("ACCOUNT NOT SIGNED IN PRIOR", " Null pointer caught");
+        }
+        Log.i("GMAIL: ", test);
 
     }
 
-    public void setFitnessService(FitnessService newService){
-        fitnessService = newService;
-    }
-    public void setTestingFlag(boolean flag){
-        testingFlag = flag;
-    }
-
-    public void startStepUpdaterMethod(){
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i("MainActivity.startStepUpdaterMethod", "start runner called");
-                if(!isBound || pedService==null) {
-                    Log.i("MainActivity.startStepUpdaterMethod", "Still waiting for successful bind");
-                    handler.postDelayed(this, 2000);
-                }
-                else{
-                    Log.i("MainActivity.startStepUpdaterMethod", "Successful bind achieved");
-                    pedService.beginStepTracking(fitnessService);
-                    startServCalled = true;
-                }
-            }
-        }, 1500);
-    }
-    public void continueStepUpdaterMethod(){
-        final Handler bindCheckHandler = new Handler();
-        bindCheckHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i("MainActivity.continueStepUpdaterMethod", "continue Runner Called");
-                if(!isBound) {
-                    Log.i("MainActivity.continueStepUpdaterMethod", "Still waiting for successful bind");
-                    bindCheckHandler.postDelayed(this, 2000);
-                }
-                if(!startServCalled){
-                    Log.i("MainActivity.continueStepUpdaterMethod", "beginStepTracking Uncalled");
-                    bindCheckHandler.postDelayed(this, 2000);
-                }
-                else{
-                    Log.i("MainActivity.continueStepUpdaterMethod", "Successful bind achieved");
-                    final Handler updateStepsHandler = new Handler();
-                    updateStepsHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setStepCount(pedService.getCurrentSteps());
-                            updateStepsHandler.postDelayed(this, 3000);
-                        }
-                    }, 3000);
-                }
-            }
-        }, 1500);
-    }
-    public void bindPedService(){
-        if(!testingFlag)
-            return;
-        Intent intent = new Intent(this, PedometerService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-    public void rebindPedService(){
-        Intent intent = new Intent(this, PedometerService.class);
-        bindService(intent, serviceConnection, 0);
-        isBound = true;
-    }
-    public void unbindPedometerService() {
-        unbindService(serviceConnection);
-    }
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
@@ -250,9 +189,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.i("MainActivity.onPause", "onPause() has been called");
-        stopService(new Intent(this, PedometerService.class));
-        isBound = false;
-        unbindPedometerService();
+        gFitUtilLifecycleFlag = false;
     }
 
     public void launchHeightActivity() {
@@ -265,8 +202,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
-        rebindPedService();
-        continueStepUpdaterMethod();
+
+
+        gFitUtilLifecycleFlag = true;
+
+        final Handler stepsUpdaterHandler = new Handler();
+        stepsUpdaterHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (gFitUtilLifecycleFlag) {
+                    Log.i("stepsUpdaterHandler", "Updating step value");
+                    gFitUtil.updateStepCount();
+                    setStepCount(gFitUtil.getStepValue());
+                    stepsUpdaterHandler.postDelayed(this, 4000);
+                }
+                else{
+                    Log.i("stepsUpdaterHandler", "THREAD DISABLED");
+                }
+            }
+        }, 4000);
+
 
         ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
         databaseWriteExecutor.execute(() -> {
@@ -322,6 +277,7 @@ public class MainActivity extends AppCompatActivity {
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
         textStep.setText(""+numSteps);
     }
+    /*
     //For GoogleFit
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -335,16 +291,43 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, "ERROR, google fit result code: " + resultCode);
         }
-    }
+    }*/
 
     @Override
     protected void onDestroy() {
         Log.i("MainActivity.onDestroy", "onDestroy() has been called");
-        if(isBound){
-            unbindService(serviceConnection);
-            isBound = false;
-        }
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            if(account.getEmail() != null)
+                Log.i("YO HOPEFULLY THIS SHIT WORK OKAY: ", account.getEmail());
+            else
+                Log.i("YO HOPEFULLY THIS SHIT WORK OKAY: ", "IT DIDN'T FK");
+            // Signed in successfully, show authenticated UI.
+            //updateUI(account);
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            //Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            //updateUI(null);
+        }
     }
 
 }

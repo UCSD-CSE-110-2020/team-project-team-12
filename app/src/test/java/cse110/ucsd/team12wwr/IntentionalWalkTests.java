@@ -23,17 +23,18 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class IntentionalWalkTests {
     private Intent intentionalWalkIntent, mainIntent;
-    private ActivityTestRule<mockMainActivity> mainActivityTestRule;
+    private ActivityTestRule<MainActivity> mainActivityTestRule;
     private ActivityTestRule<IntentionalWalkActivity> intentionalWalkActivityActivityTestRule;
 
     @Before
     public void setUp() {
-        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
     }
 
+    //This passes but throws an exception
     @Test
     public void testWalkDatabase() {
-        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(mainIntent);
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
             databaseWriteExecutor.execute(() -> {
