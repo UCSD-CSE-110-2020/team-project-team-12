@@ -5,8 +5,12 @@ import androidx.room.Room;
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.database.WalkDao;
 
+import android.app.Activity;
 import android.app.Instrumentation;
+import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -21,72 +25,13 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.lang.reflect.Array;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static android.os.Process.setThreadPriority;
-
-
-/**
- * If you need to save a route, you first create a Route object
- *
- * Route thingToInsert = new Route();
- * thingToInsert.name = name of the route;
- * thingToInsert.startingPoint = blabla;
- * etcetc (you can look at what fields are available in Route.java)
- *
- * Then, you call the RouteDao from the database. Dao is the Data Access Object. Should be something like
- * RouteDao dao = db.routeDao();
- *
- * And then, I think it's
- * dao.insertAll(thingToInsert);
- *
- *
- * 1. Route is what the database looks like. Every single variable there represents a "column" in the table
- * 2. You use the RouteDao to interact with the database. When you try to get stuff from the database, you call
- *    the methods inside RouteDao (e.g. retrieveAllRoutes), and you'll receive a Route object. All the informations
- *    you need will be in the Route object.
- * 3. Similarly, if you use the RouteDao object to insert stuff into the database. You first create a new Route
- *    object, and then fill out the variables with the information you want to insert. Then, you just call insertAll
- *    in the RouteDao.
- * 4. You CANNOT access the database in the UI thread, because it'll throw an exception. Use an
- *    ExecutorService instead. You should look at my code in MainActivity for getting stuff from the DB,
- *    or IntentionalWalkActivity for putting stuff into the DB
- *
- * i think the method to find the routes by name is RouteDao.findName(String name) or something lke that
- *
- *         stopButton.setOnClickListener((view) -> {
- *             ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
- *             databaseWriteExecutor.execute(() -> {
- *                 WWRDatabase walkDb = WWRDatabase.getInstance(this);
- *                 WalkDao dao = walkDb.walkDao();
- *
- *                 Walk newEntry = new Walk();
- *                 newEntry.time = System.currentTimeMillis();
- *                 newEntry.duration = stopwatchText.getText().toString();
- *                 newEntry.steps = stepsText.getText().toString();
- *                 newEntry.distance = distanceText.getText().toString();
- *
- *                 dao.insertAll(newEntry);
- *             });
- *
- *             finish();
- *         });
- *
- *         Route newEntry = new Route();
- *         newEntry.name = "Mission Hills Tour";
- *         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
- *         newEntry.routeType = Route.RouteType.LOOP;
- *         newEntry.hilliness = Route.Hilliness.FLAT;
- *         newEntry.surfaceType = Route.SurfaceType.STREETS;
- *         newEntry.evenness = Route.Evenness.EVEN_SURFACE;
- *         newEntry.difficulty = Route.Difficulty.MODERATE;
- *         newEntry.notes = "This is a pretty dope route wanna do it again";
- *         db.routeDao().insertAll(newEntry);
- */
 
 public class RouteInfoActivity extends AppCompatActivity {
 
@@ -107,7 +52,7 @@ public class RouteInfoActivity extends AppCompatActivity {
     boolean isFavorite = false;
 
     /* Setting spinners and textfields */
-    String routeTitle, startPosition, endLocation, notesField;
+    String routeTitle, startPosition, endLocation, notesField, totalDistance, totalTime;
     Boolean isHilly, isStreet, isEven, isLoop;
 
     /* Difficulty */
@@ -120,6 +65,8 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
+    Route newRoute;
+    List<Walk> currWalk;
 
     /* Database */
     WWRDatabase db;
@@ -131,29 +78,43 @@ public class RouteInfoActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Route Information");
 
-        isNewRoute = true;
-
-        // Init database
-//        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-//        db = Room.inMemoryDatabaseBuilder(context, WWRDatabase.class).build();
-        // TODO: Retrieve passed in object for route() through intent
-//        String currRouteName = (String) getIntent().getExtras().getString("route_data");
-        //currRouteName = "Fun Route";
-        //System.out.println(currRouteName);
-        if (currRouteName != null) {
-            isNewRoute = false;
-            Log.d(TAG, "onCreate: This is a new route we will be creating");
-        }
+        resetFields();
 
         EditText titleField = findViewById(R.id.title_text);
         EditText startPoint = findViewById(R.id.start_text);
         EditText endPoint = findViewById(R.id.stop_text);
+        EditText notesEntry = findViewById(R.id.notes_entry);
+        TextView totalDistText = findViewById(R.id.dist_textEdit);
+        TextView totalTimeText = findViewById(R.id.totalTime_textEdit);
         CheckBox favoriteBtn = findViewById(R.id.favoriteCheckBtn);
         Button cancelBtn = findViewById(R.id.cancel_btn);
         Button saveBtn = findViewById(R.id.save_btn);
         Button easyBtn = findViewById(R.id.easy_btn);
         Button moderateBtn = findViewById(R.id.moderate_btn);
         Button hardBtn = findViewById(R.id.hard_btn);
+
+
+        // TODO: Retrieve passed in object for route() through intent
+        if ( getIntent().hasExtra("ROUTE_TITLE")) {
+            currRouteName = getIntent().getExtras().getString("ROUTE_TITLE");
+            Log.d(TAG, "onCreate: currentRouteName: " + currRouteName);
+        }
+        if ( getIntent().hasExtra("distance") ) {
+            totalDistance = getIntent().getExtras().getString("distance");
+            Log.d(TAG, "onCreate: totalDistance passed in: " + totalDistance);
+            totalDistText.setText(totalDistance);
+        }
+        if (getIntent().hasExtra("duration") ) {
+            totalTime = (String) getIntent().getExtras().getString("duration");
+            totalTimeText.setText(totalTime);
+            Log.d(TAG, "onCreate: totalTime passed in: " + totalTime);
+        }
+
+        // TODO: Remove Route Title
+        if (currRouteName != null ) { // && !currRouteName.equals("Route Title")) {
+            isNewRoute = false;
+            Log.d(TAG, "onCreate: This is not a new route we will be creating");
+        }
 
         // Set spinners
         final Spinner pathSpinner = findViewById(R.id.path_spinner);
@@ -178,114 +139,92 @@ public class RouteInfoActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
         if ( !isNewRoute ) {
-            ExecutorService dbWriteExecutor = Executors.newSingleThreadExecutor();//Executors.newFixedThreadPool(1);
-            dbWriteExecutor.execute(() -> {
-                WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                RouteDao dao = routeDb.routeDao();
+            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+            RouteDao routeDao = routeDb.routeDao();
+            WalkDao walkDao = routeDb.walkDao();
 
-                Route currEntry = dao.findName(currRouteName);
-                System.out.println(currEntry.name);
-                System.out.println(currEntry.notes);
-                System.out.println(currEntry.startingPoint);
-                System.out.println(currEntry.difficulty);
-                System.out.println(currEntry.evenness);
-                System.out.println(currEntry.hilliness);
-                System.out.println(currEntry.routeType);
-                System.out.println(currEntry.surfaceType);
-                routeTitle = currEntry.name;
-                startPosition = currEntry.startingPoint;
-                System.out.println(startPosition);
-                // TODO: get the ending point
-                notesField = currEntry.notes;
-                if ( currEntry.routeType != null ) {
-                    Log.d(TAG, "onCreate: setting routeType to: " + currEntry.routeType);
-                    if (currEntry.routeType == Route.RouteType.LOOP) {
-                        isLoop = true;
-                    } else {
-                        isLoop = false;
-                        System.out.println("not loop");
-                    }
-                }
-                if ( currEntry.hilliness != null ) {
-                    if ( currEntry.hilliness == Route.Hilliness.HILLY ) {
-                        isHilly = true;
-                    } else {
-                        isHilly = false;
-                    }
-                }
-                if ( currEntry.surfaceType != null ) {
-                    if ( currEntry.surfaceType == Route.SurfaceType.STREETS ) {
-                        isStreet = true;
-                    } else {
-                        isStreet = false;
-                    }
-                }
-                if (currEntry.evenness != null ) {
-                    if ( currEntry.evenness == Route.Evenness.EVEN_SURFACE ) {
-                        isEven = true;
-                    } else {
-                        isEven = false;
-                    }
-                }
-                if ( currEntry.difficulty != null ) {
-                    if ( currEntry.difficulty == Route.Difficulty.EASY ) {
-                        isEasy = true;
-                    } else if ( currEntry.difficulty == Route.Difficulty.MODERATE ) {
-                        isModerate = true;
-                    } else {
-                        isHard = true;
-                    }
-                }
-                // TODO: Favorite?
+            newRoute = routeDb.routeDao().findName(currRouteName);
+            currWalk = walkDao.findByRouteName(currRouteName);
 
-            });
-//            dbWriteExecutor.shutdown();
+            if ( newRoute != null ) {
+                titleField.setText(newRoute.name);
+            }
+            if (newRoute.startingPoint != null) {
+                startPoint.setText(newRoute.startingPoint);
+            }
+
+            if (newRoute.endingPoint != null) {
+                endPoint.setText(newRoute.endingPoint);
+            }
+
+            if (newRoute.difficulty != null) {
+                if (newRoute.difficulty == Route.Difficulty.EASY) {
+                    setEasyButton(easyBtn, moderateBtn, hardBtn);
+                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                    setModerateButton(easyBtn, moderateBtn, hardBtn);
+                } else {
+                    setHardButton(easyBtn, moderateBtn, hardBtn);
+                }
+            }
+
+            if (newRoute.evenness != null) {
+                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                    textureSpinner.setSelection(1);
+                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                    textureSpinner.setSelection(2);
+                }
+            }
+
+            if (newRoute.hilliness != null) {
+                if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                    inclineSpinner.setSelection(1);
+                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                    inclineSpinner.setSelection(2);
+                }
+            }
+
+            if (newRoute.routeType != null) {
+                if (newRoute.routeType == Route.RouteType.LOOP) {
+                    pathSpinner.setSelection(1);
+                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                    pathSpinner.setSelection(2);
+                }
+            }
+
+            if (newRoute.surfaceType != null) {
+                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                    terrainSpinner.setSelection(1);
+                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                    terrainSpinner.setSelection(2);
+                }
+            }
+
+            if ( newRoute.favorite != null ) {
+                if ( newRoute.favorite == Route.Favorite.FAVORITE) {
+                    favoriteBtn.performClick();
+                }
+            }
+
+            if ( newRoute.notes != null ) {
+                notesEntry.setText(newRoute.notes);
+            }
+
+            if ( currWalk.size() > 0 ) {
+                if ( currWalk.get(0) != null ) {
+                    totalDistText.setText(currWalk.get(0).distance);
+                    totalTimeText.setText(currWalk.get(0).duration);
+                }
+            }
+
         }
+
         Log.d(TAG, "onCreate: Page is now set up");
 
         Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
         Log.d(TAG, "onCreate: startPosition: " + startPosition);
         Log.d(TAG, "onCreate: isLoop: " + isLoop);
-//        Log.d(TAG, "onCreate: notesField: " + notesField);
-        
-        // TODO: Check if the certain fields have something, if not, then set everything to nonetype
-        if ( !isNewRoute ) {
-            titleField.setText(routeTitle);
-            if (startPosition != null) {
-                startPoint.setText(startPosition);
-            }
-            // TODO: Ending point
-            if ( isLoop != null ) {
-                if ( isLoop ) {
-                    pathSpinner.setSelection(1);
-                } else {
-                    pathSpinner.setSelection(2);
-                }
-            }
-            if ( isHilly != null ) {
-                if ( isHilly ) {
-                    inclineSpinner.setSelection(2);
-                } else {
-                    inclineSpinner.setSelection(1);
-                }
-            }
-            if ( isStreet != null ) {
-                if ( isStreet ) {
-                    terrainSpinner.setSelection(1);
-                } else {
-                    terrainSpinner.setSelection(2);
-                }
-            }
-            if ( isEven != null ) {
-                if ( isEven ) {
-                    textureSpinner.setSelection(1);
-                } else {
-                    textureSpinner.setSelection(2);
-                }
-            }
-        }
+        Log.d(TAG, "onCreate: notesField: " + notesField);
 
-        // TODO: Set up the favorite button to be whatever favorite is passed in
         // Favorite button
         favoriteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,7 +239,25 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: Figure out the difficulty and set it if there is an route object
+        // Cancel Button
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "onClick: Save Button is clicked");
+                // Make sure it is not null
+                if ( TextUtils.isEmpty(titleField.getText()) ) {
+                    Log.d(TAG, "onClick: Title field is null, save not finished");
+                    titleField.setError("You must enter a title for your route!");
+                }
+            }
+        });
 
         defaultColor = (Drawable) easyBtn.getBackground();
 
@@ -331,7 +288,6 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
-
         // Cancel Button
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -340,23 +296,8 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
-        // Notes field
-        EditText notes = findViewById(R.id.notes_entry);
-        notes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Notes field is clicked");
-            }
-        });
-
-        // TODO: Save button: if object is null/no object passed, create new object to store in db
-        // TODO: If object exists, just update the object's fields
-
         // Save Button
         saveBtn.setOnClickListener(new View.OnClickListener() {
-
-            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-            RouteDao dao = routeDb.routeDao();
 
             @Override
             public void onClick(View view) {
@@ -367,89 +308,69 @@ public class RouteInfoActivity extends AppCompatActivity {
                     titleField.setError("You must enter a title for your route!");
                 } else {
                     final boolean[] dupeTitle = {false};
-//                    ExecutorService dbWriteExec = Executors.newFixedThreadPool(1);
-//                    dbWriteExec.execute(() -> {
-//                        if (dao.findName(titleField.getText().toString()) != null) {
-//                            Log.d(TAG, "onClick: Title already in use");
-//                            dupeTitle[0] = true;
-//                        }
-//                    });
-//                    if ( dupeTitle[0] ) {
-//                        titleField.setError("Route already exists, use another name!");
-//                        return;
-//                    }
                     Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
                     if (isNewRoute) {
-                        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-                        databaseWriteExecutor.execute(() -> {
+                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                        RouteDao dao = routeDb.routeDao();
 
-                            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                            RouteDao dao = routeDb.routeDao();
+                        Route newEntry = new Route();
+                        newEntry.name = titleField.getText().toString();
+                        newEntry.startingPoint = startPoint.getText().toString();
+                        newEntry.endingPoint = endPoint.getText().toString();
+                        setFavorite(newEntry, isFavorite);
+                        setRouteType(newEntry, pathSpinner);
+                        setHilliness(newEntry, inclineSpinner);
+                        setSurfaceType(newEntry, terrainSpinner);
+                        setEvenness(newEntry, textureSpinner);
+                        setDifficulty(newEntry);
+                        setNotes(newEntry, notesEntry.getText().toString());
 
-                            Route newEntry = new Route();
-                            newEntry.name = titleField.getText().toString();
-                            newEntry.startingPoint = startPoint.getText().toString();
-                            // TODO: Need ending point
-                            setRouteType(newEntry, pathSpinner);
-                            setHilliness(newEntry, inclineSpinner);
-                            setSurfaceType(newEntry, terrainSpinner);
-                            setEvenness(newEntry, textureSpinner);
-                            setDifficulty(newEntry);
-                            setNotes(newEntry, "");
-
-                            try {
-                                dao.insertAll(newEntry);
-                                Log.d(TAG, "onClick: added entry");
-                            } catch (SQLiteConstraintException e) {
-//                                titleField.setError("Route already exists, use another name!");
-                                Log.d(TAG, "onClick: Title already in use");
-                                dupeTitle[0] = true;
-//                                return;
-                            }
-//                            Log.d(TAG, "onClick: inserted a route into database");
-                        });
-
-                        if ( dupeTitle[0] ) {
-                          titleField.setError("Route already exists, use another name!");
-                            Log.d(TAG, "onClick: did not insert route into database");
-//                          return;
-                        } else {
-                            Log.d(TAG, "onClick: inserted a route into database");
+                        try {
+                            dao.insertAll(newEntry);
+                            Log.d(TAG, "onClick: added entry");
+                        } catch (SQLiteConstraintException e) {
+                            Log.d(TAG, "onClick: Title already in use");
+                            dupeTitle[0] = true;
+                            return;
                         }
-                    }
+                    } else {
+
+                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                        RouteDao dao = routeDb.routeDao();
+
+                        Route newEntry = dao.findName(currRouteName);
+                        newEntry.name = titleField.getText().toString();
+                        newEntry.startingPoint = startPoint.getText().toString();
+                        newEntry.endingPoint = endPoint.getText().toString();
+                        setFavorite(newEntry, isFavorite);
+                        setRouteType(newEntry, pathSpinner);
+                        setHilliness(newEntry, inclineSpinner);
+                        setSurfaceType(newEntry, terrainSpinner);
+                        setEvenness(newEntry, textureSpinner);
+                        setDifficulty(newEntry);
+                        setNotes(newEntry, notesEntry.getText().toString());
+                        dao.update(newEntry);
+                        Log.d(TAG, "onClick: Updated route information for old route");
+                    } // End inner else ( if not a new route )
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("routeTitle", titleField.getText().toString());
+                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
+                    setResult(Activity.RESULT_OK, resultIntent);
+                    finish();
                 } // End else
+
+
             } // End onClick()
         }); // End setOnClickListener()
     }
-//                    if ( isNewRoute ) {
-//                        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-//                        databaseWriteExecutor.execute(() -> {
-//
-//                            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-//                            RouteDao dao = routeDb.routeDao();
-//
-//                            Route newEntry = new Route();
-//                            newEntry.name = titleField.getText().toString();
-//                            newEntry.startingPoint = startPoint.getText().toString();
-//                            // TODO: Need ending point
-//                            setRouteType(newEntry, pathSpinner);
-//                            setHilliness(newEntry, inclineSpinner);
-//                            setSurfaceType(newEntry, terrainSpinner);
-//                            setEvenness(newEntry, textureSpinner);
-//                            setDifficulty(newEntry);
-//                            setNotes(newEntry, "");
-//
-//                            dao.insertAll(newEntry);
-//                            Log.d(TAG, "onClick: inserted a route into database");
-//                        });
-//                    }
-//                }
-//                Log.d(TAG, "onClick: Finished and now closing activity");
-////                finish();
-//            }
-//        });
-//
-//    }
+
+    public void setFavorite( Route route, Boolean isFavorite ) {
+        if ( isFavorite ) {
+            route.favorite = Route.Favorite.FAVORITE;
+        } else {
+            route.favorite = Route.Favorite.NOT_FAVORITE;
+        }
+    }
 
     public void setRouteType( Route route, Spinner spinner ) {
         if ( spinner.getSelectedItem() == LOOP ) {
@@ -515,7 +436,11 @@ public class RouteInfoActivity extends AppCompatActivity {
     }
 
     public void setNotes(Route route, String msg) {
-        route.notes = msg;
+        if ( msg != null ) {
+            route.notes = msg;
+        } else {
+            route.notes = "";
+        }
     }
 
     public void setEasyButton(Button easyBtn, Button moderateBtn, Button hardBtn) {
@@ -581,16 +506,22 @@ public class RouteInfoActivity extends AppCompatActivity {
         Log.d(TAG, "onClick: isEasy: " + isEasy);
     }
 
-    public void awaitTerminationAfterShutdown(ExecutorService threadPool) {
-        threadPool.shutdown();
-        try {
-            if (!threadPool.awaitTermination(60, TimeUnit.SECONDS)) {
-                threadPool.shutdownNow();
-            }
-        } catch (InterruptedException ex) {
-            threadPool.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+    public void resetFields() {
+        isNewRoute = true;
+        isHilly = null;
+        isStreet = null;
+        isLoop = null;
+        isEven = null;
+        isFavorite = false;
+        isModerate = false;
+        isEasy = false;
+        isHard = false;
+        routeTitle = null;
+        startPosition = null;
+        endLocation = null;
+        notesField = null;
+        totalDistance = null;
+        totalTime = null;
     }
 
 }
