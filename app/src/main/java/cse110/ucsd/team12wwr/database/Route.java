@@ -17,6 +17,9 @@ public class Route {
     @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String startingPoint;
 
+    @ColumnInfo(collate = ColumnInfo.NOCASE)
+    public String endingPoint;
+
     @TypeConverters(RouteType.class)
     public RouteType routeType;
     
@@ -36,6 +39,11 @@ public class Route {
 
     @TypeConverters(Favorite.class)
     public Favorite favorite;
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 
     public enum RouteType {
         LOOP(0),
@@ -197,6 +205,7 @@ public class Route {
             }
             return null;
         }
+
 
         @TypeConverter
         public static int getEnumCode(Difficulty d) {

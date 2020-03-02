@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//      launchRouteInfoActivity();
+
+//        launchRouteDetailsActivity();
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -119,6 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 launchActivity();
             }
         });
+
+        Button launchRoutesScreen = (Button) findViewById(R.id.routes_list_button);
+        launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRoutesScreenActivity();
+            }
+        });
+
         Toolbar toolbar = findViewById(R.id.toolbar);
 
 
@@ -130,11 +142,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
-        
+
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
-        Button btnDebugIncSteps = findViewById(R.id.btn_debug_increment_steps);
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
@@ -154,7 +165,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
 
     public void setFitnessService(FitnessService newService){
         fitnessService = newService;
@@ -228,6 +238,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
     }
+
+    public void launchRoutesScreenActivity() {
+        Intent intent = new Intent(this, RoutesScreen.class);
+        startActivity(intent);
+    }
+
+
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -330,4 +348,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-

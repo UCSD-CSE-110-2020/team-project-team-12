@@ -30,6 +30,7 @@ public abstract class WWRDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             WWRDatabase.class, "wwr_database")
                             .addMigrations(MIGRATION_1_2)
+                            .allowMainThreadQueries()
                             .build();
                 }
             }

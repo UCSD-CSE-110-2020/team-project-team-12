@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -10,23 +11,27 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
+import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
     // TODO code repetition
+    private static final String TAG = "IntentionalWalkActivity";
+
     private final int HEIGHT_FACTOR = 12;
     private final double STRIDE_CONVERSION = 0.413;
     private final int MILE_FACTOR = 63360;
@@ -35,10 +40,15 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private AsyncTaskRunner runner;
     private int timeWhenPaused, timeElapsed;
     private double strideLength;
+    private String routeTitle;
+    private boolean isNewRoute = true;
 
     private int temporaryNumSteps;
 
     private IClock clock;
+    private String result;
+    private static int LAUNCH_SECOND_ACTIVITY = 1;
+
 
     //private long stepsFromService = -1;
 
@@ -74,9 +84,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         clock = new DeviceClock();
 
         // TODO this is code repetition, should just declare getStrideLength() somewhere
-        SharedPreferences spf = getSharedPreferences("height", MODE_PRIVATE);
-        int feet = spf.getInt("feet", 0);
-        int inches = spf.getInt("inches", 0);
+        SharedPreferences spf = getSharedPreferences("HEIGHT", MODE_PRIVATE);
+        int feet = spf.getInt("FEET", 0);
+        int inches = spf.getInt("INCHES", 0);
         int totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
@@ -99,6 +109,13 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         continueButton.setVisibility(View.GONE);
         stopButton.setVisibility(View.GONE);
         pauseButton.setVisibility(View.VISIBLE);
+
+        if ( getIntent().hasExtra("ROUTE_TITLE")) {
+            routeTitle = getIntent().getExtras().getString("ROUTE_TITLE");
+            TextView routeName = findViewById(R.id.text_route_name);
+            routeName.setText(routeTitle);
+            Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
+        }
 
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
@@ -132,22 +149,16 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
 
         stopButton.setOnClickListener((view) -> {
-            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-            databaseWriteExecutor.execute(() -> {
-                WWRDatabase walkDb = WWRDatabase.getInstance(this);
-                WalkDao dao = walkDb.walkDao();
-
-                Walk newEntry = new Walk();
-                newEntry.time = System.currentTimeMillis();
-                newEntry.duration = stopwatchText.getText().toString();
-                newEntry.steps = stepsText.getText().toString();
-                newEntry.distance = distanceText.getText().toString();
-
-                dao.insertAll(newEntry);
-            });
-
-            finish();
+            launchRouteInfoPage();
         });
+    }
+
+    private void launchRouteInfoPage() {
+        Log.d(TAG, "launchRouteInfoPage: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+        intent.putExtra("duration", stopwatchText.getText().toString());
+        intent.putExtra("distance", distanceText.getText().toString());
+        startActivityForResult(intent, LAUNCH_SECOND_ACTIVITY);
     }
 
     protected void setClock(IClock clock) {
@@ -208,5 +219,36 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             distanceText.setText(text[2]);
         }
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == LAUNCH_SECOND_ACTIVITY) {
+            if(resultCode == Activity.RESULT_OK){
+                result = data.getExtras().getString("routeTitle");
+                System.out.println("RESULT IS: " + result);
+                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
+                databaseWriteExecutor.execute(() -> {
+                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
+                    WalkDao dao = walkDb.walkDao();
+                    RouteDao rDao = walkDb.routeDao();
+
+                    Walk newEntry = new Walk();
+                    newEntry.time = System.currentTimeMillis();
+                    newEntry.duration = stopwatchText.getText().toString();
+                    newEntry.steps = stepsText.getText().toString();
+                    newEntry.distance = distanceText.getText().toString();
+                    newEntry.routeName = result;
+
+                    dao.insertAll(newEntry);
+                });
+
+                finish();
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                finish();
+            }
+        }
     }
 }
