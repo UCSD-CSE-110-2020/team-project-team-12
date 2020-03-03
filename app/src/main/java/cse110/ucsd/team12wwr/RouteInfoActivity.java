@@ -46,8 +46,7 @@ public class RouteInfoActivity extends AppCompatActivity {
     final String EVEN = "Even Surface";
     final String UNEVEN = "Uneven Surface";
     final String NONETYPE = "";
-    final int threadID = android.os.Process.getThreadPriority(android.os.Process.myTid());
-    final Thread currThread = Thread.currentThread();
+
     /* Favorite button */
     boolean isFavorite = false;
 
@@ -225,7 +224,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                     totalTimeText.setText(currWalk.get(0).duration);
                 }
             }
-
         }
 
         Log.d(TAG, "onCreate: Page is now set up");
@@ -370,8 +368,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } // End else
-
-
             } // End onClick()
         }); // End setOnClickListener()
     }
