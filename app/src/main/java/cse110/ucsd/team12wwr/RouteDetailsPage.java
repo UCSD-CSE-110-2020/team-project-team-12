@@ -144,6 +144,11 @@ public class RouteDetailsPage extends AppCompatActivity {
                     star.setChecked(false);
                 }
             }
+
+            if (newRoute.notes != null && !newRoute.notes.equals("")) {
+                TextView notes = findViewById(R.id.notes_content);
+                notes.setText(newRoute.notes);
+            }
         }
     }
 
