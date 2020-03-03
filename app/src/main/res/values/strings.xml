@@ -30,8 +30,7 @@
     <string name="total_time">Total Time:</string>
     <string name="default_time">00:00:00</string>
     <string name="total_distance">Total Distance:</string>
-    <string name="default_dist">00.00</string>
-    <string name="dist_unit">mi.</string>
+    <string name="default_dist">00.00 mi</string>
     <string name="additional_info">Additional Information</string>
     <string name="path_text">Path:</string>
     <string name="incline_text">Incline:</string>
