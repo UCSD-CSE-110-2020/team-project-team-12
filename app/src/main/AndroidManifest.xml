@@ -9,10 +9,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".TeamScreen"
-            android:label="@string/title_activity_team_screen" />
+            android:label="@string/title_activity_team_screen"></activity>
         <activity android:name=".RoutesScreen" />
         <activity android:name=".RouteInfoActivity" />
         <activity android:name=".RouteDetailsPage" />
@@ -26,7 +25,7 @@
         <activity
             android:name=".StartPage"
             android:label="@string/title_activity_start_page"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
