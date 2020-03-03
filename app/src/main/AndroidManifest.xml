@@ -44,6 +44,7 @@
         <activity
             android:name=".IntentionalWalkActivity"
             android:label="@string/title_activity_intentional_walk"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
