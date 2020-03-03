@@ -32,6 +32,11 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         populateRouteDetails();
 
         CheckBox star = findViewById(R.id.favorited_details);
@@ -66,8 +71,6 @@ public class RouteDetailsPage extends AppCompatActivity {
     private void populateRouteDetails() {
         WWRDatabase db = WWRDatabase.getInstance(this);
         Route newRoute = db.routeDao().findName(routeName);
-
-        System.err.println("Refactored!");
 
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
