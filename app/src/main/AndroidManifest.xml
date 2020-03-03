@@ -3,17 +3,19 @@
     package="cse110.ucsd.team12wwr">
 
     <application
-
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".TeamScreen"
+            android:label="@string/title_activity_team_screen"></activity>
         <activity android:name=".RoutesScreen" />
-        <activity android:name=".RouteInfoActivity"></activity>
-        <activity android:name=".RouteDetailsPage"></activity>
-        <activity android:name=".DebugWalkActivity"></activity>
+        <activity android:name=".RouteInfoActivity" />
+        <activity android:name=".RouteDetailsPage" />
+        <activity android:name=".DebugWalkActivity" />
 
         <service
             android:name=".PedometerService"
@@ -23,9 +25,7 @@
         <activity
             android:name=".StartPage"
             android:label="@string/title_activity_start_page"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -36,11 +36,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".mockMainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".IntentionalWalkActivity"
             android:label="@string/title_activity_intentional_walk"

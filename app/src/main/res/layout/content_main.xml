@@ -184,38 +184,17 @@
             android:textSize="27sp"></TextView>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/button_bar_main"
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/routes_list_button"
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:background="@android:color/black"
-            android:text="Routes"
-            android:textColor="#CACACA"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btn_start_walk"
-            style="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/black"
-            android:text="Start Walk"
-            android:textColor="#CACACA"
-            android:textSize="18sp"
-            android:textStyle="bold"></Button>
-    </LinearLayout>
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

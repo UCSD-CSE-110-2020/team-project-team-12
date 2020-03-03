@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -20,6 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
@@ -111,22 +116,6 @@ public class MainActivity extends AppCompatActivity {
             launchHeightActivity();
         }
 
-        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
-        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchActivity();
-            }
-        });
-
-        Button launchRoutesScreen = (Button) findViewById(R.id.routes_list_button);
-        launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchRoutesScreenActivity();
-            }
-        });
-
         Toolbar toolbar = findViewById(R.id.toolbar);
 
 
@@ -159,6 +148,34 @@ public class MainActivity extends AppCompatActivity {
             fitnessService.setup();
             startStepUpdaterMethod();
         }
+
+        BottomNavigationView navigation = findViewById(R.id.nav_view);
+        Menu menu = navigation.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        menuItem.setChecked(true);
+
+        navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        break;
+                    case R.id.navigation_routes:
+                        launchRoutesScreenActivity();
+
+                        break;
+                    case R.id.navigation_walk:
+                        launchActivity();
+
+                        break;
+                    case R.id.navigation_teams:
+                        launchTeamScreenActivity();
+
+                        break;
+                }
+                return false;
+            }
+        });
 
     }
 
@@ -237,6 +254,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void launchRoutesScreenActivity() {
         Intent intent = new Intent(this, RoutesScreen.class);
+        startActivity(intent);
+    }
+
+    public void launchTeamScreenActivity() {
+        Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
     }
 
