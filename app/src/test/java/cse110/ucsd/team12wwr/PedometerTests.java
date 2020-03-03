@@ -13,22 +13,12 @@ import org.junit.runner.RunWith;
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 import static org.junit.Assert.assertEquals;
 
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.Shadows;
-import org.robolectric.shadows.ShadowApplication;
-
-
-
-
-
 @RunWith(AndroidJUnit4.class)
 public class PedometerTests {
     private MainActivity mainActivity;
     private TestFitnessService testService;
     private Intent intent;
     TestPedometerService testPedService;
-
-
 
     @Before
     public void setUp() {
@@ -73,7 +63,7 @@ public class PedometerTests {
     }
 
     @Test
-    public void testStepsUpdatedInMainDisplayANDService() {
+    public void testStepsUpdatedInMainDisplayAndService() {
         ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {
             testService = new TestFitnessService(activity, 420);
