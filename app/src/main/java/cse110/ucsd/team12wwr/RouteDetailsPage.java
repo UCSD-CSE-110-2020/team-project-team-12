@@ -64,29 +64,6 @@ public class RouteDetailsPage extends AppCompatActivity {
     }
 
     private void populateRouteDetails() {
-//        TextView routeTitle, startPoint, endPoint;
-//        TextView totalTime, totalDist;
-//        TextView path, terrain, incline, surface;
-//        TextView difficulty, notes;
-//        // Header
-//        routeTitle = findViewById(R.id.route_title_detail);
-//        startPoint = findViewById(R.id.start_textview);
-//        endPoint = findViewById(R.id.end_textview);
-//
-//        // Metrics
-//        totalTime = findViewById(R.id.total_time_detail);
-//        totalDist = findViewById(R.id.dist_details);
-//
-//        // Spinner info
-//        path = findViewById(R.id.path_details);
-//        terrain = findViewById(R.id.terrain_deets);
-//        incline = findViewById(R.id.incline_deets);
-//        surface = findViewById(R.id.texture_details);
-//
-//        // Extra info
-//        difficulty = findViewById(R.id.diff_detail);
-//        notes = findViewById(R.id.notes_content);
-
         WWRDatabase db = WWRDatabase.getInstance(this);
         Route newRoute = db.routeDao().findName(routeName);
 
@@ -94,71 +71,70 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
-            TextView textView = (TextView) findViewById(R.id.route_title_detail);
-            textView.setText(routeName);
+            TextView routeTitle = findViewById(R.id.route_title_detail);
+            routeTitle.setText(routeName);
         }
 
         if (newRoute != null) {
             if (newRoute.startingPoint != null) {
-                TextView textView = (TextView) findViewById(R.id.start_textview);
-                textView.setText("Starting Point: " + newRoute.startingPoint);
+                TextView startPoint = findViewById(R.id.start_textview);
+                startPoint.setText("Starting Point: " + newRoute.startingPoint);
             }
 
             if (newRoute.endingPoint != null) {
-                TextView textView = (TextView) findViewById(R.id.end_textview);
-                textView.setText("Ending Point: " + newRoute.endingPoint);
+                TextView endPoint = findViewById(R.id.end_textview);
+                endPoint.setText("Ending Point: " + newRoute.endingPoint);
             }
 
             if (newRoute.difficulty != null) {
-                TextView textView = (TextView) findViewById(R.id.diff_detail);
+                TextView difficulty = findViewById(R.id.diff_detail);
                 if (newRoute.difficulty == Route.Difficulty.EASY) {
-                    textView.setText("Easy");
+                    difficulty.setText("Easy");
                 } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
-                    textView.setText("Moderate");
+                    difficulty.setText("Moderate");
                 } else {
-                    textView.setText("Hard");
+                    difficulty.setText("Hard");
                 }
             }
 
             if (newRoute.evenness != null) {
-                TextView textView = (TextView) findViewById(R.id.texture_details);
+                TextView surface = findViewById(R.id.texture_details);
                 if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
-                    textView.setText("Surface: Even");
+                    surface.setText("Surface: Even");
                 } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
-                    textView.setText("Surface: Uneven");
+                    surface.setText("Surface: Uneven");
                 }
             }
 
             if (newRoute.hilliness != null) {
-                TextView textView = (TextView) findViewById(R.id.incline_deets);
+                TextView incline = findViewById(R.id.incline_deets);
                 if (newRoute.hilliness == Route.Hilliness.FLAT) {
-                    textView.setText("Incline: Flat");
+                    incline.setText("Incline: Flat");
                 } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
-                    textView.setText("Incline: Hilly");
+                    incline.setText("Incline: Hilly");
                 }
             }
 
             if (newRoute.routeType != null) {
-                TextView textView = (TextView) findViewById(R.id.path_details);
+                TextView path = findViewById(R.id.path_details);
                 if (newRoute.routeType == Route.RouteType.LOOP) {
-                    textView.setText("Path Type: Loop");
+                    path.setText("Path Type: Loop");
                 } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
-                    textView.setText("Path Type: Out and Back");
+                    path.setText("Path Type: Out and Back");
                 }
             }
 
             if (newRoute.surfaceType != null) {
-                TextView textView = (TextView) findViewById(R.id.terrain_deets);
+                TextView terrain = findViewById(R.id.terrain_deets);
                 if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
-                    textView.setText("Terrain Type: Streets");
+                    terrain.setText("Terrain Type: Streets");
                 } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
-                    textView.setText("Terrain Type: Trial");
+                    terrain.setText("Terrain Type: Trial");
                 }
             }
 
             if (newRoute.favorite != null) {
-
-                CheckBox star = (CheckBox) findViewById(R.id.favorited_details);
+                CheckBox star = findViewById(R.id.favorited_details);
                 if (newRoute.favorite == Route.Favorite.FAVORITE) {
                     star.setChecked(true);
                 } else {
