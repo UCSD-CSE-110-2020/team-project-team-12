@@ -1,15 +1,12 @@
 package cse110.ucsd.team12wwr.fitness;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.fitness.Fitness;
 import com.google.android.gms.fitness.FitnessOptions;
 import com.google.android.gms.fitness.data.DataSet;
@@ -20,7 +17,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import cse110.ucsd.team12wwr.MainActivity;
 
 import static com.google.android.gms.fitness.data.Field.FIELD_STEPS;
 
@@ -59,7 +55,6 @@ public class GoogleFitUtility {
                     fitnessOptions);
         } else {
             Log.i("GoogleFitUtility.init", "GoogleSignIn.hasPermissions, account initialized");
-            //startRecording();
         }
 
         Log.i("GoogleFitUtility.init", "END OF METHOD");
@@ -90,6 +85,7 @@ public class GoogleFitUtility {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.i("GoogleFitUtility.startRecording", "There was a problem subscribing.");
+                        e.printStackTrace();
                     }
                 });
         Log.i("GoogleFitUtility.startRecording", "END OF METHOD");

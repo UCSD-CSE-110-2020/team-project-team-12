@@ -1,18 +1,14 @@
 package cse110.ucsd.team12wwr;
 
-import android.app.Activity;
-import android.content.ComponentName;
+
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -89,16 +85,6 @@ public class MainActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
-
-        // Launches height activity only on first start
-        if(!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
-            edit.commit();
-            launchHeightActivity();
-        }
 
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
@@ -127,6 +113,50 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
+        /* PEDOMETER START */
+        gFitUtil = new GoogleFitUtility(this);
+        final Handler checkSubscription = new Handler();
+        checkSubscription.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!gFitUtil.getSubscribed()) {
+                    Log.i("checkSubscription", "Not yet subscribed, checking again in 5 seconds");
+                    checkSubscription.postDelayed(this, 5000);
+                }
+                else{
+                    Log.i("checkSubscription", "Ending handler.run");
+                    googleSubscribedStatus = true;
+                }
+            }
+        }, 5000);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("MainActivity.onStart", "onStart() has been called");
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        String test = "account not retrieved";
+        try{
+            test = account.getEmail();
+        }
+        catch(NullPointerException e){
+            Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
+        }
+        Log.i("GMAIL: ", test);
+
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
+
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
+            edit.commit();
+            launchHeightActivity();
+        }
+
         // Collect the height from the height page
         spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
         int feet = spf.getInt(FEET_KEY, 0);
@@ -134,41 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
-
-        /* PEDOMETER START */
-        gFitUtil = new GoogleFitUtility(this);
-        gFitUtil.init();
-        final Handler checkSubscription = new Handler();
-        checkSubscription.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!gFitUtil.getSubscribed()) {
-                    Log.i("checkSubscription", "Not yet subscribed, trying again in 2 seconds");
-                    checkSubscription.postDelayed(this, 2000);
-                }
-                else{
-                    Log.i("checkSubscription", "Ending handler.run");
-                    googleSubscribedStatus = true;
-                }
-            }
-        }, 1500);
-
-
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        String test = "account not retrieved";
-        try{
-            test = account.getEmail();
-        }
-        catch(NullPointerException e){
-            Log.i("ACCOUNT NOT SIGNED IN PRIOR", " Null pointer caught");
-        }
-        Log.i("GMAIL: ", test);
 
     }
 
@@ -215,6 +210,9 @@ public class MainActivity extends AppCompatActivity {
                     gFitUtil.updateStepCount();
                     setStepCount(gFitUtil.getStepValue());
                     stepsUpdaterHandler.postDelayed(this, 4000);
+                }
+                else if (!gFitUtil.getSubscribed()){
+                    Log.i("stepsUpdaterHandler", "NOT YET SUBSCRIBED");
                 }
                 else{
                     Log.i("stepsUpdaterHandler", "THREAD DISABLED");
@@ -310,6 +308,7 @@ public class MainActivity extends AppCompatActivity {
             // a listener.
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInResult(task);
+            gFitUtil.init();
         }
     }
 
@@ -317,15 +316,15 @@ public class MainActivity extends AppCompatActivity {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             if(account.getEmail() != null)
-                Log.i("YO HOPEFULLY THIS SHIT WORK OKAY: ", account.getEmail());
+                Log.i("MainActivity.handleSignInResult() ", account.getEmail());
             else
-                Log.i("YO HOPEFULLY THIS SHIT WORK OKAY: ", "IT DIDN'T FK");
+                Log.i("MainActivity.handleSignInResult() ", "FAILURE");
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            //Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
             //updateUI(null);
         }
     }
