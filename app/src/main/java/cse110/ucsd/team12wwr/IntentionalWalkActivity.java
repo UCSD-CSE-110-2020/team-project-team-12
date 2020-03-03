@@ -186,16 +186,17 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
+                String routeName = data.getExtras().getString("routeTitle");
+
                 WWRDatabase db = WWRDatabase.getInstance(this);
                 Walk newEntry = new Walk();
                 newEntry.time = System.currentTimeMillis();
                 newEntry.duration = stopwatchText.getText().toString();
                 newEntry.steps = stepsText.getText().toString();
                 newEntry.distance = distanceText.getText().toString();
-                newEntry.routeName = routeTitle;
+                newEntry.routeName = routeName;
                 db.walkDao().insertAll(newEntry);
 
                 finish();
