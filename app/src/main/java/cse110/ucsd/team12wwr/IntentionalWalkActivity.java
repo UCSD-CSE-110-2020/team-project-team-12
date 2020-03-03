@@ -25,35 +25,30 @@ import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
-    // TODO code repetition
     private static final String TAG = "IntentionalWalkActivity";
 
     private final int HEIGHT_FACTOR = 12;
     private final double STRIDE_CONVERSION = 0.413;
     private final int MILE_FACTOR = 63360;
+    private static int LAUNCH_SECOND_ACTIVITY = 1;
 
     private TextView stopwatchText, stepsText, distanceText;
     private AsyncTaskRunner runner;
     private int timeWhenPaused, timeElapsed;
     private double strideLength;
     private String routeTitle;
-    private boolean isNewRoute = true;
 
     private int temporaryNumSteps;
 
     private IClock clock;
     private String result;
-    private static int LAUNCH_SECOND_ACTIVITY = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intentional_walk);
-        //bindTheThing();
         clock = new DeviceClock();
 
-        result = null;
-        // TODO this is code repetition, should just declare getStrideLength() somewhere
         SharedPreferences spf = getSharedPreferences("HEIGHT", MODE_PRIVATE);
         int feet = spf.getInt("FEET", 0);
         int inches = spf.getInt("INCHES", 0);
@@ -86,7 +81,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             routeName.setText(routeTitle);
             Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
         }
-
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,7 +164,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 publishProgress(timeString, stepsString, distanceString);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (Exception e) {
                     return e.toString();
                 }
