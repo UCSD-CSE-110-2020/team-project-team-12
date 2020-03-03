@@ -103,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
 
         setTestingFlag(true);
 
+        launchTeamRouteActivity();
+
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
@@ -115,7 +117,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-
 
         // Create and adapt the FitnessService
         FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
@@ -260,6 +261,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
+        startActivity(intent);
+    }
 
 
     @Override

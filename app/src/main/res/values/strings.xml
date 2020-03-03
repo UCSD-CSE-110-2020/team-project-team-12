@@ -50,6 +50,9 @@
     <string name="title_route">Routes</string>
     <string name="title_walk">Walks</string>
     <string name="title_team">Team</string>
+    <string name="title_activity_team_individ_routes">TeamIndividRoutes</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
 
 </resources>

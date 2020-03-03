@@ -10,8 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".TeamIndividRoutes"
+            android:label="@string/title_activity_team_individ_routes"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".TeamScreen"
-            android:label="@string/title_activity_team_screen"></activity>
+            android:label="@string/title_activity_team_screen" />
         <activity android:name=".RoutesScreen" />
         <activity android:name=".RouteInfoActivity" />
         <activity android:name=".RouteDetailsPage" />
@@ -25,7 +29,7 @@
         <activity
             android:name=".StartPage"
             android:label="@string/title_activity_start_page"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -43,8 +47,8 @@
         <activity
             android:name=".IntentionalWalkActivity"
             android:label="@string/title_activity_intentional_walk"
-            android:screenOrientation="portrait"
             android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
