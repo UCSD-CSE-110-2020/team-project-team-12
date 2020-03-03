@@ -16,6 +16,7 @@ import android.widget.Button;
 import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.database.Walk;
 
 public class RouteDetailsPage extends AppCompatActivity {
     // Public constants for string intents
@@ -148,6 +149,24 @@ public class RouteDetailsPage extends AppCompatActivity {
             if (newRoute.notes != null && !newRoute.notes.equals("")) {
                 TextView notes = findViewById(R.id.notes_content);
                 notes.setText(newRoute.notes);
+            }
+        }
+
+        List<Walk> recentWalks = db.walkDao().findByRouteName(routeName);
+        Walk mostRecentWalk = null;
+        if (recentWalks.size() > 0) {
+            mostRecentWalk = recentWalks.get(0);
+        }
+
+        if (mostRecentWalk != null) {
+            if (mostRecentWalk.duration != null) {
+                TextView duration = findViewById(R.id.total_time_detail);
+                duration.setText(mostRecentWalk.duration);
+            }
+
+            if (mostRecentWalk.distance != null) {
+                TextView distance = findViewById(R.id.dist_details);
+                distance.setText(mostRecentWalk.distance);
             }
         }
     }
