@@ -320,59 +320,49 @@ public class RouteInfoActivity extends AppCompatActivity {
                     final boolean[] dupeTitle = {false};
                     Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
                     if (isNewRoute) {
-                        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-                        databaseWriteExecutor.execute(() -> {
+                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                        RouteDao dao = routeDb.routeDao();
 
-                            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                            RouteDao dao = routeDb.routeDao();
+                        Route newEntry = new Route();
+                        newEntry.name = titleField.getText().toString();
+                        newEntry.startingPoint = startPoint.getText().toString();
+                        newEntry.endingPoint = endPoint.getText().toString();
+                        setFavorite(newEntry, isFavorite);
+                        setRouteType(newEntry, pathSpinner);
+                        setHilliness(newEntry, inclineSpinner);
+                        setSurfaceType(newEntry, terrainSpinner);
+                        setEvenness(newEntry, textureSpinner);
+                        setDifficulty(newEntry);
+                        // TODO: Set notes
+                        setNotes(newEntry, notesEntry.getText().toString());
 
-                            Route newEntry = new Route();
-                            newEntry.name = titleField.getText().toString();
-                            newEntry.startingPoint = startPoint.getText().toString();
-                            newEntry.endingPoint = endPoint.getText().toString();
-                            setFavorite(newEntry, isFavorite);
-                            setRouteType(newEntry, pathSpinner);
-                            setHilliness(newEntry, inclineSpinner);
-                            setSurfaceType(newEntry, terrainSpinner);
-                            setEvenness(newEntry, textureSpinner);
-                            setDifficulty(newEntry);
-                            // TODO: Set notes
-                            setNotes(newEntry, notesEntry.getText().toString());
-
-                            try {
-                                dao.insertAll(newEntry);
-                                Log.d(TAG, "onClick: added entry");
-                            } catch (SQLiteConstraintException e) {
+                        try {
+                            dao.insertAll(newEntry);
+                            Log.d(TAG, "onClick: added entry");
+                        } catch (SQLiteConstraintException e) {
 //                                titleField.setError("Route already exists, use another name!");
-                                Log.d(TAG, "onClick: Title already in use");
-                                dupeTitle[0] = true;
-                               return;
-                            }
-                        });
-
+                            Log.d(TAG, "onClick: Title already in use");
+                            dupeTitle[0] = true;
+                            return;
+                        }
                     } else {
-                        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-                        databaseWriteExecutor.execute(() -> {
+                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
+                        RouteDao dao = routeDb.routeDao();
 
-                            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                            RouteDao dao = routeDb.routeDao();
-
-                            Route newEntry = dao.findName(currRouteName);
-                            newEntry.name = titleField.getText().toString();
-                            newEntry.startingPoint = startPoint.getText().toString();
-                            newEntry.endingPoint = endPoint.getText().toString();
-                            setFavorite(newEntry, isFavorite);
-                            setRouteType(newEntry, pathSpinner);
-                            setHilliness(newEntry, inclineSpinner);
-                            setSurfaceType(newEntry, terrainSpinner);
-                            setEvenness(newEntry, textureSpinner);
-                            setDifficulty(newEntry);
-                            // TODO: Fix notes
-                            setNotes(newEntry, notesEntry.getText().toString());
-                            dao.update(newEntry);
-                            Log.d(TAG, "onClick: Updated route information for old route");
-
-                        });
+                        Route newEntry = dao.findName(currRouteName);
+                        newEntry.name = titleField.getText().toString();
+                        newEntry.startingPoint = startPoint.getText().toString();
+                        newEntry.endingPoint = endPoint.getText().toString();
+                        setFavorite(newEntry, isFavorite);
+                        setRouteType(newEntry, pathSpinner);
+                        setHilliness(newEntry, inclineSpinner);
+                        setSurfaceType(newEntry, terrainSpinner);
+                        setEvenness(newEntry, textureSpinner);
+                        setDifficulty(newEntry);
+                        // TODO: Fix notes
+                        setNotes(newEntry, notesEntry.getText().toString());
+                        dao.update(newEntry);
+                        Log.d(TAG, "onClick: Updated route information for old route");
                     } // End inner else ( if not a new route )
                     Intent resultIntent = new Intent();
                     resultIntent.putExtra("routeTitle", titleField.getText().toString());
