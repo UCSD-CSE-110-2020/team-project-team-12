@@ -25,7 +25,6 @@ public abstract class WWRDatabase extends RoomDatabase {
 
     public static WWRDatabase getInstance(Context context) {
         if (INSTANCE == null) {
-            System.err.println("Creating new database instance\n\n\n\n\n\n");
             synchronized (WWRDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),

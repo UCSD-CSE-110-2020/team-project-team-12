@@ -64,8 +64,6 @@ public class RoutesScreen extends AppCompatActivity {
 
         listView = findViewById(R.id.list_view);
 
-        System.err.println(routeList);
-
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
 
         listView.setAdapter(arrayAdapter);
