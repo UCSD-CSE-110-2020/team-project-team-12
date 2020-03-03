@@ -247,26 +247,6 @@ public class RouteInfoActivity extends AppCompatActivity {
             }
         });
 
-        // Cancel Button
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Save Button is clicked");
-                // Make sure it is not null
-                if ( TextUtils.isEmpty(titleField.getText()) ) {
-                    Log.d(TAG, "onClick: Title field is null, save not finished");
-                    titleField.setError("You must enter a title for your route!");
-                }
-            }
-        });
-
         defaultColor = (Drawable) easyBtn.getBackground();
 
         easyBtn.setOnClickListener(new View.OnClickListener() {
