@@ -22,8 +22,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
@@ -264,27 +262,19 @@ public class MainActivity extends AppCompatActivity {
         rebindPedService();
         continueStepUpdaterMethod();
 
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            WalkDao dao = walkDb.walkDao();
+        WWRDatabase walkDb = WWRDatabase.getInstance(this);
+        WalkDao dao = walkDb.walkDao();
 
-            Walk newestWalk = dao.findNewestEntry();
-            if (newestWalk != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
-                        TextView distWalkText = findViewById(R.id.text_distance_value);
-                        TextView timeWalkText = findViewById(R.id.text_time_value);
+        Walk newestWalk = dao.findNewestEntry();
+        if (newestWalk != null) {
+            TextView stepsWalkText = findViewById(R.id.text_steps_value);
+            TextView distWalkText = findViewById(R.id.text_distance_value);
+            TextView timeWalkText = findViewById(R.id.text_time_value);
 
-                        stepsWalkText.setText(newestWalk.steps);
-                        distWalkText.setText(newestWalk.distance);
-                        timeWalkText.setText(newestWalk.duration);
-                    }
-                });
-            }
-        });
+            stepsWalkText.setText(newestWalk.steps);
+            distWalkText.setText(newestWalk.distance);
+            timeWalkText.setText(newestWalk.duration);
+        }
     }
 
     @Override

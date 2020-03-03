@@ -16,11 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
 import cse110.ucsd.team12wwr.database.Route;
@@ -193,8 +188,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             stepsText.setText(text[1]);
             distanceText.setText(text[2]);
         }
-
-
     }
 
     @Override
@@ -203,22 +196,15 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
                 result = data.getExtras().getString("routeTitle");
-                System.out.println("RESULT IS: " + result);
-                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-                databaseWriteExecutor.execute(() -> {
-                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
-                    WalkDao dao = walkDb.walkDao();
-                    RouteDao rDao = walkDb.routeDao();
 
-                    Walk newEntry = new Walk();
-                    newEntry.time = System.currentTimeMillis();
-                    newEntry.duration = stopwatchText.getText().toString();
-                    newEntry.steps = stepsText.getText().toString();
-                    newEntry.distance = distanceText.getText().toString();
-                    newEntry.routeName = result;
-
-                    dao.insertAll(newEntry);
-                });
+                WWRDatabase db = WWRDatabase.getInstance(this);
+                Walk newEntry = new Walk();
+                newEntry.time = System.currentTimeMillis();
+                newEntry.duration = stopwatchText.getText().toString();
+                newEntry.steps = stepsText.getText().toString();
+                newEntry.distance = distanceText.getText().toString();
+                newEntry.routeName = result;
+                db.walkDao().insertAll(newEntry);
 
                 finish();
             }
