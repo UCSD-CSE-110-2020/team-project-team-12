@@ -46,8 +46,7 @@ public class RouteInfoActivity extends AppCompatActivity {
     final String EVEN = "Even Surface";
     final String UNEVEN = "Uneven Surface";
     final String NONETYPE = "";
-    final int threadID = android.os.Process.getThreadPriority(android.os.Process.myTid());
-    final Thread currThread = Thread.currentThread();
+
     /* Favorite button */
     boolean isFavorite = false;
 
@@ -153,6 +152,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                 startPoint.setText(newRoute.startingPoint);
             }
 
+            Log.d(TAG, "onCreate: Page is now set up");
             if (newRoute.endingPoint != null) {
                 endPoint.setText(newRoute.endingPoint);
             }
@@ -204,6 +204,15 @@ public class RouteInfoActivity extends AppCompatActivity {
                     favoriteBtn.performClick();
                 }
             }
+            if ( totalTime != null ) {
+                totalTimeText.setText(totalTime);
+            }
+            if ( totalDistance != null ) {
+                totalDistText.setText(totalDistance);
+            }
+            if ( notesField != null ) {
+                notesEntry.setText(notesField);
+            }
 
             if ( newRoute.notes != null ) {
                 notesEntry.setText(newRoute.notes);
@@ -215,7 +224,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                     totalTimeText.setText(currWalk.get(0).duration);
                 }
             }
-
         }
 
         Log.d(TAG, "onCreate: Page is now set up");
@@ -323,18 +331,19 @@ public class RouteInfoActivity extends AppCompatActivity {
                         setSurfaceType(newEntry, terrainSpinner);
                         setEvenness(newEntry, textureSpinner);
                         setDifficulty(newEntry);
+                        // TODO: Set notes
                         setNotes(newEntry, notesEntry.getText().toString());
 
                         try {
                             dao.insertAll(newEntry);
                             Log.d(TAG, "onClick: added entry");
                         } catch (SQLiteConstraintException e) {
+//                                titleField.setError("Route already exists, use another name!");
                             Log.d(TAG, "onClick: Title already in use");
                             dupeTitle[0] = true;
                             return;
                         }
                     } else {
-
                         WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
                         RouteDao dao = routeDb.routeDao();
 
@@ -348,6 +357,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                         setSurfaceType(newEntry, terrainSpinner);
                         setEvenness(newEntry, textureSpinner);
                         setDifficulty(newEntry);
+                        // TODO: Fix notes
                         setNotes(newEntry, notesEntry.getText().toString());
                         dao.update(newEntry);
                         Log.d(TAG, "onClick: Updated route information for old route");
@@ -358,8 +368,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                     setResult(Activity.RESULT_OK, resultIntent);
                     finish();
                 } // End else
-
-
             } // End onClick()
         }); // End setOnClickListener()
     }

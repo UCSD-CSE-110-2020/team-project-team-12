@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
+import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
@@ -49,33 +50,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private String result;
     private static int LAUNCH_SECOND_ACTIVITY = 1;
 
-
-    //private long stepsFromService = -1;
-
-    /*
-    private PedometerService pedoService;
-    private boolean isBound;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service){
-            PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            pedoService = localService.getService();
-            isBound = true;
-            stepsFromService = pedoService.getCurrentSteps();
-            Log.i("onServiceConnected", "Current Step Count is " + stepsFromService);
-
-            //pedoService.gimmethemsteppies(fitnessService);
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {isBound = false;}
-    };
-
-    public void bindTheThing(){
-        Intent intent = new Intent(this, PedometerService.class);
-        Log.i("Intentional Walk Activity", "COMMENCE THE BINDING");
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }*/
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +57,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         //bindTheThing();
         clock = new DeviceClock();
 
+        result = null;
         // TODO this is code repetition, should just declare getStrideLength() somewhere
         SharedPreferences spf = getSharedPreferences("HEIGHT", MODE_PRIVATE);
         int feet = spf.getInt("FEET", 0);
@@ -218,6 +193,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             stepsText.setText(text[1]);
             distanceText.setText(text[2]);
         }
+
 
     }
 

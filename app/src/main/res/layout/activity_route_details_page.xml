@@ -467,7 +467,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/start_button"
+            android:id="@+id/add_button"
             style="@android:style/Widget.Material.ButtonBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -25,20 +25,20 @@ import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
 import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
 
-
-
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
+import cse110.ucsd.team12wwr.database.Route;
 
 public class MainActivity extends AppCompatActivity {
 
     /* constants */
+    private static final String TAG = "MainActivity";
+
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
     long numSteps = 0;
 
     /* GoogleFit */
-    private static final String TAG = "MainActivity";
     private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
@@ -99,9 +98,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//      launchRouteInfoActivity();
-
-//        launchRouteDetailsActivity();
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
