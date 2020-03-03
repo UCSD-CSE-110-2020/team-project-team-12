@@ -18,23 +18,12 @@ import cse110.ucsd.team12wwr.database.RouteDao;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 
 public class RouteDetailsPage extends AppCompatActivity {
-
-    String routeName;
-    RouteDao dao;
-    WWRDatabase walkDb;
-    Route newRoute;
-
     // Public constants for string intents
     public static final String TITLE = "ROUTE_TITLE";
 
     private static final String TAG = "RouteDetailsPage";
 
-    TextView routeTitle, startPoint, endPoint;
-    TextView totalTime, totalDist;
-    TextView path, terrain, incline, surface;
-    TextView difficulty, notes;
-
-    Intent intent;
+    private String routeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,32 +32,65 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
-        System.err.print("Route Name: ");
-        System.err.println(routeName);
+        populateRouteDetails();
 
-        walkDb = WWRDatabase.getInstance(this);
-        dao = walkDb.routeDao();
+        CheckBox star = findViewById(R.id.favorited_details);
+        star.setEnabled(false);
 
-        newRoute = walkDb.routeDao().findName(routeName);
+        Button back = findViewById(R.id.back_button);
+        Button edit = findViewById(R.id.edit_route);
+        Button start = findViewById(R.id.add_button);
 
-        // Header
-        routeTitle = findViewById(R.id.route_title_detail);
-        startPoint = findViewById(R.id.start_textview);
-        endPoint = findViewById(R.id.end_textview);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
-        // Metrics
-        totalTime = findViewById(R.id.total_time_detail);
-        totalDist = findViewById(R.id.dist_details);
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
 
-        // Spinner info
-        path = findViewById(R.id.path_details);
-        terrain = findViewById(R.id.terrain_deets);
-        incline = findViewById(R.id.incline_deets);
-        surface = findViewById(R.id.texture_details);
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchIntentionalActivity();
+            }
+        });
+    }
 
-        // Extra info
-        difficulty = findViewById(R.id.diff_detail);
-        notes = findViewById(R.id.notes_content);
+    private void populateRouteDetails() {
+//        TextView routeTitle, startPoint, endPoint;
+//        TextView totalTime, totalDist;
+//        TextView path, terrain, incline, surface;
+//        TextView difficulty, notes;
+//        // Header
+//        routeTitle = findViewById(R.id.route_title_detail);
+//        startPoint = findViewById(R.id.start_textview);
+//        endPoint = findViewById(R.id.end_textview);
+//
+//        // Metrics
+//        totalTime = findViewById(R.id.total_time_detail);
+//        totalDist = findViewById(R.id.dist_details);
+//
+//        // Spinner info
+//        path = findViewById(R.id.path_details);
+//        terrain = findViewById(R.id.terrain_deets);
+//        incline = findViewById(R.id.incline_deets);
+//        surface = findViewById(R.id.texture_details);
+//
+//        // Extra info
+//        difficulty = findViewById(R.id.diff_detail);
+//        notes = findViewById(R.id.notes_content);
+
+        WWRDatabase db = WWRDatabase.getInstance(this);
+        Route newRoute = db.routeDao().findName(routeName);
+
+        System.err.println("Refactored!");
 
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
@@ -144,35 +166,6 @@ public class RouteDetailsPage extends AppCompatActivity {
                 }
             }
         }
-
-        CheckBox star = findViewById(R.id.favorited_details);
-        star.setEnabled(false);
-
-        Button back = findViewById(R.id.back_button);
-        Button edit = findViewById(R.id.edit_route);
-        Button start = findViewById(R.id.add_button);
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchRouteInfoActivity();
-            }
-        });
-
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchIntentionalActivity();
-            }
-        });
-
     }
 
     public void launchRouteInfoActivity() {
