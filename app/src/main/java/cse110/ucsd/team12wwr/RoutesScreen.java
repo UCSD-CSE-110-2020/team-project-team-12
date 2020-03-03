@@ -1,11 +1,14 @@
 package cse110.ucsd.team12wwr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,6 +17,8 @@ import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +58,37 @@ public class RoutesScreen extends AppCompatActivity {
                 launchRouteInfoActivity();
             }
         });
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.getItem(1);
+        menuItem.setChecked(true);
+
+        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        finish();
+                        break;
+                    case R.id.navigation_routes:
+                        break;
+                    case R.id.navigation_walk:
+                        finish();
+                        launchActivity();
+
+
+                        break;
+                    case R.id.navigation_teams:
+                        finish();
+                        launchTeamScreenActivity();
+
+
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -87,6 +123,16 @@ public class RoutesScreen extends AppCompatActivity {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
 
+        startActivity(intent);
+    }
+
+    public void launchActivity() {
+        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        startActivity(intent);
+    }
+
+    public void launchTeamScreenActivity() {
+        Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
     }
 }

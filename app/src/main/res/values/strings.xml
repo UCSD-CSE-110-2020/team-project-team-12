@@ -45,6 +45,11 @@
     <string name="route_edit_hint">Name of Route</string>
     <string name="start_edit_hint">Where you started</string>
     <string name="end_edit_hint">Where you ended</string>
+    <string name="title_activity_team_screen">TeamScreen</string>
+    <string name="title_home">Home</string>
+    <string name="title_route">Routes</string>
+    <string name="title_walk">Walks</string>
+    <string name="title_team">Team</string>
 
 
 </resources>

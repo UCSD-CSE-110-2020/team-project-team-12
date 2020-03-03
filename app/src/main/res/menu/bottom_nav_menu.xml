@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_home" />
+
+    <item
+        android:id="@+id/navigation_routes"
+        android:icon="@drawable/routess"
+        android:title="@string/title_route" />
+
+    <item
+        android:id="@+id/navigation_walk"
+        android:icon="@drawable/walk"
+        android:title="@string/title_walk" />
+
+   <item
+        android:id="@+id/navigation_teams"
+        android:icon="@drawable/team"
+        android:title="@string/title_team" />
+
+</menu>

@@ -16,7 +16,8 @@
     <LinearLayout
         android:id="@+id/button_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/shadow"
         android:layout_marginBottom="0dp"
         android:gravity="bottom"
         android:orientation="horizontal">
@@ -43,5 +44,27 @@
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
     </LinearLayout>
+
+    <View
+        android:id="@+id/shadow"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_above="@+id/nav_view"
+        android:layout_marginBottom="0dp"
+        android:background="@drawable/shadow"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:background="#FFFFFFFF"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>
