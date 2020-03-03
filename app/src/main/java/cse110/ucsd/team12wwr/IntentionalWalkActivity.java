@@ -41,8 +41,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private int temporaryNumSteps;
 
     private IClock clock;
-    private String result;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,15 +188,13 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
-                result = data.getExtras().getString("routeTitle");
-
                 WWRDatabase db = WWRDatabase.getInstance(this);
                 Walk newEntry = new Walk();
                 newEntry.time = System.currentTimeMillis();
                 newEntry.duration = stopwatchText.getText().toString();
                 newEntry.steps = stepsText.getText().toString();
                 newEntry.distance = distanceText.getText().toString();
-                newEntry.routeName = result;
+                newEntry.routeName = routeTitle;
                 db.walkDao().insertAll(newEntry);
 
                 finish();
