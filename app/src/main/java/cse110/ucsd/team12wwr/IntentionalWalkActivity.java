@@ -119,6 +119,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private void launchRouteInfoPage() {
         Log.d(TAG, "launchRouteInfoPage: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
+        intent.putExtra("ROUTE_TITLE", routeTitle);
         intent.putExtra("duration", stopwatchText.getText().toString());
         intent.putExtra("distance", distanceText.getText().toString());
         startActivityForResult(intent, LAUNCH_SECOND_ACTIVITY);
