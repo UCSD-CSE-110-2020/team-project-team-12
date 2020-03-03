@@ -75,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean googleSubscribedStatus = false;
     public boolean gFitUtilLifecycleFlag;
 
+    /* Team Related Variables */
+    String userEmail;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -161,14 +164,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        String test = "account not retrieved";
+        userEmail = "account not retrieved";
         try{
-            test = account.getEmail();
+            userEmail = account.getEmail();
         }
         catch(NullPointerException e){
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " Null pointer caught");
         }
-        Log.i("GMAIL: ", test);
+        Log.i("GMAIL: ", userEmail);
 
     }
 
@@ -265,6 +268,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DebugWalkActivity.class);
             startActivity(intent);
         }
+        else if (id == R.id.team_screen){
+            Intent intent = new Intent(this, TeamScreenActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -316,17 +323,18 @@ public class MainActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            if(account.getEmail() != null)
-                Log.i("YO HOPEFULLY THIS SHIT WORK OKAY: ", account.getEmail());
+            if(account.getEmail() != null) {
+                Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
+                userEmail = account.getEmail();
+            }
             else
-                Log.i("YO HOPEFULLY THIS SHIT WORK OKAY: ", "IT DIDN'T FK");
+                Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
             // Signed in successfully, show authenticated UI.
             //updateUI(account);
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             //Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            //updateUI(null);
         }
     }
 
