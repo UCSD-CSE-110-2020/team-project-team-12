@@ -14,6 +14,10 @@ public class FirebaseRouteDao {
         }
     }
 
+    public void delete(String routeName) {
+        db.collection("routes").document(routeName).delete();
+    }
+
 //    @Query("SELECT * FROM Route r ORDER BY name ASC")
     public Task<QuerySnapshot> retrieveAllRoutes() {
         return db.collection("routes").orderBy("name", Query.Direction.ASCENDING).get();
