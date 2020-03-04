@@ -1,10 +1,7 @@
 package cse110.ucsd.team12wwr;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,11 +15,8 @@ import android.widget.TextView;
 
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
-import cse110.ucsd.team12wwr.database.Route;
-import cse110.ucsd.team12wwr.database.RouteDao;
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
     private static final String TAG = "IntentionalWalkActivity";
@@ -188,16 +182,16 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
-                String routeName = data.getExtras().getString("routeTitle");
+                FirebaseWalkDao walkDao = new FirebaseWalkDao();
 
-                WWRDatabase db = WWRDatabase.getInstance(this);
+                String routeName = data.getExtras().getString("routeTitle");
                 Walk newEntry = new Walk();
                 newEntry.time = System.currentTimeMillis();
                 newEntry.duration = stopwatchText.getText().toString();
                 newEntry.steps = stepsText.getText().toString();
                 newEntry.distance = distanceText.getText().toString();
                 newEntry.routeName = routeName;
-                db.walkDao().insertAll(newEntry);
+                walkDao.insertAll(newEntry);
 
                 finish();
             }

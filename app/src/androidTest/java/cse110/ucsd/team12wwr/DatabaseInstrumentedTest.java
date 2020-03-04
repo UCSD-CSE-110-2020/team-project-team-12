@@ -15,9 +15,9 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import cse110.ucsd.team12wwr.database.Route;
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
+import cse110.ucsd.team12wwr.roomdb.Route;
+import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
+import cse110.ucsd.team12wwr.roomdb.Walk;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
