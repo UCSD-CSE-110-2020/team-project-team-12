@@ -50,7 +50,7 @@ public class TeamScreen extends FragmentActivity
                         break;
                     case R.id.navigation_routes:
                         finish();
-                        launchRoutesScreenActivity();
+                        launchTeamRouteActivity();
 
                         break;
                     case R.id.navigation_walk:
@@ -72,8 +72,8 @@ public class TeamScreen extends FragmentActivity
         startActivity(intent);
     }
 
-    public void launchRoutesScreenActivity() {
-        Intent intent = new Intent(this, RoutesScreen.class);
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
         startActivity(intent);
     }
 
