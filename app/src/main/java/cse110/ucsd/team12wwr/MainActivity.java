@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textStep;
     long numSteps = 0;
 
-    /* GoogleFit */
+    /* Testing */
+    public static boolean unitTestFlag = false;
 
 
     /* distance */
