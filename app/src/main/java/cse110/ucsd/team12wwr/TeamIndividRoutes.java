@@ -2,10 +2,13 @@ package cse110.ucsd.team12wwr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
@@ -15,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import cse110.ucsd.team12wwr.ui.routes_tab.SectionsPagerAdapter;
 
 public class TeamIndividRoutes extends AppCompatActivity {
+
+    private static final String TAG = "TeamScreen";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,15 @@ public class TeamIndividRoutes extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton add = findViewById(R.id.add_fab);
+
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
+
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -65,6 +79,13 @@ public class TeamIndividRoutes extends AppCompatActivity {
 
     public void launchTeamScreenActivity() {
         Intent intent = new Intent(this, TeamScreen.class);
+        startActivity(intent);
+    }
+
+    public void launchRouteInfoActivity() {
+        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
+        Intent intent = new Intent(this, RouteInfoActivity.class);
+
         startActivity(intent);
     }
 }
