@@ -19,8 +19,7 @@
             android:hint="Put Time Here"
             android:imeOptions="actionSearch"
 
-<<<<<<< HEAD
-=======
+
     <TextView
         android:id="@+id/text_route_name"
         android:layout_width="411dp"
@@ -92,11 +91,7 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/text_steps_value"
             app:layout_constraintStart_toStartOf="@+id/text_time_title"></TextView>
 
-<<<<<<< HEAD
-            android:maxLines="1"
-            android:textSize="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-=======
+
         <TextView
             android:id="@+id/text_steps_value"
             android:layout_width="wrap_content"
@@ -114,13 +109,12 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_current_stats_title">
->>>>>>> milestone1-refactor
+
 
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_route_name"></EditText>
 
-         TODO: Current is still hardcoded rn
 
         <TextView
             android:id="@+id/text_route_name"
