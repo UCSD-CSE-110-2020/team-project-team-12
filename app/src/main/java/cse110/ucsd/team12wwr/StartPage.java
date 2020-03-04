@@ -17,9 +17,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import cse110.ucsd.team12wwr.fitness.FitnessService;
-import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
-import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
 
 public class StartPage extends AppCompatActivity {
 
