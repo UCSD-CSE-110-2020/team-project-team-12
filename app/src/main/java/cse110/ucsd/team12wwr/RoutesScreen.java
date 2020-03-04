@@ -30,6 +30,7 @@ public class RoutesScreen extends AppCompatActivity {
 
     ListView listView;
     List<Route> routeList;
+    ArrayList<Route> routeListParam;
     String routeName;
 
     @Override
@@ -63,10 +64,12 @@ public class RoutesScreen extends AppCompatActivity {
         routeList = db.routeDao().retrieveAllRoutes();
 
         listView = findViewById(R.id.list_view);
+        routeListParam = new ArrayList<>(routeList);
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+//        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+        RouteListAdapter routeListAdapter = new RouteListAdapter(this, R.layout.route_adapter_view_layout, routeListParam);
 
-        listView.setAdapter(arrayAdapter);
+        listView.setAdapter(routeListAdapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

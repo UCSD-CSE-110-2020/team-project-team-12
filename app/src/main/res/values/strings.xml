@@ -46,6 +46,9 @@
     <string name="start_edit_hint">Where you started</string>
     <string name="end_edit_hint">Where you ended</string>
 
+    <string name="true_tick">\u2713</string>
 
-</resources>
+
+
+    </resources>
 
