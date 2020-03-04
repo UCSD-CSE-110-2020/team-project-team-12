@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
@@ -27,12 +28,26 @@ public class TeamScreenActivity extends FragmentActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
+        Log.i("onDialogPositiveClick ", "POSITIVE CLICKED INTO ACTIVITY");
+        dialog = (TeamInvitationDialogFragment) dialog;
+        String invitedEmail = ((TeamInvitationDialogFragment) dialog).getInvitedEmail();
+        String invitedUser = ((TeamInvitationDialogFragment) dialog).getInvitedName();
+        Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
+                                            + " NAME is: " + invitedUser);
+
+
+
+        Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_SHORT);
+        toast.show();
 
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
+        Log.i("onDialogPositiveClick ", "NEGATIVE CLICKED INTO ACTIVITY");
+        Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     @Override
