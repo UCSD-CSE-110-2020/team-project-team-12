@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
@@ -24,6 +25,7 @@ import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.teamlist.TeamListAdapter;
 import cse110.ucsd.team12wwr.teamlist.TeamScreenRowItem;
+
 
 public class TeamScreen extends FragmentActivity
                         implements TeamInvitationDialogFragment.InviteDialogListener {
