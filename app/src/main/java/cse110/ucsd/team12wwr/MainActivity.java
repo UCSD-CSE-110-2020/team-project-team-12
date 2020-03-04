@@ -21,16 +21,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.text.DecimalFormat;
 
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
 import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
-
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
-import cse110.ucsd.team12wwr.database.Route;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -262,19 +261,27 @@ public class MainActivity extends AppCompatActivity {
 //        rebindPedService();
 //        continueStepUpdaterMethod();
 
-        WWRDatabase walkDb = WWRDatabase.getInstance(this);
-        WalkDao dao = walkDb.walkDao();
+        FirebaseWalkDao dao = new FirebaseWalkDao();
+        dao.findNewestEntries().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Walk newestWalk = null;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (newestWalk == null) {
+                        newestWalk = document.toObject(Walk.class);
+                    }
+                }
 
-        Walk newestWalk = dao.findNewestEntry();
-        if (newestWalk != null) {
-            TextView stepsWalkText = findViewById(R.id.text_steps_value);
-            TextView distWalkText = findViewById(R.id.text_distance_value);
-            TextView timeWalkText = findViewById(R.id.text_time_value);
+                if (newestWalk != null) {
+                    TextView stepsWalkText = findViewById(R.id.text_steps_value);
+                    TextView distWalkText = findViewById(R.id.text_distance_value);
+                    TextView timeWalkText = findViewById(R.id.text_time_value);
 
-            stepsWalkText.setText(newestWalk.steps);
-            distWalkText.setText(newestWalk.distance);
-            timeWalkText.setText(newestWalk.duration);
-        }
+                    stepsWalkText.setText(newestWalk.steps);
+                    distWalkText.setText(newestWalk.distance);
+                    timeWalkText.setText(newestWalk.duration);
+                }
+            }
+        });
     }
 
     @Override

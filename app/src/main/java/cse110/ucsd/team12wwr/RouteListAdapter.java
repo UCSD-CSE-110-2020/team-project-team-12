@@ -9,18 +9,23 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import cse110.ucsd.team12wwr.database.Route;
-import cse110.ucsd.team12wwr.database.WWRDatabase;
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.Walk;
+
+//import cse110.ucsd.team12wwr.database.Route;
+//import cse110.ucsd.team12wwr.database.WWRDatabase;
 
 public class RouteListAdapter extends ArrayAdapter<Route> {
 
-    private static final String TAG = "ListAdapter";
+    private static final String TAG = "RouteListAdapter";
     private Context context;
     int resource;
-    public boolean bool = true;
 
     public RouteListAdapter(Context context, int resource, ArrayList<Route> objects) {
         super(context, resource, objects);
@@ -40,9 +45,21 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         TextView textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
 
         textViewRouteName.setText(routeName);
-        if (!bool) {
-            textViewPrevWalked.setVisibility(View.INVISIBLE);
-        }
+
+        FirebaseWalkDao dao = new FirebaseWalkDao();
+        dao.findByRouteName(routeName).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                boolean hasWalk = false;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    hasWalk = true;
+                }
+
+                if (!hasWalk) {
+                    textViewPrevWalked.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
         return convertView;
     }
 
