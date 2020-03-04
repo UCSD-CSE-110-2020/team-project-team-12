@@ -29,6 +29,14 @@ public class TeamInvitationDialogFragment extends DialogFragment {
         return invitedFirstName + " " + invitedLastName;
     }
 
+    public String getInvitedFirstName() {
+        return invitedFirstName;
+    }
+
+    public String getInvitedLastName() {
+        return invitedLastName;
+    }
+
     public String getInvitedEmail(){
         return invitedEmail;
     }
