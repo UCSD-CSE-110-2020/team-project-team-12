@@ -22,6 +22,7 @@ public class PedometerTests {
 
     @Before
     public void setUp() {
+        MainActivity.unitTestFlag = true;
         //ShadowApplication shadowApplication = Shadows.shadowOf(RuntimeEnvironment.application);
         //shadowApplication.declareActionUnbindable("cse110.ucsd.team12wwr.service.START");
         intent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);

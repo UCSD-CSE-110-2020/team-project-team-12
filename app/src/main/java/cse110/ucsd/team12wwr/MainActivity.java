@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* TESTING */
     public boolean testingFlag = false;
+    public static boolean unitTestFlag = false;
 
     public boolean startServCalled = false;
 
