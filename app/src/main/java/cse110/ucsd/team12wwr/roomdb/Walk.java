@@ -1,4 +1,4 @@
-package cse110.ucsd.team12wwr.database;
+package cse110.ucsd.team12wwr.roomdb;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;

@@ -1,19 +1,11 @@
 package cse110.ucsd.team12wwr;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.room.Room;
-import cse110.ucsd.team12wwr.database.Route;
-import cse110.ucsd.team12wwr.database.RouteDao;
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -23,15 +15,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import java.lang.reflect.Array;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import static android.os.Process.setThreadPriority;
+import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class RouteInfoActivity extends AppCompatActivity {
 
@@ -51,7 +43,7 @@ public class RouteInfoActivity extends AppCompatActivity {
     boolean isFavorite = false;
 
     /* Setting spinners and textfields */
-    String routeTitle, startPosition, endLocation, notesField, totalDistance, totalTime;
+    String routeTitle, startPosition, endLocation, totalDistance, totalTime;
     Boolean isHilly, isStreet, isEven, isLoop;
 
     /* Difficulty */
@@ -64,11 +56,6 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
-    Route newRoute;
-    List<Walk> currWalk;
-
-    /* Database */
-    WWRDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,100 +125,96 @@ public class RouteInfoActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
         if ( !isNewRoute ) {
-            WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-            RouteDao routeDao = routeDb.routeDao();
-            WalkDao walkDao = routeDb.walkDao();
+            FirebaseRouteDao routeDao = new FirebaseRouteDao();
+            routeDao.findName(currRouteName).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Route newRoute = null;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (newRoute == null) {
+                            newRoute = document.toObject(Route.class);
+                        } else {
+                            Log.w(TAG, "There is a duplicate route entry in the database!");
+                        }
+                    }
 
-            newRoute = routeDb.routeDao().findName(currRouteName);
-            currWalk = walkDao.findByRouteName(currRouteName);
+                    if (newRoute != null) {
+                        if (newRoute.name != null) {
+                            titleField.setText(newRoute.name);
+                        }
 
-            if ( newRoute != null ) {
-                titleField.setText(newRoute.name);
-            }
-            if (newRoute.startingPoint != null) {
-                startPoint.setText(newRoute.startingPoint);
-            }
+                        if (newRoute.startingPoint != null) {
+                            startPoint.setText(newRoute.startingPoint);
+                        }
 
-            Log.d(TAG, "onCreate: Page is now set up");
-            if (newRoute.endingPoint != null) {
-                endPoint.setText(newRoute.endingPoint);
-            }
+                        if (newRoute.endingPoint != null) {
+                            endPoint.setText(newRoute.endingPoint);
+                        }
 
-            if (newRoute.difficulty != null) {
-                if (newRoute.difficulty == Route.Difficulty.EASY) {
-                    setEasyButton(easyBtn, moderateBtn, hardBtn);
-                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
-                    setModerateButton(easyBtn, moderateBtn, hardBtn);
-                } else {
-                    setHardButton(easyBtn, moderateBtn, hardBtn);
+                        if (newRoute.difficulty != null) {
+                            if (newRoute.difficulty == Route.Difficulty.EASY) {
+                                setEasyButton(easyBtn, moderateBtn, hardBtn);
+                            } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                                setModerateButton(easyBtn, moderateBtn, hardBtn);
+                            } else {
+                                setHardButton(easyBtn, moderateBtn, hardBtn);
+                            }
+                        }
+
+                        if (newRoute.evenness != null) {
+                            if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                                textureSpinner.setSelection(1);
+                            } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                                textureSpinner.setSelection(2);
+                            }
+                        }
+
+                        if (newRoute.hilliness != null) {
+                            if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                                inclineSpinner.setSelection(1);
+                            } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                                inclineSpinner.setSelection(2);
+                            }
+                        }
+
+                        if (newRoute.routeType != null) {
+                            if (newRoute.routeType == Route.RouteType.LOOP) {
+                                pathSpinner.setSelection(1);
+                            } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                                pathSpinner.setSelection(2);
+                            }
+                        }
+
+                        if (newRoute.surfaceType != null) {
+                            if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                                terrainSpinner.setSelection(1);
+                            } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                                terrainSpinner.setSelection(2);
+                            }
+                        }
+
+                        if ( newRoute.favorite != null ) {
+                            if ( newRoute.favorite == Route.Favorite.FAVORITE) {
+                                favoriteBtn.performClick();
+                            }
+                        }
+
+                        if ( newRoute.notes != null ) {
+                            notesEntry.setText(newRoute.notes);
+                        }
+
+                        if ( totalTime != null ) {
+                            totalTimeText.setText(totalTime);
+                        }
+
+                        if ( totalDistance != null ) {
+                            totalDistText.setText(totalDistance);
+                        }
+                    }
                 }
-            }
-
-            if (newRoute.evenness != null) {
-                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
-                    textureSpinner.setSelection(1);
-                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
-                    textureSpinner.setSelection(2);
-                }
-            }
-
-            if (newRoute.hilliness != null) {
-                if (newRoute.hilliness == Route.Hilliness.FLAT) {
-                    inclineSpinner.setSelection(1);
-                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
-                    inclineSpinner.setSelection(2);
-                }
-            }
-
-            if (newRoute.routeType != null) {
-                if (newRoute.routeType == Route.RouteType.LOOP) {
-                    pathSpinner.setSelection(1);
-                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
-                    pathSpinner.setSelection(2);
-                }
-            }
-
-            if (newRoute.surfaceType != null) {
-                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
-                    terrainSpinner.setSelection(1);
-                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
-                    terrainSpinner.setSelection(2);
-                }
-            }
-
-            if ( newRoute.favorite != null ) {
-                if ( newRoute.favorite == Route.Favorite.FAVORITE) {
-                    favoriteBtn.performClick();
-                }
-            }
-            if ( totalTime != null ) {
-                totalTimeText.setText(totalTime);
-            }
-            if ( totalDistance != null ) {
-                totalDistText.setText(totalDistance);
-            }
-            if ( notesField != null ) {
-                notesEntry.setText(notesField);
-            }
-
-            if ( newRoute.notes != null ) {
-                notesEntry.setText(newRoute.notes);
-            }
-
-            if ( currWalk.size() > 0 ) {
-                if ( currWalk.get(0) != null ) {
-                    totalDistText.setText(currWalk.get(0).distance);
-                    totalTimeText.setText(currWalk.get(0).duration);
-                }
-            }
+            });
         }
 
         Log.d(TAG, "onCreate: Page is now set up");
-
-        Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
-        Log.d(TAG, "onCreate: startPosition: " + startPosition);
-        Log.d(TAG, "onCreate: isLoop: " + isLoop);
-        Log.d(TAG, "onCreate: notesField: " + notesField);
 
         // Favorite button
         favoriteBtn.setOnClickListener(new View.OnClickListener() {
@@ -243,26 +226,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                 } else {
                     isFavorite = false;
                     Log.d(TAG, "onClick: isFavorite: " + isFavorite);
-                }
-            }
-        });
-
-        // Cancel Button
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Save Button is clicked");
-                // Make sure it is not null
-                if ( TextUtils.isEmpty(titleField.getText()) ) {
-                    Log.d(TAG, "onClick: Title field is null, save not finished");
-                    titleField.setError("You must enter a title for your route!");
                 }
             }
         });
@@ -300,76 +263,74 @@ public class RouteInfoActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED, resultIntent);
                 finish();
             }
         });
 
         // Save Button
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(view -> {
+            Log.d(TAG, "onClick: Save Button is clicked");
+            // Make sure it is not null
+            if (TextUtils.isEmpty(titleField.getText())) {
+                Log.d(TAG, "onClick: Title field is null");
+                titleField.setError("You must enter a title for your route!");
+                return;
+            }
+            
+            final boolean[] dupeTitle = {false};
+            Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
 
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Save Button is clicked");
-                // Make sure it is not null
-                if (TextUtils.isEmpty(titleField.getText())) {
-                    Log.d(TAG, "onClick: Title field is null");
-                    titleField.setError("You must enter a title for your route!");
-                } else {
-                    final boolean[] dupeTitle = {false};
-                    Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
+            FirebaseRouteDao dao = new FirebaseRouteDao();
+            dao.findName(currRouteName).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Route newEntry = null;
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        if (newEntry == null) {
+                            newEntry = document.toObject(Route.class);
+                        }
+                    }
+
                     if (isNewRoute) {
-                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                        RouteDao dao = routeDb.routeDao();
+                        newEntry = new Route();
+                    }
+                    String oldEntryName = newEntry.name;
 
-                        Route newEntry = new Route();
-                        newEntry.name = titleField.getText().toString();
-                        newEntry.startingPoint = startPoint.getText().toString();
-                        newEntry.endingPoint = endPoint.getText().toString();
-                        setFavorite(newEntry, isFavorite);
-                        setRouteType(newEntry, pathSpinner);
-                        setHilliness(newEntry, inclineSpinner);
-                        setSurfaceType(newEntry, terrainSpinner);
-                        setEvenness(newEntry, textureSpinner);
-                        setDifficulty(newEntry);
-                        // TODO: Set notes
-                        setNotes(newEntry, notesEntry.getText().toString());
+                    newEntry.name = titleField.getText().toString();
+                    newEntry.startingPoint = startPoint.getText().toString();
+                    newEntry.endingPoint = endPoint.getText().toString();
+                    setFavorite(newEntry, isFavorite);
+                    setRouteType(newEntry, pathSpinner);
+                    setHilliness(newEntry, inclineSpinner);
+                    setSurfaceType(newEntry, terrainSpinner);
+                    setEvenness(newEntry, textureSpinner);
+                    setDifficulty(newEntry);
+                    setNotes(newEntry, notesEntry.getText().toString());
 
+                    if (isNewRoute) {
                         try {
                             dao.insertAll(newEntry);
                             Log.d(TAG, "onClick: added entry");
                         } catch (SQLiteConstraintException e) {
-//                                titleField.setError("Route already exists, use another name!");
                             Log.d(TAG, "onClick: Title already in use");
                             dupeTitle[0] = true;
                             return;
                         }
                     } else {
-                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                        RouteDao dao = routeDb.routeDao();
-
-                        Route newEntry = dao.findName(currRouteName);
-                        newEntry.name = titleField.getText().toString();
-                        newEntry.startingPoint = startPoint.getText().toString();
-                        newEntry.endingPoint = endPoint.getText().toString();
-                        setFavorite(newEntry, isFavorite);
-                        setRouteType(newEntry, pathSpinner);
-                        setHilliness(newEntry, inclineSpinner);
-                        setSurfaceType(newEntry, terrainSpinner);
-                        setEvenness(newEntry, textureSpinner);
-                        setDifficulty(newEntry);
-                        // TODO: Fix notes
-                        setNotes(newEntry, notesEntry.getText().toString());
-                        dao.update(newEntry);
+                        dao.delete(oldEntryName);
+                        dao.insertAll(newEntry);
                         Log.d(TAG, "onClick: Updated route information for old route");
-                    } // End inner else ( if not a new route )
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("routeTitle", titleField.getText().toString());
-                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
-                    setResult(Activity.RESULT_OK, resultIntent);
-                    finish();
-                } // End else
-            } // End onClick()
-        }); // End setOnClickListener()
+                    }
+                }
+            });
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("routeTitle", titleField.getText().toString());
+            Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+        });
     }
 
     public void setFavorite( Route route, Boolean isFavorite ) {
@@ -527,7 +488,6 @@ public class RouteInfoActivity extends AppCompatActivity {
         routeTitle = null;
         startPosition = null;
         endLocation = null;
-        notesField = null;
         totalDistance = null;
         totalTime = null;
     }
