@@ -10,10 +10,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".TeamScreenActivity"
+            android:label="@string/title_activity_team_screen"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".RoutesScreen" />
-        <activity android:name=".RouteInfoActivity"></activity>
-        <activity android:name=".RouteDetailsPage"></activity>
-        <activity android:name=".DebugWalkActivity"></activity>
+        <activity android:name=".RouteInfoActivity" />
+        <activity android:name=".RouteDetailsPage" />
+        <activity android:name=".DebugWalkActivity" />
 
         <service
             android:name=".PedometerService"
@@ -36,7 +40,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".mockMainActivity"
             android:label="@string/app_name"
