@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "384818277509",
+    "firebase_url": "https://team-12-wwr.firebaseio.com",
+    "project_id": "team-12-wwr",
+    "storage_bucket": "team-12-wwr.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384818277509:android:11176e62cedb3d2a0f0dec",
+        "android_client_info": {
+          "package_name": "cse110.ucsd.team12wwr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "384818277509-4r57450oik181k5pentcvo41ee5a1bsj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "cse110.ucsd.team12wwr",
+            "certificate_hash": "1de5937f2f99c0d7d03c97ee043aa71fb563ba20"
+          }
+        },
+        {
+          "client_id": "384818277509-ucqkaud6cd2lgh65b00b2epmmeg43fb0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByQB1z_PTLmeF0IJx2WHpOS8tGyvoS4ZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "384818277509-ucqkaud6cd2lgh65b00b2epmmeg43fb0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

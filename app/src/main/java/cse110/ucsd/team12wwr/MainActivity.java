@@ -21,24 +21,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.fitness.FitnessService;
 import cse110.ucsd.team12wwr.fitness.FitnessServiceFactory;
 import cse110.ucsd.team12wwr.fitness.GoogleFitAdapter;
 
-
-
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
-
 public class MainActivity extends AppCompatActivity {
 
     /* constants */
+    private static final String TAG = "MainActivity";
+
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
@@ -58,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     long numSteps = 0;
 
     /* GoogleFit */
-    private static final String TAG = "MainActivity";
     private FitnessService fitnessService;
     private final String fitnessServiceKey = "GOOGLE_FIT";
 
@@ -91,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
     /* TESTING */
     public boolean testingFlag = false;
+    public static boolean unitTestFlag = false;
 
     public boolean startServCalled = false;
 
@@ -99,9 +96,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//      launchRouteInfoActivity();
-
-//        launchRouteDetailsActivity();
         setTestingFlag(true);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
@@ -134,14 +128,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
 
-        // Create and adapt the FitnessService
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(MainActivity mainActivity) {
-                return new GoogleFitAdapter(mainActivity);
-            }
-        });
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+//        // Create and adapt the FitnessService
+//        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+//            @Override
+//            public FitnessService create(MainActivity mainActivity) {
+//                return new GoogleFitAdapter(mainActivity);
+//            }
+//        });
+//        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
 
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
@@ -157,12 +151,12 @@ public class MainActivity extends AppCompatActivity {
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        /* PEDOMETER START */
-        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
-        if(testingFlag) {
-            fitnessService.setup();
-            startStepUpdaterMethod();
-        }
+//        /* PEDOMETER START */
+//        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
+//        if(testingFlag) {
+//            fitnessService.setup();
+//            startStepUpdaterMethod();
+//        }
 
     }
 
@@ -250,9 +244,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.i("MainActivity.onPause", "onPause() has been called");
-        stopService(new Intent(this, PedometerService.class));
-        isBound = false;
-        unbindPedometerService();
+//        stopService(new Intent(this, PedometerService.class));
+//        isBound = false;
+//        unbindPedometerService();
     }
 
     public void launchHeightActivity() {
@@ -265,28 +259,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
-        rebindPedService();
-        continueStepUpdaterMethod();
+//        rebindPedService();
+//        continueStepUpdaterMethod();
 
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            WalkDao dao = walkDb.walkDao();
-
-            Walk newestWalk = dao.findNewestEntry();
-            if (newestWalk != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
-                        TextView distWalkText = findViewById(R.id.text_distance_value);
-                        TextView timeWalkText = findViewById(R.id.text_time_value);
-
-                        stepsWalkText.setText(newestWalk.steps);
-                        distWalkText.setText(newestWalk.distance);
-                        timeWalkText.setText(newestWalk.duration);
+        FirebaseWalkDao dao = new FirebaseWalkDao();
+        dao.findNewestEntries().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Walk newestWalk = null;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (newestWalk == null) {
+                        newestWalk = document.toObject(Walk.class);
                     }
-                });
+                }
+
+                if (newestWalk != null) {
+                    TextView stepsWalkText = findViewById(R.id.text_steps_value);
+                    TextView distWalkText = findViewById(R.id.text_distance_value);
+                    TextView timeWalkText = findViewById(R.id.text_time_value);
+
+                    stepsWalkText.setText(newestWalk.steps);
+                    distWalkText.setText(newestWalk.distance);
+                    timeWalkText.setText(newestWalk.duration);
+                }
             }
         });
     }
@@ -323,27 +317,27 @@ public class MainActivity extends AppCompatActivity {
         textStep.setText(""+numSteps);
     }
     //For GoogleFit
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//       If authentication was required during google fit setup, this will be called after the user authenticates
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == fitnessService.getRequestCode()) {
-                //fitnessService.updateStepCount();
-                fitnessService.startRecording();
-            }
-        } else {
-            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+////       If authentication was required during google fit setup, this will be called after the user authenticates
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == fitnessService.getRequestCode()) {
+//                //fitnessService.updateStepCount();
+//                fitnessService.startRecording();
+//            }
+//        } else {
+//            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
         Log.i("MainActivity.onDestroy", "onDestroy() has been called");
-        if(isBound){
-            unbindService(serviceConnection);
-            isBound = false;
-        }
+//        if(isBound){
+//            unbindService(serviceConnection);
+//            isBound = false;
+//        }
         super.onDestroy();
     }
 
