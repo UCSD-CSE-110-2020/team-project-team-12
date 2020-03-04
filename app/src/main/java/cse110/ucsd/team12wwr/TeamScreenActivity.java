@@ -25,6 +25,8 @@ import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
 public class TeamScreenActivity extends FragmentActivity
                                 implements TeamInvitationDialogFragment.InviteDialogListener{
 
+    String validatedEmail;
+
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
@@ -32,13 +34,19 @@ public class TeamScreenActivity extends FragmentActivity
         dialog = (TeamInvitationDialogFragment) dialog;
         String invitedEmail = ((TeamInvitationDialogFragment) dialog).getInvitedEmail();
         String invitedUser = ((TeamInvitationDialogFragment) dialog).getInvitedName();
-        Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
-                                            + " NAME is: " + invitedUser);
 
-
-
-        Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_SHORT);
-        toast.show();
+        if(invitedEmail.equalsIgnoreCase("ERROR")){
+            Log.i("onDialogPositiveClick ", "INVALID EMAIL INPUT");
+            Toast toast = Toast.makeText(this, "Invalid Gmail address", Toast.LENGTH_LONG);
+            toast.show();
+        }
+        else {
+            Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
+                    + " NAME is: " + invitedUser);
+            validatedEmail = invitedEmail;
+            Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_LONG);
+            toast.show();
+        }
 
     }
 
@@ -46,7 +54,7 @@ public class TeamScreenActivity extends FragmentActivity
     public void onDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
         Log.i("onDialogPositiveClick ", "NEGATIVE CLICKED INTO ACTIVITY");
-        Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_LONG);
         toast.show();
     }
 

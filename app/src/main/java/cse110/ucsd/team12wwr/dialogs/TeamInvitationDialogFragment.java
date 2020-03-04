@@ -12,6 +12,9 @@ import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import cse110.ucsd.team12wwr.R;
 import cse110.ucsd.team12wwr.TeamScreenActivity;
 
@@ -74,6 +77,13 @@ public class TeamInvitationDialogFragment extends DialogFragment {
 
                         EditText invitedEmailField = view.findViewById(R.id.username);
                         invitedEmail = invitedEmailField.getText().toString();
+                        if(validInput(invitedEmail)){
+                            Log.i("Invited Email ", "was valid gmail");
+                        }
+                        else{
+                            invitedEmail = "ERROR";
+                            getDialog().cancel();
+                        }
 
                         EditText invitedNameField = view.findViewById(R.id.name);
                         invitedName = invitedNameField.getText().toString();
@@ -94,5 +104,12 @@ public class TeamInvitationDialogFragment extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    public static boolean validInput(String email) {
+        String expression = "^[\\w.+\\-]+@gmail\\.com$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }
