@@ -10,7 +10,7 @@ public class FirebaseRouteDao {
 
     public void insertAll(Route... r) {
         for (Route route : r) {
-            db.collection("routes").add(route);
+            db.collection("routes").document(route.name).set(route);
         }
     }
 
