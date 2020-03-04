@@ -2,16 +2,26 @@ package cse110.ucsd.team12wwr;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class TeamScreen extends AppCompatActivity {
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
+
+
+public class TeamScreen extends FragmentActivity
+                        implements TeamInvitationDialogFragment.InviteDialogListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +32,14 @@ public class TeamScreen extends AppCompatActivity {
         Menu menu = navView.getMenu();
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
+
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openDialog();
+            }
+        });
 
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -59,4 +77,30 @@ public class TeamScreen extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void openDialog() {
+        DialogFragment newFragment = new TeamInvitationDialogFragment();
+        newFragment.show(getSupportFragmentManager(), "open");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        Log.i("onDialogPositiveClick ", "POSITIVE CLICKED INTO ACTIVITY");
+        dialog = (TeamInvitationDialogFragment) dialog;
+        String invitedEmail = ((TeamInvitationDialogFragment) dialog).getInvitedEmail();
+        String invitedUser = ((TeamInvitationDialogFragment) dialog).getInvitedName();
+        Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
+                + " NAME is: " + invitedUser);
+
+        Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        Log.i("onDialogPositiveClick ", "NEGATIVE CLICKED INTO ACTIVITY");
+        Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
+        toast.show();
+    }
 }
