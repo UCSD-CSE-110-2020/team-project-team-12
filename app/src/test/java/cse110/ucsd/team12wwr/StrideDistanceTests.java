@@ -29,17 +29,17 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class StrideDistanceTests {
-    
+
     private Intent intent, mainIntent;
-    private ActivityTestRule<mockMainActivity> mainActivityTestRule;
+    private ActivityTestRule<MainActivity> mainActivityTestRule;
 
     @Before
     public void setUp() {
         MainActivity.unitTestFlag = true;
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
-        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtras(mainIntent);
-        mainActivityTestRule = new ActivityTestRule<>(mockMainActivity.class);
+        mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     }
 
@@ -95,7 +95,7 @@ public class StrideDistanceTests {
         editor.putInt("INCHES", 4);
         editor.apply();
 
-        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(mainIntent);
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
             //Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);
@@ -133,7 +133,7 @@ public class StrideDistanceTests {
         editor.putInt("INCHES", 11);
         editor.apply();
 
-        ActivityScenario<mockMainActivity> scenario = ActivityScenario.launch(mainIntent);
+        ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
 
             //Button takeStep = activity.findViewById(R.id.btn_debug_increment_steps);

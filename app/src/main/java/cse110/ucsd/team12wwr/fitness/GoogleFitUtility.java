@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr.fitness;
 
+import android.app.Activity;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,78 +16,90 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import cse110.ucsd.team12wwr.MainActivity;
+
+
 import static com.google.android.gms.fitness.data.Field.FIELD_STEPS;
 
-public class GoogleFitAdapter implements FitnessService {
+public class GoogleFitUtility {
+
+
     private final int GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(this) & 0xFFFF;
     private GoogleSignInAccount account;
     private boolean subscribed = false;
     private long currentStepValue = 0;
 
-    private MainActivity activity;
+    private Activity activity;
 
-    public GoogleFitAdapter(MainActivity activity) {
+    public GoogleFitUtility(Activity activity) {
+        Log.i("GoogleFitUtility", "Construction complete");
         this.activity = activity;
     }
 
 
-    public void setup() {
+    public void init() {
+        Log.i("GoogleFitUtility.init", "START OF METHOD");
         FitnessOptions fitnessOptions = FitnessOptions.builder()
                 .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
                 .build();
 
         account = GoogleSignIn.getAccountForExtension(activity, fitnessOptions);
+
+
         if (!GoogleSignIn.hasPermissions(account, fitnessOptions)) {
-            Log.i("GoogleFitAdapter.setup", "requesting permissions");
+            Log.i("GoogleFitUtility.init", "requesting permissions");
             GoogleSignIn.requestPermissions(
                     activity, // your activity
                     GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                     account,
                     fitnessOptions);
         } else {
-            Log.i("GoogleFitAdapter.setup", "GoogleSignIn.hasPermissions = true. start recording");
-            startRecording();
+            Log.i("GoogleFitUtility.init", "GoogleSignIn.hasPermissions, account initialized");
         }
+
+        Log.i("GoogleFitUtility.init", "END OF METHOD");
+        startRecording();
+
     }
 
-    public boolean getSubscribed(){
-        return subscribed;
-    }
 
     public void startRecording() {
+        Log.i("GoogleFitUtility.startRecording", "START OF METHOD");
         if (account == null) {
-            Log.i("GoogleFitAdapter.startRecording", "GoogleSignInAccount is null");
+            Log.i("GoogleFitUtility.startRecording", "GoogleSignInAccount is null");
             return;
         }
+        long startTimer = System.currentTimeMillis();
         Fitness.getRecordingClient(activity, account)
                 .subscribe(DataType.TYPE_STEP_COUNT_CUMULATIVE)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.i("GoogleFitAdapter.startRecording", "Successfully subscribed!");
+                        Log.i("GoogleFitUtility.startRecording", "Successfully subscribed!");
+                        long endTimer = System.currentTimeMillis();
+                        Log.i("GoogleFitUtility.startRecording", "Time to subscribe: " + (endTimer-startTimer));
                         subscribed = true;
-                        activity.bindPedService();
-
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.i("GoogleFitAdapter.startRecording", "There was a problem subscribing.");
+                        Log.i("GoogleFitUtility.startRecording", "There was a problem subscribing.");
+                        e.printStackTrace();
                     }
                 });
+        Log.i("GoogleFitUtility.startRecording", "END OF METHOD");
     }
 
 
     public void updateStepCount() {
+        //Log.i("GoogleFitUtility.updateStepCount", "START OF METHOD");
         if (account == null) {
-            Log.i("GoogleFitAdapter.updateStepCount", "GoogleSignInAccount is null");
+            Log.i("GoogleFitUtility.updateStepCount", "ACCOUNT NULL, MISTAKES MADE");
             return;
         }
         if(!getSubscribed()){
-            Log.i("GoogleFitAdapter.updateStepCount", "GoogleFit not yet subscribed");
+            Log.i("GoogleFitUtility.updateStepCount", "GoogleFit not yet subscribed");
             return;
         }
         Fitness.getHistoryClient(activity, account)
@@ -100,8 +113,8 @@ public class GoogleFitAdapter implements FitnessService {
                                         dataSet.isEmpty()
                                                 ? 0
                                                 : dataSet.getDataPoints().get(0).getValue(FIELD_STEPS).asInt();
-                                Log.i("GoogleFitAdapter.updateStepCount", "CURRENT STEP COUNT IS " + total);
-                                Log.i("GoogleFitAdapter.updateStepCount", "Is dataset empty: " + dataSet.isEmpty());
+                                Log.i("GoogleFitUtility.updateStepCount", "CURRENT STEP COUNT IS " + total);
+                                Log.i("GoogleFitUtility.updateStepCount", "Is dataset empty: " + dataSet.isEmpty());
                                 currentStepValue = total;
                             }
                         })
@@ -114,27 +127,31 @@ public class GoogleFitAdapter implements FitnessService {
                         })
                 .addOnCanceledListener(
                         new OnCanceledListener() {
-                    @Override
-                    public void onCanceled() {
-                        Log.i("GoogleFitAdapter.updateStepCount", "onCanceled was called");
-                    }
-                })
-        .addOnCompleteListener(
-                new OnCompleteListener<DataSet>() {
-                    @Override
-                    public void onComplete(@NonNull Task <DataSet> dataSet) {
-                        //Log.i("GoogleFitAdapter.updateStepCount", "onCompleted was called");
-                    }
-                });
+                            @Override
+                            public void onCanceled() {
+                                Log.i("GoogleFitAdapter.updateStepCount", "onCanceled was called");
+                            }
+                        })
+                .addOnCompleteListener(
+                        new OnCompleteListener<DataSet>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DataSet> dataSet) {
+                                //Log.i("GoogleFitAdapter.updateStepCount", "onCompleted was called");
+                            }
+                        });
+        //Log.i("GoogleFitUtility.updateStepCount", "END OF METHOD");
     }
 
 
-    @Override
+
     public long getStepValue(){
         return currentStepValue;
     }
+    public boolean getSubscribed(){
+        return subscribed;
+    }
 
-    @Override
+
     public int getRequestCode() {
         return GOOGLE_FIT_PERMISSIONS_REQUEST_CODE;
     }
