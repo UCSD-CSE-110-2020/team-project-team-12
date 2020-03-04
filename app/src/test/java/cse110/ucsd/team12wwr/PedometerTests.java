@@ -17,6 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class PedometerTests {
     private Intent intent;
 
+
     @Before
     public void setUp() {
         intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
@@ -30,6 +31,7 @@ public class PedometerTests {
         });
     }
     @Test
+
     public void testnumStepsEqualDisplayedSteps() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
         scenario.onActivity(activity -> {

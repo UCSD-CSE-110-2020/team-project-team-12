@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -27,6 +28,7 @@ import androidx.test.rule.ActivityTestRule;
 import cse110.ucsd.team12wwr.database.Route;
 
 import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.assertNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -68,7 +70,7 @@ public class RouteInfoTests {
     }
 
     @Test
-    public void testEnterOnlyStartLocation() {
+    public void testEnterStartLocation() {
         ActivityScenario<RouteInfoActivity> scenario = ActivityScenario.launch(routeIntent);
         scenario.onActivity(activity -> {
             Button saveBtn = activity.findViewById(R.id.save_btn);
@@ -79,6 +81,20 @@ public class RouteInfoTests {
             assertNotNull(startField);
             saveBtn.performClick();
             assertNotNull(titleField.getError());
+
+        });
+    }
+
+    @Test
+    public void testEnterTitle() {
+        ActivityScenario<RouteInfoActivity> scenario = ActivityScenario.launch(routeIntent);
+        scenario.onActivity(activity -> {
+            Button saveBtn = activity.findViewById(R.id.save_btn);
+            EditText titleField = activity.findViewById(R.id.title_text);
+
+            titleField.setText("Route 1");
+            assertNotNull(titleField);
+            saveBtn.performClick();
 
         });
     }
@@ -183,4 +199,39 @@ public class RouteInfoTests {
         isFav.performClick();
         assertTrue(routeInfoActivityActivityTestRule.getActivity().isFavorite);
     }
+
+    @Test
+    public void testEnterNotes() {
+        ActivityScenario<RouteInfoActivity> scenario = ActivityScenario.launch(routeIntent);
+        scenario.onActivity(activity -> {
+            Button saveBtn = activity.findViewById(R.id.save_btn);
+            EditText notes = activity.findViewById(R.id.notes_entry);
+
+            notes.setText("Park on church");
+            assertNotNull(notes);
+            saveBtn.performClick();
+
+        });
+    }
+
+    @Test
+    public void testSpinners() {
+        ActivityScenario<RouteInfoActivity> scenario = ActivityScenario.launch(routeIntent);
+        scenario.onActivity(activity -> {
+            Spinner path = activity.findViewById(R.id.path_spinner);
+            Spinner incline = activity.findViewById(R.id.incline_spinner);
+            Spinner terrain = activity.findViewById(R.id.terrain_spinner);
+            Spinner texture = activity.findViewById(R.id.texture_spinner);
+            incline.setSelection(1);
+            path.setSelection(1);
+            terrain.setSelection(1);
+            texture.setSelection(1);
+            assertNotNull(path.getSelectedItem());
+            assertNotNull(incline.getSelectedItem());
+            assertNotNull(terrain.getSelectedItem());
+            assertNotNull(texture.getSelectedItem());
+        });
+    }
+
+
 }

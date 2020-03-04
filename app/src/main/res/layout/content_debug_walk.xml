@@ -19,6 +19,69 @@
             android:hint="Put Time Here"
             android:imeOptions="actionSearch"
 
+<<<<<<< HEAD
+=======
+    <TextView
+        android:id="@+id/text_route_name"
+        android:layout_width="411dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="4dp"
+        android:text="NEW ROUTE"
+        android:textAlignment="center"
+        android:textSize="45dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></TextView>
+
+    <TextView
+        android:id="@+id/text_current_stats_title"
+        android:layout_width="413dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="20dp"
+        android:text="CURRENT STATS:"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_route_name"></TextView>
+
+
+    <LinearLayout
+        android:id="@+id/mock_buttons_layout"
+        android:layout_width="417dp"
+        android:layout_height="249dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <Button
+            android:id="@+id/btn_continue_walk"
+            android:layout_width="match_parent"
+            android:layout_height="89dp"
+            android:layout_marginStart="61dp"
+            android:layout_marginEnd="61dp"
+            android:text="STEP UP"
+            android:textSize="45dp"></Button>
+
+        <Button
+            android:id="@+id/btn_stop_walk"
+            android:layout_width="match_parent"
+            android:layout_height="89dp"
+            android:layout_marginStart="61dp"
+            android:layout_marginEnd="61dp"
+            android:layout_marginBottom="32dp"
+            android:text="END"
+            android:textSize="45dp"></Button>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mock_steps_layout"
+        android:layout_width="411dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mock_time_layout">
+
 
         <TextView
             android:id="@+id/text_steps_title"
@@ -29,9 +92,29 @@
             app:layout_constraintBaseline_toBaselineOf="@+id/text_steps_value"
             app:layout_constraintStart_toStartOf="@+id/text_time_title"></TextView>
 
+<<<<<<< HEAD
             android:maxLines="1"
             android:textSize="40dp"
             app:layout_constraintEnd_toEndOf="parent"
+=======
+        <TextView
+            android:id="@+id/text_steps_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:text="0"
+            android:textSize="30dp"></TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/mock_time_layout"
+        android:layout_width="413dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="68dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_current_stats_title">
+>>>>>>> milestone1-refactor
 
             app:layout_constraintHorizontal_bias="0.496"
             app:layout_constraintStart_toStartOf="parent"

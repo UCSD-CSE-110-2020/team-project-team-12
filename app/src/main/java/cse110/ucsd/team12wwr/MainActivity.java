@@ -34,9 +34,12 @@ import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
+
 public class MainActivity extends AppCompatActivity {
 
     /* constants */
+    private static final String TAG = "MainActivity";
+
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
@@ -56,9 +59,7 @@ public class MainActivity extends AppCompatActivity {
     long numSteps = 0;
 
     /* GoogleFit */
-    private static final String TAG = "MainActivity";
-    //private FitnessService fitnessService;
-    private final String fitnessServiceKey = "GOOGLE_FIT";
+
 
     /* distance */
     TextView textDist;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
 
+
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,8 +105,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-
-
 
 
         textDist = findViewById(R.id.num_miles);
@@ -165,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
+
+
     }
 
 
@@ -185,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         Log.i("MainActivity.onPause", "onPause() has been called");
         gFitUtilLifecycleFlag = false;
+
     }
 
     public void launchHeightActivity() {
@@ -197,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
+
 
 
         gFitUtilLifecycleFlag = true;
@@ -242,6 +246,22 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+
+
+        WWRDatabase walkDb = WWRDatabase.getInstance(this);
+        WalkDao dao = walkDb.walkDao();
+
+        Walk newestWalk = dao.findNewestEntry();
+        if (newestWalk != null) {
+            TextView stepsWalkText = findViewById(R.id.text_steps_value);
+            TextView distWalkText = findViewById(R.id.text_distance_value);
+            TextView timeWalkText = findViewById(R.id.text_time_value);
+
+            stepsWalkText.setText(newestWalk.steps);
+            distWalkText.setText(newestWalk.distance);
+            timeWalkText.setText(newestWalk.duration);
+        }
+
     }
 
     @Override
@@ -275,21 +295,8 @@ public class MainActivity extends AppCompatActivity {
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
         textStep.setText(""+numSteps);
     }
-    /*
-    //For GoogleFit
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//       If authentication was required during google fit setup, this will be called after the user authenticates
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == fitnessService.getRequestCode()) {
-                //fitnessService.updateStepCount();
-                fitnessService.startRecording();
-            }
-        } else {
-            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-        }
-    }*/
+
+
 
     @Override
     protected void onDestroy() {

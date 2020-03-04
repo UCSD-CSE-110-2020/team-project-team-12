@@ -46,8 +46,7 @@ public class RouteInfoActivity extends AppCompatActivity {
     final String EVEN = "Even Surface";
     final String UNEVEN = "Uneven Surface";
     final String NONETYPE = "";
-    final int threadID = android.os.Process.getThreadPriority(android.os.Process.myTid());
-    final Thread currThread = Thread.currentThread();
+
     /* Favorite button */
     boolean isFavorite = false;
 
@@ -153,6 +152,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                 startPoint.setText(newRoute.startingPoint);
             }
 
+            Log.d(TAG, "onCreate: Page is now set up");
             if (newRoute.endingPoint != null) {
                 endPoint.setText(newRoute.endingPoint);
             }
@@ -204,6 +204,15 @@ public class RouteInfoActivity extends AppCompatActivity {
                     favoriteBtn.performClick();
                 }
             }
+            if ( totalTime != null ) {
+                totalTimeText.setText(totalTime);
+            }
+            if ( totalDistance != null ) {
+                totalDistText.setText(totalDistance);
+            }
+            if ( notesField != null ) {
+                notesEntry.setText(notesField);
+            }
 
             if ( newRoute.notes != null ) {
                 notesEntry.setText(newRoute.notes);
@@ -215,7 +224,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                     totalTimeText.setText(currWalk.get(0).duration);
                 }
             }
-
         }
 
         Log.d(TAG, "onCreate: Page is now set up");
@@ -235,26 +243,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                 } else {
                     isFavorite = false;
                     Log.d(TAG, "onClick: isFavorite: " + isFavorite);
-                }
-            }
-        });
-
-        // Cancel Button
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
-
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Save Button is clicked");
-                // Make sure it is not null
-                if ( TextUtils.isEmpty(titleField.getText()) ) {
-                    Log.d(TAG, "onClick: Title field is null, save not finished");
-                    titleField.setError("You must enter a title for your route!");
                 }
             }
         });
@@ -292,76 +280,63 @@ public class RouteInfoActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED, resultIntent);
                 finish();
             }
         });
 
         // Save Button
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        saveBtn.setOnClickListener(view -> {
+            Log.d(TAG, "onClick: Save Button is clicked");
+            // Make sure it is not null
+            if (TextUtils.isEmpty(titleField.getText())) {
+                Log.d(TAG, "onClick: Title field is null");
+                titleField.setError("You must enter a title for your route!");
+                return;
+            }
+            
+            final boolean[] dupeTitle = {false};
+            Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
+            WWRDatabase db = WWRDatabase.getInstance(RouteInfoActivity.this);
+            RouteDao dao = db.routeDao();
+            
+            Route newEntry = new Route();
+            if (!isNewRoute) {
+                newEntry = dao.findName(currRouteName);
+            }
 
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "onClick: Save Button is clicked");
-                // Make sure it is not null
-                if (TextUtils.isEmpty(titleField.getText())) {
-                    Log.d(TAG, "onClick: Title field is null");
-                    titleField.setError("You must enter a title for your route!");
-                } else {
-                    final boolean[] dupeTitle = {false};
-                    Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
-                    if (isNewRoute) {
-                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                        RouteDao dao = routeDb.routeDao();
+            newEntry.name = titleField.getText().toString();
+            newEntry.startingPoint = startPoint.getText().toString();
+            newEntry.endingPoint = endPoint.getText().toString();
+            setFavorite(newEntry, isFavorite);
+            setRouteType(newEntry, pathSpinner);
+            setHilliness(newEntry, inclineSpinner);
+            setSurfaceType(newEntry, terrainSpinner);
+            setEvenness(newEntry, textureSpinner);
+            setDifficulty(newEntry);
+            setNotes(newEntry, notesEntry.getText().toString());
 
-                        Route newEntry = new Route();
-                        newEntry.name = titleField.getText().toString();
-                        newEntry.startingPoint = startPoint.getText().toString();
-                        newEntry.endingPoint = endPoint.getText().toString();
-                        setFavorite(newEntry, isFavorite);
-                        setRouteType(newEntry, pathSpinner);
-                        setHilliness(newEntry, inclineSpinner);
-                        setSurfaceType(newEntry, terrainSpinner);
-                        setEvenness(newEntry, textureSpinner);
-                        setDifficulty(newEntry);
-                        setNotes(newEntry, notesEntry.getText().toString());
+            if (isNewRoute) {
+                try {
+                    dao.insertAll(newEntry);
+                    Log.d(TAG, "onClick: added entry");
+                } catch (SQLiteConstraintException e) {
+                    Log.d(TAG, "onClick: Title already in use");
+                    dupeTitle[0] = true;
+                    return;
+                }
+            } else {
+                dao.update(newEntry);
+                Log.d(TAG, "onClick: Updated route information for old route");
+            }
 
-                        try {
-                            dao.insertAll(newEntry);
-                            Log.d(TAG, "onClick: added entry");
-                        } catch (SQLiteConstraintException e) {
-                            Log.d(TAG, "onClick: Title already in use");
-                            dupeTitle[0] = true;
-                            return;
-                        }
-                    } else {
-
-                        WWRDatabase routeDb = WWRDatabase.getInstance(RouteInfoActivity.this);
-                        RouteDao dao = routeDb.routeDao();
-
-                        Route newEntry = dao.findName(currRouteName);
-                        newEntry.name = titleField.getText().toString();
-                        newEntry.startingPoint = startPoint.getText().toString();
-                        newEntry.endingPoint = endPoint.getText().toString();
-                        setFavorite(newEntry, isFavorite);
-                        setRouteType(newEntry, pathSpinner);
-                        setHilliness(newEntry, inclineSpinner);
-                        setSurfaceType(newEntry, terrainSpinner);
-                        setEvenness(newEntry, textureSpinner);
-                        setDifficulty(newEntry);
-                        setNotes(newEntry, notesEntry.getText().toString());
-                        dao.update(newEntry);
-                        Log.d(TAG, "onClick: Updated route information for old route");
-                    } // End inner else ( if not a new route )
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("routeTitle", titleField.getText().toString());
-                    Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
-                    setResult(Activity.RESULT_OK, resultIntent);
-                    finish();
-                } // End else
-
-
-            } // End onClick()
-        }); // End setOnClickListener()
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("routeTitle", titleField.getText().toString());
+            Log.d(TAG, "onClick: resultIntent has: " + resultIntent.hasExtra("routeTitle"));
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+        });
     }
 
     public void setFavorite( Route route, Boolean isFavorite ) {

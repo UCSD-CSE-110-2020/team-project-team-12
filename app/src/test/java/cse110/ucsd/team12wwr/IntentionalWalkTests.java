@@ -11,9 +11,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import cse110.ucsd.team12wwr.database.Route;
 import cse110.ucsd.team12wwr.database.WWRDatabase;
 import cse110.ucsd.team12wwr.database.Walk;
 import cse110.ucsd.team12wwr.database.WalkDao;
@@ -36,29 +34,26 @@ public class IntentionalWalkTests {
     public void testWalkDatabase() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
-            ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-            databaseWriteExecutor.execute(() -> {
-                WWRDatabase walkDb = WWRDatabase.getInstance(activity);
-                WalkDao dao = walkDb.walkDao();
+            WWRDatabase db = WWRDatabase.getInstance(activity);
 
-                Walk newEntry = new Walk();
-                newEntry.time = System.currentTimeMillis();
-                newEntry.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
-                newEntry.steps = String.format("%d", 1337);
-                newEntry.distance = String.format("%.2f mi", 13.09);
+            Route newRoute = new Route();
+            newRoute.name = "Solar Path";
+            db.routeDao().insertAll(newRoute);
 
-                dao.insertAll(newEntry);
-            });
+            Walk newEntry = new Walk();
+            newEntry.time = System.currentTimeMillis();
+            newEntry.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
+            newEntry.steps = String.format("%d", 1337);
+            newEntry.distance = String.format("%.2f mi", 13.09);
+            newEntry.routeName = "Solar Path";
 
-            databaseWriteExecutor.execute(() -> {
-                WWRDatabase walkDb = WWRDatabase.getInstance(activity);
-                WalkDao dao = walkDb.walkDao();
+            db.walkDao().insertAll(newEntry);
 
-                Walk newestWalk = dao.findNewestEntry();
-                assertEquals("1337", newestWalk.steps);
-                assertEquals("13.09 mi", newestWalk.distance);
-                assertEquals("12:34:56", newestWalk.duration);
-            });
+            Walk newestWalk = db.walkDao().findNewestEntry();
+            assertEquals("1337", newestWalk.steps);
+            assertEquals("13.09 mi", newestWalk.distance);
+            assertEquals("12:34:56", newestWalk.duration);
+            assertEquals("Solar Path", newestWalk.routeName);
         });
     }
 
