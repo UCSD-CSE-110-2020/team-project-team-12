@@ -3,7 +3,6 @@ package cse110.ucsd.team12wwr;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class RoutesScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_routes_screen);
 
+        initializeUpdateListener();
+
         Button back = findViewById(R.id.back_button);
         Button add = findViewById(R.id.add_button);
 
@@ -50,11 +53,22 @@ public class RoutesScreen extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        listView = findViewById(R.id.list_view);
+    private void initializeUpdateListener() {
+        FirebaseFirestore.getInstance().collection("routes")
+                .orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener((newChatSnapshot, error) -> {
+                    if (error != null) {
+                        Log.e(TAG, error.getLocalizedMessage());
+                        return;
+                    }
 
+                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                        renderRoutesList();
+                    }
+                });
+    }
+
+    private void renderRoutesList() {
         FirebaseRouteDao routeDao = new FirebaseRouteDao();
         routeDao.retrieveAllRoutes().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -64,6 +78,8 @@ public class RoutesScreen extends AppCompatActivity {
                 }
 
                 ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+
+                listView = findViewById(R.id.list_view);
                 listView.setAdapter(arrayAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
