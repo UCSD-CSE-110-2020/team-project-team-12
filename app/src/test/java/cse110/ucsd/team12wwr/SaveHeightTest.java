@@ -35,6 +35,7 @@ public class SaveHeightTest {
 
     @Before
     public void setUp() {
+        MainActivity.unitTestFlag = true;
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
         mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtras(mainIntent);

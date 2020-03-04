@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -24,16 +25,20 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
+
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
+import cse110.ucsd.team12wwr.roomdb.WalkDao;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -71,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     GoogleFitUtility gFitUtil;
     public boolean googleSubscribedStatus = false;
     public boolean gFitUtilLifecycleFlag;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,43 +231,31 @@ public class MainActivity extends AppCompatActivity {
         }, 4000);
 
 
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            WalkDao dao = walkDb.walkDao();
 
-            Walk newestWalk = dao.findNewestEntry();
-            if (newestWalk != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
-                        TextView distWalkText = findViewById(R.id.text_distance_value);
-                        TextView timeWalkText = findViewById(R.id.text_time_value);
 
-                        stepsWalkText.setText(newestWalk.steps);
-                        distWalkText.setText(newestWalk.distance);
-                        timeWalkText.setText(newestWalk.duration);
+
+        FirebaseWalkDao dao = new FirebaseWalkDao();
+        dao.findNewestEntries().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Walk newestWalk = null;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (newestWalk == null) {
+                        newestWalk = document.toObject(Walk.class);
                     }
-                });
+                }
+
+                if (newestWalk != null) {
+                    TextView stepsWalkText = findViewById(R.id.text_steps_value);
+                    TextView distWalkText = findViewById(R.id.text_distance_value);
+                    TextView timeWalkText = findViewById(R.id.text_time_value);
+
+
+                    stepsWalkText.setText(newestWalk.steps);
+                    distWalkText.setText(newestWalk.distance);
+                    timeWalkText.setText(newestWalk.duration);
+                }
             }
         });
-
-
-        WWRDatabase walkDb = WWRDatabase.getInstance(this);
-        WalkDao dao = walkDb.walkDao();
-
-        Walk newestWalk = dao.findNewestEntry();
-        if (newestWalk != null) {
-            TextView stepsWalkText = findViewById(R.id.text_steps_value);
-            TextView distWalkText = findViewById(R.id.text_distance_value);
-            TextView timeWalkText = findViewById(R.id.text_time_value);
-
-            stepsWalkText.setText(newestWalk.steps);
-            distWalkText.setText(newestWalk.distance);
-            timeWalkText.setText(newestWalk.duration);
-        }
-
     }
 
     @Override

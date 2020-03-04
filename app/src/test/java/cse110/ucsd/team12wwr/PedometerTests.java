@@ -23,6 +23,7 @@ public class PedometerTests {
         intent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
     }
 
+
     @Test
     public void testgFitStepsEqualActivitySteps() {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(intent);
