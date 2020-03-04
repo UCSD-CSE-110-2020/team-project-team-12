@@ -92,8 +92,6 @@ public class MainActivity extends AppCompatActivity {
 
         setTestingFlag(true);
 
-        launchTeamRouteActivity();
-
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_home:
                         break;
                     case R.id.navigation_routes:
-                        launchRoutesScreenActivity();
+                        launchTeamRouteActivity();
 
                         break;
                     case R.id.navigation_walk:
