@@ -212,26 +212,6 @@ public class RouteInfoActivity extends AppCompatActivity {
                     }
                 }
             });
-
-            FirebaseWalkDao walkDao = new FirebaseWalkDao();
-            walkDao.findByRouteName(currRouteName).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Walk currWalk = null;
-                    for (QueryDocumentSnapshot document : task.getResult()) {
-                        if (currWalk == null) {
-                            currWalk = document.toObject(Walk.class);
-                        }
-                    }
-
-                    if (currWalk.distance != null) {
-                        totalDistText.setText(currWalk.distance);
-                    }
-
-                    if (currWalk.duration != null) {
-                        totalTimeText.setText(currWalk.duration);
-                    }
-                }
-            });
         }
 
         Log.d(TAG, "onCreate: Page is now set up");
