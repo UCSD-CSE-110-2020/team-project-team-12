@@ -127,14 +127,14 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
 
 
-        // Create and adapt the FitnessService
-        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
-            @Override
-            public FitnessService create(MainActivity mainActivity) {
-                return new GoogleFitAdapter(mainActivity);
-            }
-        });
-        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+//        // Create and adapt the FitnessService
+//        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+//            @Override
+//            public FitnessService create(MainActivity mainActivity) {
+//                return new GoogleFitAdapter(mainActivity);
+//            }
+//        });
+//        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
 
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
@@ -150,12 +150,12 @@ public class MainActivity extends AppCompatActivity {
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
-        /* PEDOMETER START */
-        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
-        if(testingFlag) {
-            fitnessService.setup();
-            startStepUpdaterMethod();
-        }
+//        /* PEDOMETER START */
+//        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
+//        if(testingFlag) {
+//            fitnessService.setup();
+//            startStepUpdaterMethod();
+//        }
 
     }
 
@@ -243,9 +243,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.i("MainActivity.onPause", "onPause() has been called");
-        stopService(new Intent(this, PedometerService.class));
-        isBound = false;
-        unbindPedometerService();
+//        stopService(new Intent(this, PedometerService.class));
+//        isBound = false;
+//        unbindPedometerService();
     }
 
     public void launchHeightActivity() {
@@ -258,8 +258,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
-        rebindPedService();
-        continueStepUpdaterMethod();
+//        rebindPedService();
+//        continueStepUpdaterMethod();
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
         dao.findNewestEntries().addOnCompleteListener(task -> {
@@ -316,27 +316,27 @@ public class MainActivity extends AppCompatActivity {
         textStep.setText(""+numSteps);
     }
     //For GoogleFit
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-//       If authentication was required during google fit setup, this will be called after the user authenticates
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == fitnessService.getRequestCode()) {
-                //fitnessService.updateStepCount();
-                fitnessService.startRecording();
-            }
-        } else {
-            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+////       If authentication was required during google fit setup, this will be called after the user authenticates
+//        if (resultCode == Activity.RESULT_OK) {
+//            if (requestCode == fitnessService.getRequestCode()) {
+//                //fitnessService.updateStepCount();
+//                fitnessService.startRecording();
+//            }
+//        } else {
+//            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
+//        }
+//    }
 
     @Override
     protected void onDestroy() {
         Log.i("MainActivity.onDestroy", "onDestroy() has been called");
-        if(isBound){
-            unbindService(serviceConnection);
-            isBound = false;
-        }
+//        if(isBound){
+//            unbindService(serviceConnection);
+//            isBound = false;
+//        }
         super.onDestroy();
     }
 

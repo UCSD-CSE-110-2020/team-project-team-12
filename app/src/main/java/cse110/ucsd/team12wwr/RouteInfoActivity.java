@@ -263,6 +263,8 @@ public class RouteInfoActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED, resultIntent);
                 finish();
             }
         });
