@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -23,19 +24,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
+
+
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
+import cse110.ucsd.team12wwr.roomdb.WalkDao;
 
 public class MainActivity extends AppCompatActivity {
 
     /* constants */
+    private static final String TAG = "MainActivity";
+
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
@@ -51,8 +59,9 @@ public class MainActivity extends AppCompatActivity {
     TextView textStep;
     long numSteps = 0;
 
-    /* GoogleFit */
-    private static final String TAG = "MainActivity";
+    /* Testing */
+    public static boolean unitTestFlag = false;
+
 
     /* distance */
     TextView textDist;
@@ -65,8 +74,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean googleSubscribedStatus = false;
     public boolean gFitUtilLifecycleFlag;
 
+
     /* Team Related Variables */
     String userEmail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +93,9 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
         startActivityForResult(signInIntent, RC_SIGN_IN);*/
+
 
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         closeOptionsMenu();
+
 
         /* FOR DEBUG ONLY */
         Intent intentX = new Intent(this, TeamScreenActivity.class);
@@ -134,13 +148,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         userEmail = "account not retrieved";
         try{
             userEmail = account.getEmail();
         }
         catch(NullPointerException e){
-            Log.i("ACCOUNT NOT SIGNED IN PRIOR", " Null pointer caught");
+            Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
         }
         Log.i("GMAIL: ", userEmail);
 
@@ -162,6 +177,10 @@ public class MainActivity extends AppCompatActivity {
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
 
+
+
+
+
     }
 
 
@@ -182,6 +201,7 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
         Log.i("MainActivity.onPause", "onPause() has been called");
         gFitUtilLifecycleFlag = false;
+
     }
 
     public void launchHeightActivity() {
@@ -194,6 +214,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
+
 
 
         gFitUtilLifecycleFlag = true;
@@ -218,25 +239,29 @@ public class MainActivity extends AppCompatActivity {
         }, 4000);
 
 
-        ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-        databaseWriteExecutor.execute(() -> {
-            WWRDatabase walkDb = WWRDatabase.getInstance(this);
-            WalkDao dao = walkDb.walkDao();
 
-            Walk newestWalk = dao.findNewestEntry();
-            if (newestWalk != null) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        TextView stepsWalkText = findViewById(R.id.text_steps_value);
-                        TextView distWalkText = findViewById(R.id.text_distance_value);
-                        TextView timeWalkText = findViewById(R.id.text_time_value);
 
-                        stepsWalkText.setText(newestWalk.steps);
-                        distWalkText.setText(newestWalk.distance);
-                        timeWalkText.setText(newestWalk.duration);
+
+        FirebaseWalkDao dao = new FirebaseWalkDao();
+        dao.findNewestEntries().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Walk newestWalk = null;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (newestWalk == null) {
+                        newestWalk = document.toObject(Walk.class);
                     }
-                });
+                }
+
+                if (newestWalk != null) {
+                    TextView stepsWalkText = findViewById(R.id.text_steps_value);
+                    TextView distWalkText = findViewById(R.id.text_distance_value);
+                    TextView timeWalkText = findViewById(R.id.text_time_value);
+
+
+                    stepsWalkText.setText(newestWalk.steps);
+                    distWalkText.setText(newestWalk.distance);
+                    timeWalkText.setText(newestWalk.duration);
+                }
             }
         });
     }
@@ -276,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
         textStep.setText(""+numSteps);
     }
+
 
     @Override
     protected void onDestroy() {

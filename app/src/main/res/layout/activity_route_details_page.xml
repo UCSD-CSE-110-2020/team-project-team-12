@@ -168,15 +168,6 @@
                             android:textAlignment="center"
                             android:textSize="18sp" />
 
-                        <TextView
-                            android:id="@+id/metrics_details"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="6dp"
-                            android:paddingRight="6dp"
-                            android:text="@string/dist_unit"
-                            android:textAlignment="center"
-                            android:textSize="18sp" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -467,7 +458,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/start_button"
+            android:id="@+id/add_button"
             style="@android:style/Widget.Material.ButtonBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

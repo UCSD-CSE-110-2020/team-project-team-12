@@ -6,11 +6,26 @@
     android:layout_height="match_parent"
     tools:context=".RoutesScreen">
 
+    <TextView
+        android:id="@+id/route_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:paddingStart="5sp"
+        android:paddingEnd="15dp"
+        android:scrollHorizontally="true"
+        android:text="Routes"
+        android:textAlignment="center"
+        android:textSize="36sp"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@+id/list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        >
     </ListView>
 
     <LinearLayout

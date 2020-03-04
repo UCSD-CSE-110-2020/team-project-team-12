@@ -1,10 +1,7 @@
 package cse110.ucsd.team12wwr;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,74 +13,35 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
-import cse110.ucsd.team12wwr.database.RouteDao;
-import cse110.ucsd.team12wwr.database.WWRDatabase;
-import cse110.ucsd.team12wwr.database.Walk;
-import cse110.ucsd.team12wwr.database.WalkDao;
+import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
-    // TODO code repetition
     private static final String TAG = "IntentionalWalkActivity";
 
     private final int HEIGHT_FACTOR = 12;
     private final double STRIDE_CONVERSION = 0.413;
     private final int MILE_FACTOR = 63360;
+    private static int LAUNCH_SECOND_ACTIVITY = 1;
 
     private TextView stopwatchText, stepsText, distanceText;
     private AsyncTaskRunner runner;
     private int timeWhenPaused, timeElapsed;
     private double strideLength;
     private String routeTitle;
-    private boolean isNewRoute = true;
 
     private int temporaryNumSteps;
 
     private IClock clock;
-    private String result;
-    private static int LAUNCH_SECOND_ACTIVITY = 1;
-
-
-    //private long stepsFromService = -1;
-
-    /*
-    private PedometerService pedoService;
-    private boolean isBound;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service){
-            PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            pedoService = localService.getService();
-            isBound = true;
-            stepsFromService = pedoService.getCurrentSteps();
-            Log.i("onServiceConnected", "Current Step Count is " + stepsFromService);
-
-            //pedoService.gimmethemsteppies(fitnessService);
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {isBound = false;}
-    };
-
-    public void bindTheThing(){
-        Intent intent = new Intent(this, PedometerService.class);
-        Log.i("Intentional Walk Activity", "COMMENCE THE BINDING");
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }*/
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intentional_walk);
-        //bindTheThing();
         clock = new DeviceClock();
 
-        // TODO this is code repetition, should just declare getStrideLength() somewhere
         SharedPreferences spf = getSharedPreferences("HEIGHT", MODE_PRIVATE);
         int feet = spf.getInt("FEET", 0);
         int inches = spf.getInt("INCHES", 0);
@@ -116,7 +74,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             routeName.setText(routeTitle);
             Log.d(TAG, "onCreate: routeTitle: " + routeTitle);
         }
-
 
         pauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -156,6 +113,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private void launchRouteInfoPage() {
         Log.d(TAG, "launchRouteInfoPage: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
+        intent.putExtra("ROUTE_TITLE", routeTitle);
         intent.putExtra("duration", stopwatchText.getText().toString());
         intent.putExtra("distance", distanceText.getText().toString());
         startActivityForResult(intent, LAUNCH_SECOND_ACTIVITY);
@@ -200,7 +158,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 publishProgress(timeString, stepsString, distanceString);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                 } catch (Exception e) {
                     return e.toString();
                 }
@@ -218,31 +176,22 @@ public class IntentionalWalkActivity extends AppCompatActivity {
             stepsText.setText(text[1]);
             distanceText.setText(text[2]);
         }
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
-                result = data.getExtras().getString("routeTitle");
-                System.out.println("RESULT IS: " + result);
-                ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(1);
-                databaseWriteExecutor.execute(() -> {
-                    WWRDatabase walkDb = WWRDatabase.getInstance(this);
-                    WalkDao dao = walkDb.walkDao();
-                    RouteDao rDao = walkDb.routeDao();
+                FirebaseWalkDao walkDao = new FirebaseWalkDao();
 
-                    Walk newEntry = new Walk();
-                    newEntry.time = System.currentTimeMillis();
-                    newEntry.duration = stopwatchText.getText().toString();
-                    newEntry.steps = stepsText.getText().toString();
-                    newEntry.distance = distanceText.getText().toString();
-                    newEntry.routeName = result;
-
-                    dao.insertAll(newEntry);
-                });
+                String routeName = data.getExtras().getString("routeTitle");
+                Walk newEntry = new Walk();
+                newEntry.time = System.currentTimeMillis();
+                newEntry.duration = stopwatchText.getText().toString();
+                newEntry.steps = stepsText.getText().toString();
+                newEntry.distance = distanceText.getText().toString();
+                newEntry.routeName = routeName;
+                walkDao.insertAll(newEntry);
 
                 finish();
             }
