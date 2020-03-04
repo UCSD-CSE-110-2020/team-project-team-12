@@ -52,6 +52,7 @@ public class RouteInfoTests {
 
     @Before
     public void setUp() {
+        MainActivity.unitTestFlag = true;
         routeIntent = new Intent(ApplicationProvider.getApplicationContext(), RouteInfoActivity.class);
         routeInfoActivityActivityTestRule = new ActivityTestRule<>(RouteInfoActivity.class);
     }
@@ -86,16 +87,13 @@ public class RouteInfoTests {
 
     @Test
     public void testEnterTitle() {
-        ActivityScenario<RouteInfoActivity> scenario = ActivityScenario.launch(routeIntent);
-        scenario.onActivity(activity -> {
-            Button saveBtn = activity.findViewById(R.id.save_btn);
-            EditText titleField = activity.findViewById(R.id.title_text);
+        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
+        Button saveBtn = routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.save_btn);
+        EditText titleField = routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.title_text);
 
-            titleField.setText("Route 1");
-            assertNotNull(titleField);
-            saveBtn.performClick();
-
-        });
+        titleField.setText("Route 1");
+        assertNotNull(titleField);
+        saveBtn.performClick();
     }
 
     @Test

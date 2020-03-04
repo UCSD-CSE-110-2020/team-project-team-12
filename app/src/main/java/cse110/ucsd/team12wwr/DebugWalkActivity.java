@@ -26,7 +26,6 @@ import java.util.Date;
 public class DebugWalkActivity extends AppCompatActivity {
 
     private long stepCount;
-    private PedometerService pedService;
     private boolean isBound = false;
     /*
     private ServiceConnection serviceConnection = new ServiceConnection() {
