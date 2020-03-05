@@ -24,6 +24,14 @@ public class FirebaseUserDao {
         }
     }
 
+    public void updateTeamID(String userID, String teamID){
+        if (db == null){
+            return;
+        }
+
+        db.collection("users").document(userID).update("teamID", teamID);
+    }
+
     public void delete(String userID) {
         if (db == null) {
             return;

@@ -122,9 +122,7 @@ public class MainActivity extends AppCompatActivity {
         closeOptionsMenu();
 
 
-        /* FOR DEBUG ONLY */
-        Intent intentX = new Intent(this, TeamScreen.class);
-        startActivity(intentX);
+
         //onDestroy();
 
         /* PEDOMETER START */
@@ -159,6 +157,16 @@ public class MainActivity extends AppCompatActivity {
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
         }
         Log.i("GMAIL: ", userEmail);
+
+        /* FOR DEBUG ONLY */
+        Intent intentX = new Intent(this, PendingInviteActivity.class);
+        intentX.putExtra("user Email", userEmail);
+        //startActivity(intentX);
+
+
+
+
+
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
@@ -322,6 +330,14 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (id == R.id.team_screen){
             Intent intent = new Intent(this, TeamScreen.class);
+            startActivity(intent);
+        }
+        else if (id == R.id.invites){
+            Intent intent = new Intent(this, PendingInviteActivity.class);
+            if(userEmail!=null)
+                intent.putExtra("user Email", userEmail);
+            else
+                intent.putExtra("user Email", "FAILED TO RETRIEVE USER INFO");
             startActivity(intent);
         }
 

@@ -129,6 +129,7 @@ public class TeamInvitationDialogFragment extends DialogFragment {
         String expression = "^[\\w.+\\-]+@gmail\\.com$";
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        //return matcher.matches(); COMMENTED 3/4/2020 8:17 TO ALLOW UCSD EMAIL CHECKS
+        return true;
     }
 }

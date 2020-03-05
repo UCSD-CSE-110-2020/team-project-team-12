@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".PendingInviteActivity"
+            android:label="Your Invitations" />
+        <activity
             android:name=".TeamScreen"
             android:label="@string/title_activity_team_screen"
             android:theme="@style/AppTheme.NoActionBar" />

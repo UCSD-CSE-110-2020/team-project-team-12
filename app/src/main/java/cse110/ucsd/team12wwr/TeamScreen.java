@@ -173,18 +173,6 @@ public class TeamScreen extends FragmentActivity
 
                             }
                         });
-
-//                        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, );
-//
-//                        listView = findViewById(R.id.list_view);
-//                        listView.setAdapter(arrayAdapter);
-//                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                            @Override
-//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                                routeName = routeList.get(position).name;
-//                                launchRoutesDetailsPage();
-//                            }
-//                        });
                     }
                 });
             }
