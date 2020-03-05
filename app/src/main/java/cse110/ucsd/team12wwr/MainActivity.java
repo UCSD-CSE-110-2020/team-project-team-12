@@ -87,14 +87,14 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        /* START GOOGLE LOGIN *//*
+        /* START GOOGLE LOGIN */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
 
-        startActivityForResult(signInIntent, RC_SIGN_IN);*/
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
 
         Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
@@ -120,15 +120,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
-
-        /* FOR DEBUG ONLY */
-        Intent intentX = new Intent(this, TeamScreenActivity.class);
-        startActivity(intentX);
-        //onDestroy();
-
         /* PEDOMETER START */
         gFitUtil = new GoogleFitUtility(this);
-        final Handler checkSubscription = new Handler();/*
+        final Handler checkSubscription = new Handler();
         checkSubscription.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -141,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
                     googleSubscribedStatus = true;
                 }
             }
-        }, 5000);*/
+        }, 5000);
     }
 
 

@@ -377,7 +377,8 @@
                         android:layout_marginTop="10dp"
                         android:text="@string/true_tick"
                         android:textAlignment="center"
-                        android:textSize="20sp" />
+                        android:textSize="20sp"
+                        android:visibility="invisible"/>
                 </LinearLayout>
 
                 <LinearLayout

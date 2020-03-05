@@ -177,6 +177,8 @@ public class RouteDetailsPage extends AppCompatActivity {
                     if (mostRecentWalk.duration != null) {
                         TextView duration = findViewById(R.id.total_time_detail);
                         duration.setText(mostRecentWalk.duration);
+                        TextView checkmark = findViewById(R.id.checkmark_detail);
+                        checkmark.setVisibility(View.VISIBLE);
                     }
 
                     if (mostRecentWalk.distance != null) {
