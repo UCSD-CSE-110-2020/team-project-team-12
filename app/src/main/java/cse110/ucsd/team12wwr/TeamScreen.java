@@ -95,8 +95,9 @@ public class TeamScreen extends FragmentActivity
             }
         });
 
-        createUsers();
+//        createUsers();
         if ( !MainActivity.unitTestFlag) {
+            createUsers();
             initializeUpdateListener();
         }
 //        createUsers();
@@ -238,6 +239,12 @@ public class TeamScreen extends FragmentActivity
     }
 
     public void updateList() {
+        for ( int i = 0; i < teamList.size(); i++ ) {
+            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
+            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
+            rowItems.add(item);
+        }
+
         listView = findViewById(R.id.team_list);
         adapter = new TeamListAdapter(this, rowItems);
         listView.setAdapter(adapter);
@@ -272,4 +279,5 @@ public class TeamScreen extends FragmentActivity
         teamList.add(secondUser);
 
     }
+
 }

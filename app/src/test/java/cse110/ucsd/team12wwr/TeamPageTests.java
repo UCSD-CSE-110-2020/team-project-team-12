@@ -54,10 +54,18 @@ public class TeamPageTests {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
             teamScreenActivityTestRule.launchActivity(teamPageIntent);
-            int numOfItems = teamScreenActivityTestRule.getActivity().rowItems.size();
+            int numOfItems = teamScreenActivityTestRule.getActivity().teamList.size();
             assertEquals(numOfItems, 0);
             teamScreenActivityTestRule.finishActivity();
         });
+    }
+
+    @Test
+    public void testAddMembers() {
+        teamScreenActivityTestRule.launchActivity(teamPageIntent);
+        teamScreenActivityTestRule.getActivity().createUsers();
+        teamScreenActivityTestRule.getActivity().updateList();
+        assertEquals(teamScreenActivityTestRule.getActivity().rowItems.size(), 2);
     }
 
 
