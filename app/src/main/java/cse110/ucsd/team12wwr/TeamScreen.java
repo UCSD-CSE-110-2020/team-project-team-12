@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -97,7 +96,9 @@ public class TeamScreen extends FragmentActivity
         });
 
         createUsers();
-        initializeUpdateListener();
+        if ( !MainActivity.unitTestFlag) {
+            initializeUpdateListener();
+        }
 //        createUsers();
         
 //        for ( int i = 0; i < teamList.size(); i++ ) {
