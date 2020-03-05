@@ -1,28 +1,17 @@
 package cse110.ucsd.team12wwr;
 
-<<<<<<< HEAD
-import android.content.ComponentName;
-import android.content.Context;
-=======
->>>>>>> previously-walked
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-<<<<<<< HEAD
-import android.os.IBinder;
-=======
-import android.util.Log;
->>>>>>> previously-walked
+
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
-<<<<<<< HEAD
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-=======
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -31,7 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
->>>>>>> previously-walked
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 
@@ -47,12 +35,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
-<<<<<<< HEAD
-import cse110.ucsd.team12wwr.fitness.FitnessService;
-=======
+
 import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
 import cse110.ucsd.team12wwr.roomdb.WalkDao;
->>>>>>> previously-walked
 
 public class MainActivity extends AppCompatActivity {
 

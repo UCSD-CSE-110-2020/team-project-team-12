@@ -15,7 +15,7 @@
             android:label="@string/title_activity_team_individ_routes"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".TeamScreenActivity"
+            android:name=".TeamScreen"
             android:label="@string/title_activity_team_screen"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
