@@ -1,8 +1,5 @@
 package cse110.ucsd.team12wwr;
 
-import android.content.ComponentName;
-import android.content.Context;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,6 +10,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -47,13 +46,10 @@ public class MainActivity extends AppCompatActivity {
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
-    DecimalFormat DF = new DecimalFormat("#.##");
     final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
     final String INCHES_KEY = "INCHES";
-    final String STEP_SPF_NAME = "TOTAL_DIST_STEP";
-    final String TOTAL_STEPS_KEY = "totalSteps";
 
     /* height */
     SharedPreferences spf, spf2, prefs;
@@ -80,11 +76,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean gFitUtilLifecycleFlag;
 
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("MainActivity.onCreate", "onCreate() called");
+
+
 
         /* START GOOGLE LOGIN */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -92,10 +93,27 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
+
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        /* COMMENTED OUT FOR NOW 5:45PM 3/4/2020
+        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
+        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity();
+            }
+        });
 
+        Button launchRoutesScreen = (Button) findViewById(R.id.routes_list_button);
+        launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRoutesScreenActivity();
+            }
+        }); */
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
@@ -103,9 +121,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
+
+        /* FOR DEBUG ONLY */
+        Intent intentX = new Intent(this, TeamScreen.class);
+        startActivity(intentX);
+        //onDestroy();
+
         /* PEDOMETER START */
         gFitUtil = new GoogleFitUtility(this);
-        final Handler checkSubscription = new Handler();
+        final Handler checkSubscription = new Handler();/*
         checkSubscription.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -118,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     googleSubscribedStatus = true;
                 }
             }
-        }, 5000);
+        }, 5000);*/
     }
 
 
@@ -182,6 +206,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+
 
     }
 
@@ -294,6 +320,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DebugWalkActivity.class);
             startActivity(intent);
         }
+        else if (id == R.id.team_screen){
+            Intent intent = new Intent(this, TeamScreen.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -306,7 +336,6 @@ public class MainActivity extends AppCompatActivity {
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
         textStep.setText(""+numSteps);
     }
-
 
 
     @Override
@@ -333,10 +362,11 @@ public class MainActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            if (account.getEmail() != null) {
+            if(account.getEmail() != null) {
                 Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
                 userEmail = account.getEmail();
-            } else
+            }
+            else
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
             // Signed in successfully, show authenticated UI.
             //

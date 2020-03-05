@@ -25,6 +25,13 @@ public class FirebaseInvitationDao {
         }
     }
 
+    public void insert(Invitation invite){
+        if (db == null) {
+            return;
+        }
+            db.collection("invitations").document(invite.inviteeID).set(invite);
+    }
+
     public void delete(String inviteeID) {
         if (db == null) {
             return;

@@ -28,8 +28,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
+import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
 import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
 import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.Invitation;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.teamlist.TeamListAdapter;
@@ -48,6 +50,11 @@ public class TeamScreen extends FragmentActivity
     TeamListAdapter adapter;
     String userEmail;
 
+    /* my code */
+    String validatedEmail;
+    FirebaseInvitationDao db = new FirebaseInvitationDao();
+    Invitation inv = new Invitation();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,8 +67,8 @@ public class TeamScreen extends FragmentActivity
 
         Context context;
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
-        userEmail = emailprefs.getString("EMAIL_ID", null);
-        userEmail = "jane@gmail.com";
+        userEmail = emailprefs.getString("EMAIL_ID", "jane@gmail.com");
+        //userEmail = "jane@gmail.com";
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -208,6 +215,26 @@ public class TeamScreen extends FragmentActivity
         String invitedUser = ((TeamInvitationDialogFragment) dialog).getInvitedName();
         Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
                 + " NAME is: " + invitedUser);
+
+        if(invitedEmail.equalsIgnoreCase("ERROR")){
+            Log.i("onDialogPositiveClick ", "INVALID EMAIL INPUT");
+            Toast toast = Toast.makeText(this, "Invalid Gmail address", Toast.LENGTH_LONG);
+            toast.show();
+            return;
+        }
+        else {
+            Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
+                    + " NAME is: " + invitedUser);
+            validatedEmail = invitedEmail;
+            Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_LONG);
+            toast.show();
+
+            inv.inviteeID = validatedEmail;
+            inv.teamID = "TEAM !yee";
+            db.insert(inv);
+        }
+
+
 
         FirebaseUserDao userDao = new FirebaseUserDao();
         User user = new User();

@@ -12,7 +12,14 @@ import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
 
+
 import cse110.ucsd.team12wwr.R;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cse110.ucsd.team12wwr.TeamScreenActivity;
+
 
 public class TeamInvitationDialogFragment extends DialogFragment {
 
@@ -35,6 +42,7 @@ public class TeamInvitationDialogFragment extends DialogFragment {
 
     public String getInvitedLastName() {
         return invitedLastName;
+
     }
 
     public String getInvitedEmail(){
@@ -83,15 +91,27 @@ public class TeamInvitationDialogFragment extends DialogFragment {
                         EditText invitedEmailField = view.findViewById(R.id.username);
                         invitedEmail = invitedEmailField.getText().toString();
 
+
                         EditText invitedLastNameField = view.findViewById(R.id.first_name);
-                        invitedLastName = invitedLastNameField.getText().toString();
+                        invitedFirstName = invitedLastNameField.getText().toString();
 
                         EditText invitedFirstNameField = view.findViewById(R.id.last_name);
-                        invitedFirstName = invitedFirstNameField.getText().toString();
+                        invitedLastName = invitedFirstNameField.getText().toString();
+
+                        if(validInput(invitedEmail)){
+                            Log.i("Invited Email ", "was valid gmail");
+                        }
+                        else{
+                            invitedEmail = "ERROR";
+                            getDialog().cancel();
+                        }
+
+
+
+
 
                         listener.onDialogPositiveClick(TeamInvitationDialogFragment.this);
 
-                        // if(not valid gmail) cancel
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -103,5 +123,12 @@ public class TeamInvitationDialogFragment extends DialogFragment {
                 });
 
         return builder.create();
+    }
+
+    public static boolean validInput(String email) {
+        String expression = "^[\\w.+\\-]+@gmail\\.com$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

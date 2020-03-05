@@ -94,6 +94,7 @@ public class TeamListAdapter extends BaseAdapter {
 
             if ( item.getTeamID().equals("") ) {
                 holder.member_name.setTypeface(holder.member_name.getTypeface(), Typeface.ITALIC);
+                holder.member_name.setTextColor(Color.parseColor("#808080"));
             }
 
         }
