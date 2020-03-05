@@ -71,7 +71,7 @@ public class TeamListAdapter extends BaseAdapter {
             TeamScreenRowItem item = rowItems.get(i);
 
             ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
-            int pendingColor = Color.GRAY;
+            int pendingColor = Color.LTGRAY;
             // generate color based on a key (same key returns the same color), useful for list/grid views
             int color = generator.getColor(item.getMemberName());
 
@@ -93,7 +93,7 @@ public class TeamListAdapter extends BaseAdapter {
             holder.member_name.setText(item.getMemberName());
 
             if ( item.getTeamID().equals("") ) {
-                holder.member_name.setTypeface(holder.member_name.getTypeface(), Typeface.BOLD_ITALIC);
+                holder.member_name.setTypeface(holder.member_name.getTypeface(), Typeface.ITALIC);
             }
 
         }

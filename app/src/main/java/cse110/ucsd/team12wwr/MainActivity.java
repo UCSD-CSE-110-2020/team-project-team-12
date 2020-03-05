@@ -23,9 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
@@ -33,13 +31,11 @@ import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
-import cse110.ucsd.team12wwr.fitness.FitnessService;
 import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
 import cse110.ucsd.team12wwr.roomdb.WalkDao;
 
@@ -69,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     /* Testing */
     public static boolean unitTestFlag = false;
 
+    /* Team Related Variables */
+    String userEmail;
 
     /* distance */
     TextView textDist;
@@ -95,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-
-
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -131,15 +127,14 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        String test = "account not retrieved";
+        userEmail = "account not retrieved";
         try{
-            test = account.getEmail();
+            userEmail = account.getEmail();
         }
         catch(NullPointerException e){
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
         }
-        Log.i("GMAIL: ", test);
-
+        Log.i("GMAIL: ", userEmail);
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
@@ -202,6 +197,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchTeamScreenActivity() {
+        SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("EMAIL_ID", userEmail);
+        editor.apply();
+
         Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
     }
@@ -249,9 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 4000);
-
-
-
 
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
@@ -336,17 +333,17 @@ public class MainActivity extends AppCompatActivity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            if(account.getEmail() != null)
-                Log.i("MainActivity.handleSignInResult() ", account.getEmail());
-            else
-                Log.i("MainActivity.handleSignInResult() ", "FAILURE");
+            if (account.getEmail() != null) {
+                Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
+                userEmail = account.getEmail();
+            } else
+                Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
             // Signed in successfully, show authenticated UI.
-            //updateUI(account);
+            //
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            //updateUI(null);
         }
     }
 
