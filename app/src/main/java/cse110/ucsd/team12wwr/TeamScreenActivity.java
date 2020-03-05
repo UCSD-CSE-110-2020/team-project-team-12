@@ -21,11 +21,16 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
+import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
+import cse110.ucsd.team12wwr.firebase.Invitation;
 
 public class TeamScreenActivity extends FragmentActivity
                                 implements TeamInvitationDialogFragment.InviteDialogListener{
 
     String validatedEmail;
+    FirebaseInvitationDao db = new FirebaseInvitationDao();
+    Invitation inv = new Invitation();
+
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
@@ -46,6 +51,10 @@ public class TeamScreenActivity extends FragmentActivity
             validatedEmail = invitedEmail;
             Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_LONG);
             toast.show();
+
+            inv.inviteeID = validatedEmail;
+            inv.teamID = "TEAM !yee";
+            db.insert(inv);
         }
 
     }
