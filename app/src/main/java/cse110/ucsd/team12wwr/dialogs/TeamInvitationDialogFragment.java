@@ -12,7 +12,15 @@ import android.widget.EditText;
 
 import androidx.fragment.app.DialogFragment;
 
+<<<<<<< HEAD
 import cse110.ucsd.team12wwr.R;
+=======
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import cse110.ucsd.team12wwr.R;
+import cse110.ucsd.team12wwr.TeamScreenActivity;
+>>>>>>> previously-walked
 
 public class TeamInvitationDialogFragment extends DialogFragment {
 
@@ -22,11 +30,18 @@ public class TeamInvitationDialogFragment extends DialogFragment {
     }
 
     private String invitedEmail = "";
+<<<<<<< HEAD
     private String invitedLastName = "";
     private String invitedFirstName = "";
 
     public String getInvitedName(){
         return invitedFirstName + " " + invitedLastName;
+=======
+    private String invitedName = "";
+
+    public String getInvitedName(){
+        return invitedName;
+>>>>>>> previously-walked
     }
 
     public String getInvitedEmail(){
@@ -74,12 +89,27 @@ public class TeamInvitationDialogFragment extends DialogFragment {
 
                         EditText invitedEmailField = view.findViewById(R.id.username);
                         invitedEmail = invitedEmailField.getText().toString();
+<<<<<<< HEAD
 
                         EditText invitedLastNameField = view.findViewById(R.id.first_name);
                         invitedLastName = invitedLastNameField.getText().toString();
 
                         EditText invitedFirstNameField = view.findViewById(R.id.last_name);
                         invitedFirstName = invitedFirstNameField.getText().toString();
+=======
+                        if(validInput(invitedEmail)){
+                            Log.i("Invited Email ", "was valid gmail");
+                        }
+                        else{
+                            invitedEmail = "ERROR";
+                            getDialog().cancel();
+                        }
+
+                        EditText invitedNameField = view.findViewById(R.id.name);
+                        invitedName = invitedNameField.getText().toString();
+
+
+>>>>>>> previously-walked
 
                         listener.onDialogPositiveClick(TeamInvitationDialogFragment.this);
 
@@ -96,4 +126,14 @@ public class TeamInvitationDialogFragment extends DialogFragment {
 
         return builder.create();
     }
+<<<<<<< HEAD
+=======
+
+    public static boolean validInput(String email) {
+        String expression = "^[\\w.+\\-]+@gmail\\.com$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+>>>>>>> previously-walked
 }

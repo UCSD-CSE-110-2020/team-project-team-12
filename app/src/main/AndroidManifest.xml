@@ -10,12 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+
             android:name=".TeamIndividRoutes"
             android:label="@string/title_activity_team_individ_routes"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".TeamScreen"
-            android:label="@string/title_activity_team_screen" />
+            android:name=".TeamScreenActivity"
+            android:label="@string/title_activity_team_screen"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity android:name=".RoutesScreen" />
         <activity android:name=".RouteInfoActivity" />
         <activity android:name=".RouteDetailsPage" />

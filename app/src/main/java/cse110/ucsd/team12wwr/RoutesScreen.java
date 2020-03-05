@@ -30,8 +30,10 @@ public class RoutesScreen extends AppCompatActivity {
 
     private static final String TAG = "RoutesScreen";
 
-    private String routeName;
-    private ListView listView;
+    ListView listView;
+    List<Route> routeList;
+    ArrayList<Route> routeListParam;
+    String routeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,22 @@ public class RoutesScreen extends AppCompatActivity {
         });
     }
 
+//     @Override
+//     protected void onResume() {
+//         super.onResume();
+
+//         WWRDatabase db = WWRDatabase.getInstance(this);
+//         routeList = db.routeDao().retrieveAllRoutes();
+
+//         listView = findViewById(R.id.list_view);
+//         routeListParam = new ArrayList<>(routeList);
+
+// //        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+//         RouteListAdapter routeListAdapter = new RouteListAdapter(this, R.layout.route_adapter_view_layout, routeListParam);
+
+//         listView.setAdapter(routeListAdapter);
+    
+
     private void initializeUpdateListener() {
         FirebaseFirestore.getInstance().collection("routes")
                 .orderBy("name", Query.Direction.ASCENDING)
@@ -103,6 +121,7 @@ public class RoutesScreen extends AppCompatActivity {
                     }
                 });
     }
+    
 
     private void renderRoutesList() {
         FirebaseRouteDao routeDao = new FirebaseRouteDao();
@@ -113,10 +132,16 @@ public class RoutesScreen extends AppCompatActivity {
                     routeList.add(document.toObject(Route.class));
                 }
 
-                ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+//                ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
 
                 listView = findViewById(R.id.list_view);
-                listView.setAdapter(arrayAdapter);
+                routeListParam = new ArrayList<>(routeList);
+
+                RouteListAdapter routeListAdapter = new RouteListAdapter(this, R.layout.route_adapter_view_layout,
+                        routeListParam);
+
+                listView.setAdapter(routeListAdapter);
+//                listView.setAdapter(arrayAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

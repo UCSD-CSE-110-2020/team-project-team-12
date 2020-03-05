@@ -1,30 +1,58 @@
 package cse110.ucsd.team12wwr;
 
+<<<<<<< HEAD
 import android.content.ComponentName;
 import android.content.Context;
+=======
+>>>>>>> previously-walked
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+<<<<<<< HEAD
 import android.os.IBinder;
+=======
+import android.util.Log;
+>>>>>>> previously-walked
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+<<<<<<< HEAD
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+=======
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
+
+>>>>>>> previously-walked
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+
 import java.text.DecimalFormat;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
+
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
+<<<<<<< HEAD
 import cse110.ucsd.team12wwr.fitness.FitnessService;
+=======
+import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
+import cse110.ucsd.team12wwr.roomdb.WalkDao;
+>>>>>>> previously-walked
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,13 +62,10 @@ public class MainActivity extends AppCompatActivity {
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
-    DecimalFormat DF = new DecimalFormat("#.##");
     final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
     final String INCHES_KEY = "INCHES";
-    final String STEP_SPF_NAME = "TOTAL_DIST_STEP";
-    final String TOTAL_STEPS_KEY = "totalSteps";
 
     /* height */
     SharedPreferences spf, spf2, prefs;
@@ -49,59 +74,42 @@ public class MainActivity extends AppCompatActivity {
     TextView textStep;
     long numSteps = 0;
 
-    /* GoogleFit */
-    private FitnessService fitnessService;
-    private final String fitnessServiceKey = "GOOGLE_FIT";
+    /* Testing */
+    public static boolean unitTestFlag = false;
 
-
-    /*SERVICE*/
-    private PedometerService pedService;
-    private boolean isBound = false;
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service){
-            Log.i("MainActivity.onServiceConnected", "PedometerService Connection Initializing");
-            PedometerService.LocalService localService = (PedometerService.LocalService)service;
-            try {
-                pedService = localService.getService();
-            }
-            catch(Exception e){
-                Log.i("Not real", "NOT REAL THIS DOESN'T HAPPEN");
-            }
-            isBound = true;
-            Log.i("MainActivity.onServiceConnected", "PedometerService Connected");
-        }
-        @Override
-        public void onServiceDisconnected(ComponentName name) {isBound = false;}
-    };
 
     /* distance */
     TextView textDist;
     int totalHeight;
     double strideLength;
 
-    /* TESTING */
-    public boolean testingFlag = false;
+    /* GoogleFit Refactor */
+    int RC_SIGN_IN = 4;
+    GoogleFitUtility gFitUtil;
+    public boolean googleSubscribedStatus = false;
+    public boolean gFitUtilLifecycleFlag;
 
-    public boolean startServCalled = false;
+
+    /* Team Related Variables */
+    String userEmail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.i("MainActivity.onCreate", "onCreate() called");
 
-        setTestingFlag(true);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
-        // Launches height activity only on first start
-        if(!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
-            edit.commit();
-            launchHeightActivity();
-        }
+        /* START GOOGLE LOGIN */
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
+        startActivityForResult(signInIntent, RC_SIGN_IN);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
 
@@ -120,6 +128,49 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
+        /* PEDOMETER START */
+        gFitUtil = new GoogleFitUtility(this);
+        final Handler checkSubscription = new Handler();
+        checkSubscription.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!gFitUtil.getSubscribed()) {
+                    Log.i("checkSubscription", "Not yet subscribed, checking again in 5 seconds");
+                    checkSubscription.postDelayed(this, 5000);
+                }
+                else{
+                    Log.i("checkSubscription", "Ending handler.run");
+                    googleSubscribedStatus = true;
+                }
+            }
+        }, 5000);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("MainActivity.onStart", "onStart() has been called");
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        userEmail = "account not retrieved";
+        try{
+            userEmail = account.getEmail();
+        }
+        catch(NullPointerException e){
+            Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
+        }
+        Log.i("GMAIL: ", userEmail);
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
+
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
+            edit.commit();
+            launchHeightActivity();
+        }
+
         // Collect the height from the height page
         spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
         int feet = spf.getInt(FEET_KEY, 0);
@@ -127,13 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
         totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
-
-//        /* PEDOMETER START */
-//        Log.i("MainActivity.onCreate", "calling fitnessService.setup()");
-//        if(testingFlag) {
-//            fitnessService.setup();
-//            startStepUpdaterMethod();
-//        }
 
         BottomNavigationView navigation = findViewById(R.id.nav_view);
         Menu menu = navigation.getMenu();
@@ -163,75 +207,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
     }
 
-    public void setFitnessService(FitnessService newService){
-        fitnessService = newService;
-    }
-    public void setTestingFlag(boolean flag){
-        testingFlag = flag;
-    }
-
-    public void startStepUpdaterMethod(){
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i("MainActivity.startStepUpdaterMethod", "start runner called");
-                if(!isBound || pedService==null) {
-                    Log.i("MainActivity.startStepUpdaterMethod", "Still waiting for successful bind");
-                    handler.postDelayed(this, 2000);
-                }
-                else{
-                    Log.i("MainActivity.startStepUpdaterMethod", "Successful bind achieved");
-                    pedService.beginStepTracking(fitnessService);
-                    startServCalled = true;
-                }
-            }
-        }, 1500);
-    }
-    public void continueStepUpdaterMethod(){
-        final Handler bindCheckHandler = new Handler();
-        bindCheckHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Log.i("MainActivity.continueStepUpdaterMethod", "continue Runner Called");
-                if(!isBound) {
-                    Log.i("MainActivity.continueStepUpdaterMethod", "Still waiting for successful bind");
-                    bindCheckHandler.postDelayed(this, 2000);
-                }
-                if(!startServCalled){
-                    Log.i("MainActivity.continueStepUpdaterMethod", "beginStepTracking Uncalled");
-                    bindCheckHandler.postDelayed(this, 2000);
-                }
-                else{
-                    Log.i("MainActivity.continueStepUpdaterMethod", "Successful bind achieved");
-                    final Handler updateStepsHandler = new Handler();
-                    updateStepsHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setStepCount(pedService.getCurrentSteps());
-                            updateStepsHandler.postDelayed(this, 3000);
-                        }
-                    }, 3000);
-                }
-            }
-        }, 1500);
-    }
-    public void bindPedService(){
-        if(!testingFlag)
-            return;
-        Intent intent = new Intent(this, PedometerService.class);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-    }
-    public void rebindPedService(){
-        Intent intent = new Intent(this, PedometerService.class);
-        bindService(intent, serviceConnection, 0);
-        isBound = true;
-    }
-    public void unbindPedometerService() {
-        unbindService(serviceConnection);
-    }
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
@@ -258,9 +237,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Log.i("MainActivity.onPause", "onPause() has been called");
-//        stopService(new Intent(this, PedometerService.class));
-//        isBound = false;
-//        unbindPedometerService();
+        gFitUtilLifecycleFlag = false;
+
     }
 
     public void launchHeightActivity() {
@@ -273,8 +251,33 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
-//        rebindPedService();
-//        continueStepUpdaterMethod();
+
+
+
+        gFitUtilLifecycleFlag = true;
+
+        final Handler stepsUpdaterHandler = new Handler();
+        stepsUpdaterHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (gFitUtilLifecycleFlag) {
+                    Log.i("stepsUpdaterHandler", "Updating step value");
+                    gFitUtil.updateStepCount();
+                    setStepCount(gFitUtil.getStepValue());
+                    stepsUpdaterHandler.postDelayed(this, 4000);
+                }
+                else if (!gFitUtil.getSubscribed()){
+                    Log.i("stepsUpdaterHandler", "NOT YET SUBSCRIBED");
+                }
+                else{
+                    Log.i("stepsUpdaterHandler", "THREAD DISABLED");
+                }
+            }
+        }, 4000);
+
+
+
+
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
         dao.findNewestEntries().addOnCompleteListener(task -> {
@@ -290,6 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     TextView stepsWalkText = findViewById(R.id.text_steps_value);
                     TextView distWalkText = findViewById(R.id.text_distance_value);
                     TextView timeWalkText = findViewById(R.id.text_time_value);
+
 
                     stepsWalkText.setText(newestWalk.steps);
                     distWalkText.setText(newestWalk.distance);
@@ -318,6 +322,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DebugWalkActivity.class);
             startActivity(intent);
         }
+        else if (id == R.id.team_screen){
+            Intent intent = new Intent(this, TeamScreenActivity.class);
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -330,29 +338,45 @@ public class MainActivity extends AppCompatActivity {
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
         textStep.setText(""+numSteps);
     }
-    //For GoogleFit
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-////       If authentication was required during google fit setup, this will be called after the user authenticates
-//        if (resultCode == Activity.RESULT_OK) {
-//            if (requestCode == fitnessService.getRequestCode()) {
-//                //fitnessService.updateStepCount();
-//                fitnessService.startRecording();
-//            }
-//        } else {
-//            Log.e(TAG, "ERROR, google fit result code: " + resultCode);
-//        }
-//    }
+
 
     @Override
     protected void onDestroy() {
         Log.i("MainActivity.onDestroy", "onDestroy() has been called");
-//        if(isBound){
-//            unbindService(serviceConnection);
-//            isBound = false;
-//        }
         super.onDestroy();
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
+            gFitUtil.init();
+        }
+    }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            if(account.getEmail() != null) {
+                Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
+                userEmail = account.getEmail();
+            }
+            else
+                Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
+            // Signed in successfully, show authenticated UI.
+            //
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+        }
     }
 
 }

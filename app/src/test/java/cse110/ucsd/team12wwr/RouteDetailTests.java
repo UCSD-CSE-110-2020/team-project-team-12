@@ -1,14 +1,8 @@
 package cse110.ucsd.team12wwr;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import org.apache.tools.ant.Main;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,40 +17,46 @@ import static org.junit.Assert.assertEquals;
 public class RouteDetailTests {
 
     private Intent routeIntent;
-    private ActivityTestRule<RouteDetailsPage> routeInfoActivityActivityTestRule;
-    private Intent mainIntent;
-    private ActivityTestRule<MainActivity> mainActivityTestRule;
+    private ActivityTestRule<RouteDetailsPage> routeDetailsPageTestRule;
+    private ActivityTestRule<RouteInfoActivity> routeInfoActivityTestRule;
     private ActivityTestRule<IntentionalWalkActivity> intentionalWalkActivityActivityTestRule;
 
     @Before
     public void setUp(){
+        MainActivity.unitTestFlag = true;
         routeIntent = new Intent(ApplicationProvider.getApplicationContext(), RouteDetailsPage.class);
-        routeInfoActivityActivityTestRule = new ActivityTestRule<>(RouteDetailsPage.class);
+        routeDetailsPageTestRule = new ActivityTestRule<>(RouteDetailsPage.class);
+        routeInfoActivityTestRule = new ActivityTestRule<>(RouteInfoActivity.class);
+        intentionalWalkActivityActivityTestRule = new ActivityTestRule<>(IntentionalWalkActivity.class);
     }
 
     @Test
     public void testDefaultState() {
-        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
-        TextView title = routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.route_title_detail);
+        routeDetailsPageTestRule.launchActivity(routeIntent);
+        TextView title = routeDetailsPageTestRule.getActivity().findViewById(R.id.route_title_detail);
         title.setText("Title");
-        assertEquals(true, (routeInfoActivityActivityTestRule.getActivity().extractString(title)).equals("Title"));
-        routeInfoActivityActivityTestRule.finishActivity();
+        assertEquals(true, (routeDetailsPageTestRule.getActivity().extractString(title)).equals("Title"));
+        routeDetailsPageTestRule.finishActivity();
     }
 
 //    @Test
 //    public void testLaunchRouteInfoActivity() {
-//        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
-//        routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.route_title_detail);
-//        routeInfoActivityActivityTestRule.getActivity().launchRouteInfoActivity();
-//        assertEquals(true, routeInfoActivityActivityTestRule.getActivity().getIntent().hasExtra("ROUTE_TITLE"));
+//        routeDetailsPageTestRule.launchActivity(routeIntent);
+//        routeDetailsPageTestRule.getActivity().findViewById(R.id.route_title_detail);
+//        routeDetailsPageTestRule.getActivity().launchRouteInfoActivity();
+//
+//        routeInfoActivityTestRule.launchActivity(new Intent(ApplicationProvider.getApplicationContext(), RouteInfoActivity.class));
+//        assertEquals(true, routeInfoActivityTestRule.getActivity().getIntent().hasExtra("ROUTE_TITLE"));
 //
 //    }
 //
 //    @Test
 //    public void testLaunchIntentionalActivity() {
-//        routeInfoActivityActivityTestRule.launchActivity(routeIntent);
-//        routeInfoActivityActivityTestRule.getActivity().findViewById(R.id.route_title_detail);
-//        routeInfoActivityActivityTestRule.getActivity().launchIntentionalActivity();
-//        assertEquals(true, routeInfoActivityActivityTestRule.getActivity().getIntent().hasExtra("ROUTE_TITLE"));
+//        routeDetailsPageTestRule.launchActivity(routeIntent);
+//        routeDetailsPageTestRule.getActivity().findViewById(R.id.route_title_detail);
+//        routeDetailsPageTestRule.getActivity().launchIntentionalActivity();
+//
+//        intentionalWalkActivityActivityTestRule.launchActivity(new Intent(ApplicationProvider.getApplicationContext(), IntentionalWalkActivity.class));
+//        assertEquals(true, intentionalWalkActivityActivityTestRule.getActivity().getIntent().hasExtra("ROUTE_TITLE"));
 //    }
 }

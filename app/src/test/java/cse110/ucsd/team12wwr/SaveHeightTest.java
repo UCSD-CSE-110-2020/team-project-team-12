@@ -31,14 +31,15 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(AndroidJUnit4.class)
 public class SaveHeightTest {
     private Intent intent, mainIntent;
-    private ActivityTestRule<mockMainActivity> mainActivityTestRule;
+    private ActivityTestRule<MainActivity> mainActivityTestRule;
 
     @Before
     public void setUp() {
+        MainActivity.unitTestFlag = true;
         intent = new Intent(ApplicationProvider.getApplicationContext(), StartPage.class);
-        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), mockMainActivity.class);
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
         intent.putExtras(mainIntent);
-        mainActivityTestRule = new ActivityTestRule<>(mockMainActivity.class);
+        mainActivityTestRule = new ActivityTestRule<>(MainActivity.class);
     }
 
     @Test
