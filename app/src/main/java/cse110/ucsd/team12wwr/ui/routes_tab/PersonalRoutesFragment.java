@@ -1,6 +1,7 @@
 package cse110.ucsd.team12wwr.ui.routes_tab;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import cse110.ucsd.team12wwr.R;
  */
 public class PersonalRoutesFragment extends Fragment {
 
+    private static final String TAG = "PersonalRoutesFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private PageViewModel pageViewModel;
@@ -33,6 +35,7 @@ public class PersonalRoutesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "Entered Personal Routes Tab!");
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
