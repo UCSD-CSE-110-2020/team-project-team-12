@@ -100,7 +100,7 @@ public class TeamScreen extends FragmentActivity
         });
 
         if ( !MainActivity.unitTestFlag) {
-            createUsers();
+//            createUsers();
             initializeUpdateListener();
         }
 
@@ -155,9 +155,9 @@ public class TeamScreen extends FragmentActivity
                             userList.add(document.toObject(User.class));
                         }
 
-                        for ( int i = 0; i < teamList.size(); i++ ) {
-                            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
-                            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
+                        for ( int i = 0; i < userList.size(); i++ ) {
+                            String name = userList.get(i).firstName + " " + userList.get(i).lastName;
+                            TeamScreenRowItem item = new TeamScreenRowItem(name, userList.get(i).userIcon, userList.get(i).teamID );
                             rowItems.add(item);
                         }
 

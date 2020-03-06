@@ -88,20 +88,11 @@ public class TeamInvitationDialogFragment extends DialogFragment {
                         EditText invitedEmailField = view.findViewById(R.id.username);
                         invitedEmail = invitedEmailField.getText().toString();
 
-                        EditText invitedLastNameField = view.findViewById(R.id.name);
-                        invitedName = invitedLastNameField.getText().toString();
+                        EditText invitedLastNameField = view.findViewById(R.id.first_name);
+                        invitedLastName = invitedLastNameField.getText().toString();
 
-                        if(validInput(invitedEmail)){
-                            Log.i("Invited Email ", "was valid gmail");
-                        }
-                        else{
-                            invitedEmail = "ERROR";
-                            getDialog().cancel();
-                        }
-
-                        EditText invitedNameField = view.findViewById(R.id.name);
-                        invitedName = invitedNameField.getText().toString();
-
+                        EditText invitedFirstNameField = view.findViewById(R.id.last_name);
+                        invitedFirstName = invitedFirstNameField.getText().toString();
 
                         listener.onDialogPositiveClick(TeamInvitationDialogFragment.this);
 
