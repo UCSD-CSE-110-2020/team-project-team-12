@@ -180,8 +180,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 FirebaseWalkDao walkDao = new FirebaseWalkDao();
 
                 String routeName = data.getExtras().getString("routeTitle");
