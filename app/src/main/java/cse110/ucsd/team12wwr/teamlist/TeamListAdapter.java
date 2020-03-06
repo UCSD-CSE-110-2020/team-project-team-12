@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.google.api.LogDescriptor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import cse110.ucsd.team12wwr.teamlist.TeamScreenRowItem;
 
 public class TeamListAdapter extends BaseAdapter {
 
+    private static final String TAG = "TeamListAdapter";
     Context context;
     List<TeamScreenRowItem> rowItems;
     TextDrawable.IBuilder builder;
@@ -70,8 +73,9 @@ public class TeamListAdapter extends BaseAdapter {
 
             TeamScreenRowItem item = rowItems.get(i);
 
-            ColorGenerator generator = ColorGenerator.MATERIAL; // or use DEFAULT
+            ColorGenerator generator = ColorGenerator.MATERIAL;
             int pendingColor = Color.LTGRAY;
+            
             // generate color based on a key (same key returns the same color), useful for list/grid views
             int color = generator.getColor(item.getMemberName());
 
@@ -84,8 +88,11 @@ public class TeamListAdapter extends BaseAdapter {
                     .round();
 
             if ( !item.getTeamID().equals("") ) {
+                Log.d(TAG, "getView: Team members: " + holder.member_name);
+                Log.d(TAG, "getView: Color: " + color);
                 iconDrawable = builder.build(item.getInitials(), color);
             } else {
+                Log.d(TAG, "getView: Team member is pending");
                 iconDrawable = builder.build(item.getInitials(), pendingColor);
             }
 
@@ -95,6 +102,8 @@ public class TeamListAdapter extends BaseAdapter {
             if ( item.getTeamID().equals("") ) {
                 holder.member_name.setTypeface(holder.member_name.getTypeface(), Typeface.ITALIC);
             }
+
+            Log.d(TAG, "getView: Team List item is now set");
 
         }
         return convertView;

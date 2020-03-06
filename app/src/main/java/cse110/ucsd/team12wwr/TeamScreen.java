@@ -62,6 +62,7 @@ public class TeamScreen extends FragmentActivity
         userEmail = emailprefs.getString("EMAIL_ID", null);
         userEmail = "jane@gmail.com";
 
+        Log.d(TAG, "onCreate: Email for current user: " + userEmail);
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,6 +71,7 @@ public class TeamScreen extends FragmentActivity
             }
         });
 
+        Log.d(TAG, "onCreate: Navigation bar created");
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -135,7 +137,9 @@ public class TeamScreen extends FragmentActivity
                 });
     }
 
+    
     private void renderRoutesList(String email) {
+        Log.d(TAG, "renderRoutesList: Now rendering the list of team members");
         FirebaseUserDao dao = new FirebaseUserDao();
         dao.findUserByID(email).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
