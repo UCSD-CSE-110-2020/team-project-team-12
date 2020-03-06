@@ -1,25 +1,52 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
+import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.teamlist.TeamListAdapter;
+import cse110.ucsd.team12wwr.teamlist.TeamScreenRowItem;
 
 
 public class TeamScreen extends FragmentActivity
                         implements TeamInvitationDialogFragment.InviteDialogListener {
+
+    private static final String TAG = "TeamScreen";
+
+    private String firstName, lastName;
+    List<User> teamList = new ArrayList<>();
+    List<TeamScreenRowItem> rowItems = new ArrayList<>();
+    ListView listView;
+    TeamListAdapter adapter;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +58,14 @@ public class TeamScreen extends FragmentActivity
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
 
+        Context context;
+        SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailprefs.getString("EMAIL_ID", null);
+        userEmail = "jane@gmail.com";
+
+        Log.d(TAG, "onCreate: Email for current user: " + userEmail);
         FloatingActionButton fab = findViewById(R.id.add_fab);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -39,6 +73,7 @@ public class TeamScreen extends FragmentActivity
             }
         });
 
+        Log.d(TAG, "onCreate: Navigation bar created");
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -61,6 +96,97 @@ public class TeamScreen extends FragmentActivity
                         break;
                 }
                 return false;
+            }
+        });
+
+//        createUsers();
+        if ( !MainActivity.unitTestFlag) {
+            createUsers();
+            initializeUpdateListener();
+        }
+//        createUsers();
+        
+//        for ( int i = 0; i < teamList.size(); i++ ) {
+//            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
+//            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
+//            rowItems.add(item);
+//        }
+//
+//        listView = findViewById(R.id.team_list);
+//        adapter = new TeamListAdapter(this, rowItems);
+//        listView.setAdapter(adapter);
+//
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//
+//            }
+//        });
+
+    }
+
+    private void initializeUpdateListener() {
+        FirebaseFirestore.getInstance().collection("users")
+                .addSnapshotListener((newChatSnapshot, error) -> {
+                    if (error != null) {
+                        Log.e(TAG, error.getLocalizedMessage());
+                        return;
+                    }
+
+                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                        renderRoutesList(userEmail);
+                    }
+                });
+    }
+
+    
+    private void renderRoutesList(String email) {
+        Log.d(TAG, "renderRoutesList: Now rendering the list of team members");
+        FirebaseUserDao dao = new FirebaseUserDao();
+        dao.findUserByID(email).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                User u = null;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    u = document.toObject(User.class);
+                }
+
+                dao.findUsersByTeam(u.teamID).addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        List<User> userList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            userList.add(document.toObject(User.class));
+                        }
+
+                        for ( int i = 0; i < teamList.size(); i++ ) {
+                            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
+                            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
+                            rowItems.add(item);
+                        }
+
+                        listView = findViewById(R.id.team_list);
+                        adapter = new TeamListAdapter(this, rowItems);
+                        listView.setAdapter(adapter);
+
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                            }
+                        });
+
+//                        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, );
+//
+//                        listView = findViewById(R.id.list_view);
+//                        listView.setAdapter(arrayAdapter);
+//                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                            @Override
+//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                                routeName = routeList.get(position).name;
+//                                launchRoutesDetailsPage();
+//                            }
+//                        });
+                    }
+                });
             }
         });
     }
@@ -90,6 +216,22 @@ public class TeamScreen extends FragmentActivity
         Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
                 + " NAME is: " + invitedUser);
 
+        FirebaseUserDao userDao = new FirebaseUserDao();
+        User user = new User();
+        user.firstName = ((TeamInvitationDialogFragment) dialog).getInvitedFirstName();
+        user.lastName = ((TeamInvitationDialogFragment) dialog).getInvitedLastName();
+        String initials = String.valueOf(((TeamInvitationDialogFragment) dialog).getInvitedFirstName().charAt(0)) +
+                          String.valueOf(((TeamInvitationDialogFragment) dialog).getInvitedLastName().charAt(0));
+        user.userIcon = initials;
+        user.teamID = "";
+        user.userID = invitedEmail;
+        userDao.insertAll(user);
+        teamList.add(user);
+        TeamScreenRowItem item = new TeamScreenRowItem(invitedUser, initials, "" );
+        rowItems.add(item);
+        adapter.updateItems(rowItems);
+        updateList();
+
         Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_SHORT);
         toast.show();
     }
@@ -101,4 +243,47 @@ public class TeamScreen extends FragmentActivity
         Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
         toast.show();
     }
+
+    public void updateList() {
+        for ( int i = 0; i < teamList.size(); i++ ) {
+            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
+            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
+            rowItems.add(item);
+        }
+
+        listView = findViewById(R.id.team_list);
+        adapter = new TeamListAdapter(this, rowItems);
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
+    }
+    
+    public void createUsers() {
+        FirebaseUserDao userDao = new FirebaseUserDao();
+
+        User firstUser = new User();
+        firstUser.userID = "jane@gmail.com";
+        firstUser.firstName = "Jane";
+        firstUser.lastName = "Ease";
+        firstUser.userIcon = "JE";
+        firstUser.teamID = "Team A";
+        userDao.insertAll(firstUser);
+        teamList.add(firstUser);
+
+        User secondUser = new User();
+        secondUser.userID = "susan@gmail.com";
+        secondUser.firstName = "Susan";
+        secondUser.lastName = "Sath";
+        secondUser.userIcon = "SS";
+        secondUser.teamID = "Team A";
+        userDao.insertAll(secondUser);
+        teamList.add(secondUser);
+
+    }
+
 }

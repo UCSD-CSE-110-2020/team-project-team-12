@@ -1,10 +1,15 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.ComponentName;
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
+import android.os.IBinder;
+import android.util.Log;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -22,13 +27,11 @@ import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-
 import java.text.DecimalFormat;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
-
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     /* Testing */
     public static boolean unitTestFlag = false;
 
+    /* Team Related Variables */
+    String userEmail;
 
     /* distance */
     TextView textDist;
@@ -75,17 +80,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean gFitUtilLifecycleFlag;
 
 
-    /* Team Related Variables */
-    String userEmail;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("MainActivity.onCreate", "onCreate() called");
-
-
 
         /* START GOOGLE LOGIN */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -138,10 +137,9 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         userEmail = "account not retrieved";
-        try{
+        try {
             userEmail = account.getEmail();
-        }
-        catch(NullPointerException e){
+        } catch (NullPointerException e) {
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
         }
         Log.i("GMAIL: ", userEmail);
@@ -149,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
-        if(!previouslyStarted) {
+        if (!previouslyStarted) {
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();
@@ -161,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         int feet = spf.getInt(FEET_KEY, 0);
         int inches = spf.getInt(INCHES_KEY, 0);
 
-        totalHeight = inches + ( HEIGHT_FACTOR * feet );
+        totalHeight = inches + (HEIGHT_FACTOR * feet);
         strideLength = totalHeight * STRIDE_CONVERSION;
 
         BottomNavigationView navigation = findViewById(R.id.nav_view);
@@ -192,10 +190,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
     }
-
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
@@ -208,6 +203,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchTeamScreenActivity() {
+        SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("EMAIL_ID", userEmail);
+        editor.apply();
+
         Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
     }
@@ -259,9 +259,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 4000);
-
-
-
 
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
@@ -353,10 +350,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
                 userEmail = account.getEmail();
             }
-            else
+            else {
+
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
-            // Signed in successfully, show authenticated UI.
-            //
+                // Signed in successfully, show authenticated UI.
+                //
+            }
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
