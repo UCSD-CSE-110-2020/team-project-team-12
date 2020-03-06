@@ -12,12 +12,13 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import cse110.ucsd.team12wwr.ui.routes_tab.SectionsPagerAdapter;
 
-public class TeamIndividRoutes extends AppCompatActivity {
+public class TeamIndividRoutes extends FragmentActivity {
 
     private static final String TAG = "TeamIndivRoutes";
 
@@ -58,16 +59,6 @@ public class TeamIndividRoutes extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton add = findViewById(R.id.add_fab);
-
-        add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "Adding a route!");
-                launchRouteInfoActivity();
-            }
-        });
-
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
@@ -86,10 +77,4 @@ public class TeamIndividRoutes extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void launchRouteInfoActivity() {
-        Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
-        Intent intent = new Intent(this, RouteInfoActivity.class);
-
-        startActivity(intent);
-    }
 }
