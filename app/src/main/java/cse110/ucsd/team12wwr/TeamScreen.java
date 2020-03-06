@@ -97,13 +97,11 @@ public class TeamScreen extends FragmentActivity
             }
         });
 
-//        createUsers();
         if ( !MainActivity.unitTestFlag) {
             createUsers();
             initializeUpdateListener();
         }
-//        createUsers();
-        
+
 //        for ( int i = 0; i < teamList.size(); i++ ) {
 //            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
 //            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
