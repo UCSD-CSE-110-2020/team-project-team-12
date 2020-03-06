@@ -14,6 +14,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -23,11 +26,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.auth.User;
 
 import java.text.DecimalFormat;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
+import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.Invitation;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
 import androidx.annotation.NonNull;
@@ -63,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
 
     /* Team Related Variables */
     String userEmail;
+    String teamName;
+    cse110.ucsd.team12wwr.firebase.User thisUser;
 
     /* distance */
     TextView textDist;
@@ -152,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         userEmail = "account not retrieved";
         try{
             userEmail = account.getEmail();
+            getTeamIDFromDB(userEmail);
         }
         catch(NullPointerException e){
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
@@ -262,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onResume", "onResume() has been called");
 
 
+        //LOOKHERE for the place where you should get the user object from db and yank out team
+        //
 
         gFitUtilLifecycleFlag = true;
 
@@ -381,6 +395,7 @@ public class MainActivity extends AppCompatActivity {
             if(account.getEmail() != null) {
                 Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
                 userEmail = account.getEmail();
+                getTeamIDFromDB(userEmail);
             }
             else
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
@@ -391,6 +406,59 @@ public class MainActivity extends AppCompatActivity {
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
+    }
+
+    public String generateTeamId(String userID){
+        long r1 = userID.hashCode();
+        Random rand = new Random(r1);
+        return rand.toString();
+    }
+
+    public void getTeamIDFromDB(String userName){
+        Log.i("CHECK", " METHSTART");
+        FirebaseUserDao dao = new FirebaseUserDao();
+        dao.findUserByID(userName).addOnCompleteListener(task -> {
+            Log.i("CHECK", " COMPLETE");
+            if (task.isSuccessful()) {
+                Log.i("CHECK", " TASKSUCC");
+                cse110.ucsd.team12wwr.firebase.User u1 = null;
+                try {
+                    Log.i("CHECK", " TRYFETCHASFUCK");
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        u1 = document.toObject(cse110.ucsd.team12wwr.firebase.User.class);
+                    }
+                    Log.i("TEAM IS: ", u1.teamID);
+                    teamName = u1.teamID;
+                    thisUser = u1;
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    Log.i("TEAM IS: ", "NONSENSE DETECTED");
+                }
+            }
+            else{
+                Log.i("CHECK", " TASKUNSUCCESSFUL");
+            }
+        }).addOnCanceledListener(new OnCanceledListener() {
+            @Override
+            public void onCanceled() {
+                Log.i("CHECK", " CANCELED");
+            }
+        }).addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.i("CHECK", " FAILED");
+                            }
+                        })
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                Log.i("CHECK", " SUCCEEDED");
+
+            }
+        });
+        Log.i("CHECK", " METHEND");
     }
 
 }
