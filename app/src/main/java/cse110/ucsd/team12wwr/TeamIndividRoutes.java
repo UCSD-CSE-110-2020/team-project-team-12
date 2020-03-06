@@ -19,7 +19,7 @@ import cse110.ucsd.team12wwr.ui.routes_tab.SectionsPagerAdapter;
 
 public class TeamIndividRoutes extends AppCompatActivity {
 
-    private static final String TAG = "TeamScreen";
+    private static final String TAG = "TeamIndivRoutes";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +36,19 @@ public class TeamIndividRoutes extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_home:
+                        Log.i(TAG, "Going back home.");
                         finish();
                         break;
                     case R.id.navigation_routes:
                         break;
                     case R.id.navigation_walk:
+                        Log.i(TAG, "Taking a walk.");
                         finish();
                         launchActivity();
 
                         break;
                     case R.id.navigation_teams:
+                        Log.i(TAG, "Finding friends on a team.");
                         finish();
                         launchTeamScreenActivity();
 
@@ -60,6 +63,7 @@ public class TeamIndividRoutes extends AppCompatActivity {
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.i(TAG, "Adding a route!");
                 launchRouteInfoActivity();
             }
         });
