@@ -76,6 +76,13 @@ public class PersonalRoutesFragment extends Fragment {
         startActivity(intent);
     }
 
+    public void launchRoutesDetailsPage() {
+        Log.d(TAG, "launchRouteDetailsPage: launching the route details page");
+        Intent intent = new Intent(getActivity(), RouteDetailsPage.class);
+        intent.putExtra("name", routeName);
+        startActivity(intent);
+    }
+
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
@@ -134,16 +141,10 @@ public class PersonalRoutesFragment extends Fragment {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         routeName = routeList.get(position).name;
-//                        launchRoutesDetailsPage();
+                        launchRoutesDetailsPage();
                     }
                 });
             }
         });
     }
-
-//    public void launchRoutesDetailsPage() {
-//        Intent intent = new Intent(this, RouteDetailsPage.class);
-//        intent.putExtra("name", routeName);
-//
-//    }
 }
