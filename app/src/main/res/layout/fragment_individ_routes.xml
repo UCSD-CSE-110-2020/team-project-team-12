@@ -8,7 +8,7 @@
     tools:context=".ui.routes_tab.PersonalRoutesFragment">
 
     <ListView
-        android:id="@+id/list_view"
+        android:id="@+id/individ_routes_list"
         android:layout_width="match_parent"
         android:layout_height="530dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -16,25 +16,15 @@
 
     </ListView>
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Individual Routes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/list_view" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_fab2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:clickable="true"
         app:backgroundTint="#EDB819"
         app:layout_anchorGravity="bottom|end"
-        app:layout_constraintBottom_toBottomOf="@+id/list_view"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_add_black_24dp" />
 

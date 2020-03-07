@@ -15,15 +15,16 @@ import java.util.ArrayList;
 
 import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Route;
+
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
 
-public class RouteListAdapter extends ArrayAdapter<Route> {
+public class TeamRouteListAdapter extends ArrayAdapter<Route> {
 
     private static final String TAG = "RouteListAdapter";
     private Context context;
     int resource;
 
-    public RouteListAdapter(RoutesScreen context, int resource, ArrayList<Route> objects) {
+    public TeamRouteListAdapter(Context context, int resource, ArrayList<Route> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
