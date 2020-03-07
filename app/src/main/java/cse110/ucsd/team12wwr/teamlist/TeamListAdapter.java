@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,9 +49,19 @@ public class TeamListAdapter extends BaseAdapter {
     }
 
     public void updateItems(List<TeamScreenRowItem> newList) {
-        rowItems.clear();
-        rowItems.addAll(newList);
+        Log.i("UPDATE ITEMS", " : METHOD CALLED, ENGAGE PRE CLEAR");
+        for (TeamScreenRowItem item : rowItems){
+            Log.i("ELEMENTS IN rowItems ", " : " + item.getMemberName());
+        }
+        Log.i("NEWLIST SIZE PRE CLEAR ", "" + newList.size());
+        //rowItems.clear();
+        rowItems = newList;
+        Log.i("NEWLIST SIZE  POST CLEAR ", "" + newList.size());
+        for (TeamScreenRowItem item : newList){
+            Log.i("ELEMENTS IN newList ", " : " + item.getMemberName());
+        }
         this.notifyDataSetChanged();
+        Log.i("UPDATE ITEMS", " : METHOD END");
     }
 
     private class ViewHolder {

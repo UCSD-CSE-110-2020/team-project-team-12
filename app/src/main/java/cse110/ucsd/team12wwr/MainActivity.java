@@ -27,9 +27,9 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.auth.User;
 
 import java.text.DecimalFormat;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +37,7 @@ import java.util.concurrent.Executors;
 import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
 import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
 import cse110.ucsd.team12wwr.firebase.Invitation;
+import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
 import androidx.annotation.NonNull;
@@ -44,8 +45,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
-import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
-import cse110.ucsd.team12wwr.roomdb.WalkDao;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -163,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         userEmail = "account not retrieved";
         try{
             userEmail = account.getEmail();
-            getTeamIDFromDB(userEmail);
+            //getTeamIDFromDB(userEmail);
         }
         catch(NullPointerException e){
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
@@ -344,6 +343,10 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (id == R.id.team_screen){
             Intent intent = new Intent(this, TeamScreen.class);
+            if(userEmail!=null)
+                intent.putExtra("user Email", userEmail);
+            else
+                intent.putExtra("user Email", "FAILED TO RETRIEVE USER INFO");
             startActivity(intent);
         }
         else if (id == R.id.invites){
@@ -411,7 +414,8 @@ public class MainActivity extends AppCompatActivity {
     public String generateTeamId(String userID){
         long r1 = userID.hashCode();
         Random rand = new Random(r1);
-        return rand.toString();
+        int r2 = rand.nextInt();
+        return Integer.toString(r2);
     }
 
     public void getTeamIDFromDB(String userName){
@@ -421,15 +425,28 @@ public class MainActivity extends AppCompatActivity {
             Log.i("CHECK", " COMPLETE");
             if (task.isSuccessful()) {
                 Log.i("CHECK", " TASKSUCC");
-                cse110.ucsd.team12wwr.firebase.User u1 = null;
+                User u1 = null;
                 try {
                     Log.i("CHECK", " TRYFETCHASFUCK");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        u1 = document.toObject(cse110.ucsd.team12wwr.firebase.User.class);
+                        Log.i("CHECK", "INSIDE THE FERRR LERP");
+                        u1 = document.toObject(User.class);
+                        Log.i("TEAM IS: ", ""+u1.teamID);
                     }
                     Log.i("TEAM IS: ", u1.teamID);
+                    if(u1.teamID == ""){
+                        Log.i("CHECK ", "the object was null, no team");
+                        dao.updateTeamID(userName, generateTeamId(userName));
+                    }
+                    else{
+                        Log.i("CHECK USER:  ", u1.userID);
+                        Log.i("CHECK TEAM: ", u1.teamID);
+                        Log.i("CHECK ", "the object WASNOT null");
+                    }
                     teamName = u1.teamID;
                     thisUser = u1;
+                    Log.i("CHECK TEAM: ", u1.teamID);
+                    Log.i("CHECK", "END OF TRY");
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -454,7 +471,9 @@ public class MainActivity extends AppCompatActivity {
         .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                Log.i("CHECK", " SUCCEEDED");
+                //u1 = document.toObject(cse110.ucsd.team12wwr.firebase.User.class);
+                //QueryDocumentSnapshot document
+                Log.i("CHECK", " SUCCEEDED" + thisUser.teamID);
 
             }
         });
