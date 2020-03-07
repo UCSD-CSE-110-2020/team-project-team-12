@@ -43,13 +43,13 @@ public class TeamScreen extends FragmentActivity
 
     private static final String TAG = "TeamScreen";
 
-    private String firstName, lastName;
-    List<User> teamList = new ArrayList<>();
     List<TeamScreenRowItem> rowItems = new ArrayList<>();
     ListView listView;
     TeamListAdapter adapter;
     String userEmail;
     String teamName;
+
+    boolean existingUser = false;
 
     /* my code */
     String validatedEmail;
@@ -65,12 +65,8 @@ public class TeamScreen extends FragmentActivity
         Menu menu = navView.getMenu();
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
-
         Context context;
         userEmail = getIntent().getStringExtra("user Email");
-
-        Log.i("USER EMAIL IS: ", userEmail);
-
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +74,6 @@ public class TeamScreen extends FragmentActivity
                 openDialog();
             }
         });
-
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -102,23 +97,18 @@ public class TeamScreen extends FragmentActivity
         });
         initializeUpdateListener();
     }
-
     private void initializeUpdateListener() {
-        Log.i("FUCKWHYPLS ", " PLS STAHP");
         FirebaseFirestore.getInstance().collection("users")
                 .addSnapshotListener((newChatSnapshot, error) -> {
                     if (error != null) {
                         Log.e(TAG, error.getLocalizedMessage());
                         return;
                     }
-
                     if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        Log.i("initUpList ", "RENDER INCOMING");
                         renderRoutesList(userEmail);
                     }
                 });
     }
-
     private void renderRoutesList(String email) {
         FirebaseUserDao dao = new FirebaseUserDao();
         dao.findUserByID(email).addOnCompleteListener(task -> {
@@ -128,43 +118,48 @@ public class TeamScreen extends FragmentActivity
                     u = document.toObject(User.class);
                 }
                 teamName = u.teamID;
-                Log.i("RENDERROUTES ", u.teamID);
-
-                dao.findUsersByTeam(u.teamID).addOnCompleteListener(task1 -> {
+                dao.findUsersByTeam(teamName).addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {
                         List<User> userList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task1.getResult()) {
                             userList.add(document.toObject(User.class));
-                            User forUser = null;
-                            forUser = document.toObject(User.class);
-                            Log.i("RENDERROUTESXXXXXX ", forUser.teamID);
-                            Log.i("RENDERROUTES ", "ID FOR LOOP");
-                            Log.i("RENDERROUTES ", forUser.userID);
                         }
-
-                        for ( int i = 0; i < userList.size(); i++ ) {
-                            String name = userList.get(i).firstName + " " + userList.get(i).lastName;
-                            TeamScreenRowItem item = new TeamScreenRowItem(name, userList.get(i).userIcon, userList.get(i).teamID );
-                            boolean fartsalot = false;
-                            for (TeamScreenRowItem FUCK : rowItems){
-                                //Log.i("FUCKEVERYTHING", FUCK.getMemberName());
-                                ///Log.i("FUCKEVERYTHINGTWICE", ""+rowItems.size());
-                                if(item.getMemberName().equals(FUCK.getMemberName())){
-                                    fartsalot = true;
+                        FirebaseInvitationDao dao2 = new FirebaseInvitationDao();
+                        dao2.findInviteByTeam(teamName).addOnCompleteListener(task3 -> {
+                            if (task3.isSuccessful()) {
+                                Invitation inv = null;
+                                for (QueryDocumentSnapshot document : task3.getResult()) {
+                                    inv = document.toObject(Invitation.class);
+                                    dao.findUserByID(inv.inviteeID).addOnCompleteListener(task4 -> {
+                                        if (task4.isSuccessful()){
+                                            User invitedItem = null;
+                                            for(QueryDocumentSnapshot document2 : task4.getResult()){
+                                                invitedItem = document2.toObject(User.class);
+                                                userList.add(invitedItem);
+                                            }
+                                            for ( int i = 0; i < userList.size(); i++ ) {
+                                                String name = userList.get(i).firstName + " " + userList.get(i).lastName;
+                                                TeamScreenRowItem item = new TeamScreenRowItem(name, userList.get(i).userIcon, userList.get(i).teamID );
+                                                boolean duplicateFlag = false;
+                                                for (TeamScreenRowItem itr : rowItems){
+                                                    if(item.getMemberName().equals(itr.getMemberName())){
+                                                        duplicateFlag = true;
+                                                    }
+                                                }
+                                                if(!duplicateFlag)
+                                                    rowItems.add(item);
+                                            }
+                                            listView = findViewById(R.id.team_list);
+                                            adapter = new TeamListAdapter(this, rowItems, teamName);
+                                            listView.setAdapter(adapter);
+                                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                                @Override
+                                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                                }
+                                            });
+                                        }
+                                    });
                                 }
-                            }
-                            if(!fartsalot)
-                            rowItems.add(item);
-                        }
-
-                        listView = findViewById(R.id.team_list);
-                        adapter = new TeamListAdapter(this, rowItems);
-                        listView.setAdapter(adapter);
-
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
                             }
                         });
                     }
@@ -190,27 +185,18 @@ public class TeamScreen extends FragmentActivity
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        // User touched the dialog's positive button
-        Log.i("onDialogPositiveClick ", "POSITIVE CLICKED INTO ACTIVITY");
         dialog = (TeamInvitationDialogFragment) dialog;
         String invitedEmail = ((TeamInvitationDialogFragment) dialog).getInvitedEmail();
         String invitedUser = ((TeamInvitationDialogFragment) dialog).getInvitedName();
-        Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
-                + " NAME is: " + invitedUser);
-
         if(invitedEmail.equalsIgnoreCase("ERROR")){
-            Log.i("onDialogPositiveClick ", "INVALID EMAIL INPUT");
             Toast toast = Toast.makeText(this, "Invalid Gmail address", Toast.LENGTH_LONG);
             toast.show();
             return;
         }
         else {
-            Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
-                    + " NAME is: " + invitedUser);
             validatedEmail = invitedEmail;
             Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_LONG);
             toast.show();
-
             inv.inviteeID = validatedEmail;
             inv.teamID = teamName;
             db.insert(inv);
@@ -226,41 +212,33 @@ public class TeamScreen extends FragmentActivity
         user.userIcon = initials;
         user.teamID = "";
         user.userID = invitedEmail;
-        userDao.insertAll(user);
-
-
-        teamList.add(user);
-
-
+        userDao.findUserByID(invitedEmail).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult())
+                        existingUser = true;
+                    if(!existingUser)
+                        userDao.insertAll(user);
+                }
+        });
         TeamScreenRowItem item = new TeamScreenRowItem(invitedUser, initials,"");
         rowItems.add(item);
-
         adapter.updateItems(rowItems);
         updateList();
-
-
     }
 
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
-        // User touched the dialog's negative button
-        Log.i("onDialogPositiveClick ", "NEGATIVE CLICKED INTO ACTIVITY");
         Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
         toast.show();
     }
 
     public void updateList() {
         listView = findViewById(R.id.team_list);
-        adapter = new TeamListAdapter(this, rowItems);
-        for (TeamScreenRowItem item : rowItems){
-            Log.i("TEAMSCREENUPDATE IN rowItems ", " : " + item.getMemberName());
-        }
+        adapter = new TeamListAdapter(this, rowItems, teamName);
         listView.setAdapter(adapter);
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
             }
         });
     }

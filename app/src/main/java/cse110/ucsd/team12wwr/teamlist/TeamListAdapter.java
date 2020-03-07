@@ -27,10 +27,12 @@ public class TeamListAdapter extends BaseAdapter {
     List<TeamScreenRowItem> rowItems;
     TextDrawable.IBuilder builder;
     TextDrawable iconDrawable;
+    String teamID;
 
-    public TeamListAdapter(Context c, List<TeamScreenRowItem> list) {
+    public TeamListAdapter(Context c, List<TeamScreenRowItem> list, String passedTeam) {
         this.context = c;
         this.rowItems = list;
+        this.teamID = passedTeam;
     }
 
     @Override
@@ -49,19 +51,8 @@ public class TeamListAdapter extends BaseAdapter {
     }
 
     public void updateItems(List<TeamScreenRowItem> newList) {
-        Log.i("UPDATE ITEMS", " : METHOD CALLED, ENGAGE PRE CLEAR");
-        for (TeamScreenRowItem item : rowItems){
-            Log.i("ELEMENTS IN rowItems ", " : " + item.getMemberName());
-        }
-        Log.i("NEWLIST SIZE PRE CLEAR ", "" + newList.size());
-        //rowItems.clear();
         rowItems = newList;
-        Log.i("NEWLIST SIZE  POST CLEAR ", "" + newList.size());
-        for (TeamScreenRowItem item : newList){
-            Log.i("ELEMENTS IN newList ", " : " + item.getMemberName());
-        }
         this.notifyDataSetChanged();
-        Log.i("UPDATE ITEMS", " : METHOD END");
     }
 
     private class ViewHolder {
@@ -103,11 +94,12 @@ public class TeamListAdapter extends BaseAdapter {
             holder.initials.setImageDrawable(iconDrawable);
             holder.member_name.setText(item.getMemberName());
 
-            if ( item.getTeamID().equals("") ) {
+
+
+            if (!item.getTeamID().equals(teamID) ) {
                 holder.member_name.setTypeface(holder.member_name.getTypeface(), Typeface.ITALIC);
                 holder.member_name.setTextColor(Color.parseColor("#808080"));
             }
-
         }
         return convertView;
     }
