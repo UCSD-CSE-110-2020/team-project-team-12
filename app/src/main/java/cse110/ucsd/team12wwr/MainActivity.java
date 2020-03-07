@@ -14,6 +14,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -167,6 +169,14 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
+        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.start_walk_btn);
+        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity();
+            }
+        });
+
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -178,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case R.id.navigation_walk:
-                        launchActivity();
+//                        launchActivity();
 
                         break;
                     case R.id.navigation_teams:
