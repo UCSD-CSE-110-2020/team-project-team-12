@@ -8,7 +8,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import cse110.ucsd.team12wwr.MainActivity;
 
-public class FirebaseWalkDao {
+public class FirebaseWalkDao implements WalkDao {
     public static final String WALK_COLLECTION_KEY = "walks";
 
     FirebaseFirestore db;

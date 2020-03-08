@@ -7,7 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import cse110.ucsd.team12wwr.MainActivity;
 
-public class FirebaseScheduleDao {
+public class FirebaseScheduleDao implements ScheduleDao {
     public static final String SCHEDULE_COLLECTION_KEY = "schedules";
     FirebaseFirestore db;
 

@@ -7,7 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import cse110.ucsd.team12wwr.MainActivity;
 
-public class FirebaseUserDao {
+public class FirebaseUserDao implements UserDao {
     public static final String USER_COLLECTION_KEY = "users";
     
     FirebaseFirestore db;

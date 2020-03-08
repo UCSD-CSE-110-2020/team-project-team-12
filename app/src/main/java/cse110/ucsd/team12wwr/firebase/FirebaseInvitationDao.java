@@ -7,7 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import cse110.ucsd.team12wwr.MainActivity;
 
-public class FirebaseInvitationDao {
+public class FirebaseInvitationDao implements InvitationDao {
     public static final String INVITATION_COLLECTION_KEY = "invitations";
 
     FirebaseFirestore db;

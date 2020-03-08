@@ -8,7 +8,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import cse110.ucsd.team12wwr.MainActivity;
 
-public class FirebaseRouteDao {
+public class FirebaseRouteDao implements RouteDao {
     public static final String ROUTE_COLLECTION_KEY = "routes";
 
     FirebaseFirestore db;
