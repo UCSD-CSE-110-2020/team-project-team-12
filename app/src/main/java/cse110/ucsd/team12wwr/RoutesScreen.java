@@ -132,8 +132,6 @@ public class RoutesScreen extends AppCompatActivity {
                     routeList.add(document.toObject(Route.class));
                 }
 
-//                ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
-
                 listView = findViewById(R.id.individ_routes_list);
                 routeListParam = new ArrayList<>(routeList);
 
