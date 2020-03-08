@@ -14,11 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,18 +87,17 @@ public class RoutesScreen extends AppCompatActivity {
     }
 
     private void initializeUpdateListener() {
-        FirebaseFirestore.getInstance().collection("routes")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((newChatSnapshot, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                        return;
-                    }
+        FirebaseRouteDao dao = new FirebaseRouteDao();
+        dao.listenForChanges((newChatSnapshot, error) -> {
+            if (error != null) {
+                Log.e(TAG, error.getLocalizedMessage());
+                return;
+            }
 
-                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        renderRoutesList();
-                    }
-                });
+            if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                renderRoutesList();
+            }
+        });
     }
 
     private void renderRoutesList() {

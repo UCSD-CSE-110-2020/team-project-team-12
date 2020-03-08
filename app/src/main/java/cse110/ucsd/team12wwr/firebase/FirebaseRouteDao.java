@@ -1,6 +1,7 @@
 package cse110.ucsd.team12wwr.firebase;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -53,5 +54,13 @@ public class FirebaseRouteDao {
 
         db.collection(ROUTE_COLLECTION_KEY).whereEqualTo("name", routeName).get()
                 .addOnCompleteListener(listener);
+    }
+
+    public void listenForChanges(EventListener<QuerySnapshot> listener) {
+        if (db == null) {
+            return;
+        }
+
+        db.collection(ROUTE_COLLECTION_KEY).addSnapshotListener(listener);
     }
 }

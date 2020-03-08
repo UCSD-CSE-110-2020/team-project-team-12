@@ -16,8 +16,6 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -98,16 +96,16 @@ public class TeamScreen extends FragmentActivity
         initializeUpdateListener();
     }
     private void initializeUpdateListener() {
-        FirebaseFirestore.getInstance().collection("users")
-                .addSnapshotListener((newChatSnapshot, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                        return;
-                    }
-                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        renderRoutesList(userEmail);
-                    }
-                });
+        FirebaseUserDao dao = new FirebaseUserDao();
+        dao.listenForChanges((newChatSnapshot, error) -> {
+            if (error != null) {
+                Log.e(TAG, error.getLocalizedMessage());
+                return;
+            }
+            if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                renderRoutesList(userEmail);
+            }
+        });
     }
     private void renderRoutesList(String email) {
         FirebaseUserDao dao = new FirebaseUserDao();
