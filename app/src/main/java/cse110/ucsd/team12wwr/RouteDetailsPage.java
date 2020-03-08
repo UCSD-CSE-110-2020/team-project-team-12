@@ -13,10 +13,11 @@ import android.widget.Button;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 
 public class RouteDetailsPage extends AppCompatActivity {
     // Public constants for string intents
@@ -76,7 +77,7 @@ public class RouteDetailsPage extends AppCompatActivity {
             routeTitle.setText(routeName);
         }
 
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
+        RouteDao routeDao = DaoFactory.getRouteDao();
         routeDao.findName(routeName, task -> {
             if (task.isSuccessful()) {
                 Route newRoute = null;
@@ -163,7 +164,7 @@ public class RouteDetailsPage extends AppCompatActivity {
             }
         });
 
-        FirebaseWalkDao walkDao = new FirebaseWalkDao();
+        WalkDao walkDao = DaoFactory.getWalkDao();
         walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 Walk mostRecentWalk = null;

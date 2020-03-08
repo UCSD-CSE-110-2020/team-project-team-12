@@ -25,14 +25,15 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
-import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Invitation;
+import cse110.ucsd.team12wwr.firebase.InvitationDao;
 
 public class TeamScreenActivity extends FragmentActivity
                                 implements TeamInvitationDialogFragment.InviteDialogListener{
 
     String validatedEmail;
-    FirebaseInvitationDao db = new FirebaseInvitationDao();
+    InvitationDao db = DaoFactory.getInvitationDao();
     Invitation inv = new Invitation();
     String userEmail;
 

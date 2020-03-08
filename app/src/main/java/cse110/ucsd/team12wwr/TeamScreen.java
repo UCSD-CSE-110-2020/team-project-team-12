@@ -26,12 +26,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
-import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Invitation;
+import cse110.ucsd.team12wwr.firebase.InvitationDao;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.teamlist.TeamListAdapter;
 import cse110.ucsd.team12wwr.teamlist.TeamScreenRowItem;
 
@@ -51,7 +51,7 @@ public class TeamScreen extends FragmentActivity
 
     /* my code */
     String validatedEmail;
-    FirebaseInvitationDao db = new FirebaseInvitationDao();
+    InvitationDao db = DaoFactory.getInvitationDao();
     Invitation inv = new Invitation();
 
     @Override
@@ -96,7 +96,7 @@ public class TeamScreen extends FragmentActivity
         initializeUpdateListener();
     }
     private void initializeUpdateListener() {
-        FirebaseUserDao dao = new FirebaseUserDao();
+        UserDao dao = DaoFactory.getUserDao();
         dao.listenForChanges((newChatSnapshot, error) -> {
             if (error != null) {
                 Log.e(TAG, error.getLocalizedMessage());
@@ -108,7 +108,7 @@ public class TeamScreen extends FragmentActivity
         });
     }
     private void renderRoutesList(String email) {
-        FirebaseUserDao dao = new FirebaseUserDao();
+        UserDao dao = DaoFactory.getUserDao();
         dao.findUserByID(email, task -> {
             if (task.isSuccessful()) {
                 User u = null;
@@ -122,7 +122,7 @@ public class TeamScreen extends FragmentActivity
                         for (QueryDocumentSnapshot document : task1.getResult()) {
                             userList.add(document.toObject(User.class));
                         }
-                        FirebaseInvitationDao dao2 = new FirebaseInvitationDao();
+                        InvitationDao dao2 = DaoFactory.getInvitationDao();
                         dao2.findInviteByTeam(teamName, task3 -> {
                             if (task3.isSuccessful()) {
                                 Invitation inv = null;
@@ -201,7 +201,7 @@ public class TeamScreen extends FragmentActivity
         }
 
 
-        FirebaseUserDao userDao = new FirebaseUserDao();
+        UserDao userDao = DaoFactory.getUserDao();
         User user = new User();
         user.firstName = ((TeamInvitationDialogFragment) dialog).getInvitedFirstName();
         user.lastName = ((TeamInvitationDialogFragment) dialog).getInvitedLastName();

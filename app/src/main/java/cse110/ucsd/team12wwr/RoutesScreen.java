@@ -20,8 +20,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 
 public class RoutesScreen extends AppCompatActivity {
 
@@ -87,7 +88,7 @@ public class RoutesScreen extends AppCompatActivity {
     }
 
     private void initializeUpdateListener() {
-        FirebaseRouteDao dao = new FirebaseRouteDao();
+        RouteDao dao = DaoFactory.getRouteDao();
         dao.listenForChanges((newChatSnapshot, error) -> {
             if (error != null) {
                 Log.e(TAG, error.getLocalizedMessage());
@@ -101,7 +102,7 @@ public class RoutesScreen extends AppCompatActivity {
     }
 
     private void renderRoutesList() {
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
+        RouteDao routeDao = DaoFactory.getRouteDao();
         routeDao.retrieveAllRoutes(task -> {
             if (task.isSuccessful()) {
                 List<Route> routeList = new ArrayList<>();

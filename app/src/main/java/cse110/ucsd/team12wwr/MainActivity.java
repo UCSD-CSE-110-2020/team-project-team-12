@@ -4,19 +4,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCanceledListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,15 +21,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.DecimalFormat;
-import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Invitation;
 import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
 import androidx.annotation.NonNull;
@@ -297,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
         }, 4000);
 
 
-        FirebaseWalkDao dao = new FirebaseWalkDao();
+        WalkDao dao = DaoFactory.getWalkDao();
         dao.findNewestEntries(task -> {
             if (task.isSuccessful()) {
                 Walk newestWalk = null;
@@ -419,7 +410,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void getTeamIDFromDB(String userName){
         Log.i("CHECK", " METHSTART");
-        FirebaseUserDao dao = new FirebaseUserDao();
+        UserDao dao = DaoFactory.getUserDao();
         dao.findUserByID(userName, task -> {
             Log.i("CHECK", " COMPLETE");
             if (task.isSuccessful()) {

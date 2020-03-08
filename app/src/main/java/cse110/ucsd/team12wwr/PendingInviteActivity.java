@@ -13,9 +13,10 @@ import android.widget.TextView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseInvitationDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Invitation;
+import cse110.ucsd.team12wwr.firebase.InvitationDao;
+import cse110.ucsd.team12wwr.firebase.UserDao;
 
 public class PendingInviteActivity extends AppCompatActivity {
 
@@ -38,7 +39,7 @@ public class PendingInviteActivity extends AppCompatActivity {
     }
 
     private void checkForInvites(String email) {
-        FirebaseInvitationDao dao = new FirebaseInvitationDao();
+        InvitationDao dao = DaoFactory.getInvitationDao();
         dao.findInviteByEmail(email, task -> {
             if (task.isSuccessful()) {
                 inv = null;
@@ -66,9 +67,9 @@ public class PendingInviteActivity extends AppCompatActivity {
                 teamName.setVisibility(View.INVISIBLE);
                 accept.setVisibility(View.INVISIBLE);
                 decline.setVisibility(View.INVISIBLE);
-                FirebaseUserDao dao1 = new FirebaseUserDao();
+                UserDao dao1 = DaoFactory.getUserDao();
                 dao1.updateTeamID(userEmail, originTeam);
-                FirebaseInvitationDao dao = new FirebaseInvitationDao();
+                InvitationDao dao = DaoFactory.getInvitationDao();
                 dao.delete(userEmail);
             }
         });
@@ -78,7 +79,7 @@ public class PendingInviteActivity extends AppCompatActivity {
                 teamName.setVisibility(View.INVISIBLE);
                 accept.setVisibility(View.INVISIBLE);
                 decline.setVisibility(View.INVISIBLE);
-                FirebaseInvitationDao dao = new FirebaseInvitationDao();
+                InvitationDao dao = DaoFactory.getInvitationDao();
                 dao.delete(userEmail);
             }
         });
