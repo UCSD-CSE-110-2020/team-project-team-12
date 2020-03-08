@@ -39,7 +39,7 @@ public class PendingInviteActivity extends AppCompatActivity {
 
     private void checkForInvites(String email) {
         FirebaseInvitationDao dao = new FirebaseInvitationDao();
-        dao.findInviteByEmail(email).addOnCompleteListener(task -> {
+        dao.findInviteByEmail(email, task -> {
             if (task.isSuccessful()) {
                 inv = null;
                 try {

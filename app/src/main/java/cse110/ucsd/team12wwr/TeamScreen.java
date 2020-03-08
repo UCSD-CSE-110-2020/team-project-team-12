@@ -111,26 +111,26 @@ public class TeamScreen extends FragmentActivity
     }
     private void renderRoutesList(String email) {
         FirebaseUserDao dao = new FirebaseUserDao();
-        dao.findUserByID(email).addOnCompleteListener(task -> {
+        dao.findUserByID(email, task -> {
             if (task.isSuccessful()) {
                 User u = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     u = document.toObject(User.class);
                 }
                 teamName = u.teamID;
-                dao.findUsersByTeam(teamName).addOnCompleteListener(task1 -> {
+                dao.findUsersByTeam(teamName, task1 -> {
                     if (task1.isSuccessful()) {
                         List<User> userList = new ArrayList<>();
                         for (QueryDocumentSnapshot document : task1.getResult()) {
                             userList.add(document.toObject(User.class));
                         }
                         FirebaseInvitationDao dao2 = new FirebaseInvitationDao();
-                        dao2.findInviteByTeam(teamName).addOnCompleteListener(task3 -> {
+                        dao2.findInviteByTeam(teamName, task3 -> {
                             if (task3.isSuccessful()) {
                                 Invitation inv = null;
                                 for (QueryDocumentSnapshot document : task3.getResult()) {
                                     inv = document.toObject(Invitation.class);
-                                    dao.findUserByID(inv.inviteeID).addOnCompleteListener(task4 -> {
+                                    dao.findUserByID(inv.inviteeID, task4 -> {
                                         if (task4.isSuccessful()){
                                             User invitedItem = null;
                                             for(QueryDocumentSnapshot document2 : task4.getResult()){
@@ -212,7 +212,7 @@ public class TeamScreen extends FragmentActivity
         user.userIcon = initials;
         user.teamID = "";
         user.userID = invitedEmail;
-        userDao.findUserByID(invitedEmail).addOnCompleteListener(task -> {
+        userDao.findUserByID(invitedEmail, task -> {
             if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document : task.getResult())
                         existingUser = true;

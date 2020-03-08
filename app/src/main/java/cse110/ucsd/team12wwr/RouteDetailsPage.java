@@ -77,7 +77,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         }
 
         FirebaseRouteDao routeDao = new FirebaseRouteDao();
-        routeDao.findName(routeName).addOnCompleteListener(task -> {
+        routeDao.findName(routeName, task -> {
             if (task.isSuccessful()) {
                 Route newRoute = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -164,7 +164,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         });
 
         FirebaseWalkDao walkDao = new FirebaseWalkDao();
-        walkDao.findByRouteName(routeName).addOnCompleteListener(task -> {
+        walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 Walk mostRecentWalk = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {

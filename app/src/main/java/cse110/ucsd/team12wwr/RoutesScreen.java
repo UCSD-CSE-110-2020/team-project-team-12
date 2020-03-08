@@ -106,7 +106,7 @@ public class RoutesScreen extends AppCompatActivity {
 
     private void renderRoutesList() {
         FirebaseRouteDao routeDao = new FirebaseRouteDao();
-        routeDao.retrieveAllRoutes().addOnCompleteListener(task -> {
+        routeDao.retrieveAllRoutes(task -> {
             if (task.isSuccessful()) {
                 List<Route> routeList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {

@@ -1,6 +1,6 @@
 package cse110.ucsd.team12wwr.firebase;
 
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -26,21 +26,22 @@ public class FirebaseWalkDao {
     }
 
 //    @Query("SELECT * FROM Walk w WHERE NOT EXISTS (SELECT a.time FROM Walk a WHERE a.time > w.time)")
-    public Task<QuerySnapshot> findNewestEntries() {
+    public void findNewestEntries(OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("walks").orderBy("time", Query.Direction.DESCENDING).get();
+        db.collection("walks").orderBy("time", Query.Direction.DESCENDING).get().
+                addOnCompleteListener(listener);
     }
 
 //    @Query("SELECT * FROM Walk w WHERE w.routeName=:routeName ORDER BY time DESC")
-    public Task<QuerySnapshot> findByRouteName(String routeName) {
+    public void findByRouteName(String routeName, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("walks").whereEqualTo("routeName", routeName)
-                .orderBy("time", Query.Direction.DESCENDING).get();
+        db.collection("walks").whereEqualTo("routeName", routeName)
+                .orderBy("time", Query.Direction.DESCENDING).get().addOnCompleteListener(listener);
     }
 }

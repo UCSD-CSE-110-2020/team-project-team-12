@@ -1,6 +1,6 @@
 package cse110.ucsd.team12wwr.firebase;
 
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,20 +36,22 @@ public class FirebaseRouteDao {
     }
 
 //    @Query("SELECT * FROM Route r ORDER BY name ASC")
-    public Task<QuerySnapshot> retrieveAllRoutes() {
+    public void retrieveAllRoutes(OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("routes").orderBy("name", Query.Direction.ASCENDING).get();
+        db.collection("routes").orderBy("name", Query.Direction.ASCENDING).get()
+                .addOnCompleteListener(listener);
     }
 
 //    @Query("SELECT * FROM Route r WHERE r.name=:routeName")
-    public Task<QuerySnapshot> findName(String routeName) {
+    public void findName(String routeName, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("routes").whereEqualTo("name", routeName).get();
+        db.collection("routes").whereEqualTo("name", routeName).get()
+                .addOnCompleteListener(listener);
     }
 }

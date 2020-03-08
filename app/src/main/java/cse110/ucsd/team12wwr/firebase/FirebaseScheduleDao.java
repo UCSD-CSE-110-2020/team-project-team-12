@@ -1,6 +1,6 @@
 package cse110.ucsd.team12wwr.firebase;
 
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -34,11 +34,12 @@ public class FirebaseScheduleDao {
     }
 
     //    @Query("SELECT * FROM Schedule s WHERE s.teamID=:teamID")
-    public Task<QuerySnapshot> findScheduleByTeam(String teamID) {
+    public void findScheduleByTeam(String teamID, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("schedules").whereEqualTo("teamID", teamID).get();
+        db.collection("schedules").whereEqualTo("teamID", teamID).get()
+                .addOnCompleteListener(listener);
     }
 }

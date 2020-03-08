@@ -1,6 +1,6 @@
 package cse110.ucsd.team12wwr.firebase;
 
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -41,20 +41,22 @@ public class FirebaseUserDao {
     }
 
     //    @Query("SELECT * FROM User u WHERE u.userID=:userID")
-    public Task<QuerySnapshot> findUserByID(String userID) {
+    public void findUserByID(String userID, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("users").whereEqualTo("userID", userID).get();
+        db.collection("users").whereEqualTo("userID", userID).get()
+                .addOnCompleteListener(listener);
     }
 
     //    @Query("SELECT * FROM User u WHERE u.teamID=:teamID")
-    public Task<QuerySnapshot> findUsersByTeam(String teamID) {
+    public void findUsersByTeam(String teamID, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("users").whereEqualTo("teamID", teamID).get();
+        db.collection("users").whereEqualTo("teamID", teamID).get()
+                .addOnCompleteListener(listener);
     }
 }

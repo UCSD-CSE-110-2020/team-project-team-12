@@ -299,7 +299,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
-        dao.findNewestEntries().addOnCompleteListener(task -> {
+        dao.findNewestEntries(task -> {
             if (task.isSuccessful()) {
                 Walk newestWalk = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -421,7 +421,7 @@ public class MainActivity extends AppCompatActivity {
     public void getTeamIDFromDB(String userName){
         Log.i("CHECK", " METHSTART");
         FirebaseUserDao dao = new FirebaseUserDao();
-        dao.findUserByID(userName).addOnCompleteListener(task -> {
+        dao.findUserByID(userName, task -> {
             Log.i("CHECK", " COMPLETE");
             if (task.isSuccessful()) {
                 Log.i("CHECK", " TASKSUCC");
@@ -455,26 +455,6 @@ public class MainActivity extends AppCompatActivity {
             }
             else{
                 Log.i("CHECK", " TASKUNSUCCESSFUL");
-            }
-        }).addOnCanceledListener(new OnCanceledListener() {
-            @Override
-            public void onCanceled() {
-                Log.i("CHECK", " CANCELED");
-            }
-        }).addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.i("CHECK", " FAILED");
-                            }
-                        })
-        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                //u1 = document.toObject(cse110.ucsd.team12wwr.firebase.User.class);
-                //QueryDocumentSnapshot document
-                Log.i("CHECK", " SUCCEEDED" + thisUser.teamID);
-
             }
         });
         Log.i("CHECK", " METHEND");

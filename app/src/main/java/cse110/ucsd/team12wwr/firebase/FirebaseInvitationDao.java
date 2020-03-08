@@ -1,8 +1,7 @@
 package cse110.ucsd.team12wwr.firebase;
 
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import cse110.ucsd.team12wwr.MainActivity;
@@ -41,20 +40,22 @@ public class FirebaseInvitationDao {
     }
 
     //    @Query("SELECT * FROM Invitation i WHERE i.inviteeID=:inviteeID")
-    public Task<QuerySnapshot> findInviteByEmail(String inviteeID) {
+    public void findInviteByEmail(String inviteeID, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("invitations").whereEqualTo("inviteeID", inviteeID).get();
+        db.collection("invitations").whereEqualTo("inviteeID", inviteeID).get()
+                .addOnCompleteListener(listener);
     }
 
     //    @Query("SELECT * FROM Invitation i WHERE i.teamID=:teamID")
-    public Task<QuerySnapshot> findInviteByTeam(String teamID) {
+    public void findInviteByTeam(String teamID, OnCompleteListener<QuerySnapshot> listener) {
         if (db == null) {
-            return new MockTask<>();
+            return;
         }
 
-        return db.collection("invitations").whereEqualTo("teamID", teamID).get();
+        db.collection("invitations").whereEqualTo("teamID", teamID).get()
+                .addOnCompleteListener(listener);
     }
 }

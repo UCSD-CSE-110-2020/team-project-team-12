@@ -126,7 +126,7 @@ public class RouteInfoActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
         if ( !isNewRoute ) {
             FirebaseRouteDao routeDao = new FirebaseRouteDao();
-            routeDao.findName(currRouteName).addOnCompleteListener(task -> {
+            routeDao.findName(currRouteName, task -> {
                 if (task.isSuccessful()) {
                     Route newRoute = null;
                     for (QueryDocumentSnapshot document : task.getResult()) {
@@ -283,7 +283,7 @@ public class RouteInfoActivity extends AppCompatActivity {
             Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
 
             FirebaseRouteDao dao = new FirebaseRouteDao();
-            dao.findName(currRouteName).addOnCompleteListener(task -> {
+            dao.findName(currRouteName, task -> {
                 if (task.isSuccessful()) {
                     Route newEntry = null;
                     for (QueryDocumentSnapshot document : task.getResult()) {
