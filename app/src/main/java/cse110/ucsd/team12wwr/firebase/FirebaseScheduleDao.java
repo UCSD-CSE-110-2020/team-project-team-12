@@ -7,6 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import cse110.ucsd.team12wwr.MainActivity;
 
 public class FirebaseScheduleDao {
+    public static final String SCHEDULE_COLLECTION_KEY = "schedules";
     FirebaseFirestore db;
 
     public FirebaseScheduleDao() {
@@ -21,7 +22,7 @@ public class FirebaseScheduleDao {
         }
 
         for (Schedule schedule : schedules) {
-            db.collection("schedules").document(schedule.teamID).set(schedule);
+            db.collection(SCHEDULE_COLLECTION_KEY).document(schedule.teamID).set(schedule);
         }
     }
 
@@ -30,7 +31,7 @@ public class FirebaseScheduleDao {
             return;
         }
 
-        db.collection("schedules").document(teamID).delete();
+        db.collection(SCHEDULE_COLLECTION_KEY).document(teamID).delete();
     }
 
     //    @Query("SELECT * FROM Schedule s WHERE s.teamID=:teamID")
@@ -39,7 +40,7 @@ public class FirebaseScheduleDao {
             return;
         }
 
-        db.collection("schedules").whereEqualTo("teamID", teamID).get()
+        db.collection(SCHEDULE_COLLECTION_KEY).whereEqualTo("teamID", teamID).get()
                 .addOnCompleteListener(listener);
     }
 }

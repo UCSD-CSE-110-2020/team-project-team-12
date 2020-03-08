@@ -8,6 +8,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import cse110.ucsd.team12wwr.MainActivity;
 
 public class FirebaseWalkDao {
+    public static final String WALK_COLLECTION_KEY = "walks";
+
     FirebaseFirestore db;
     public FirebaseWalkDao() {
         if (!MainActivity.unitTestFlag) {
@@ -21,7 +23,7 @@ public class FirebaseWalkDao {
         }
 
         for (Walk walk : w) {
-            db.collection("walks").add(walk);
+            db.collection(WALK_COLLECTION_KEY).add(walk);
         }
     }
 
@@ -31,7 +33,7 @@ public class FirebaseWalkDao {
             return;
         }
 
-        db.collection("walks").orderBy("time", Query.Direction.DESCENDING).get().
+        db.collection(WALK_COLLECTION_KEY).orderBy("time", Query.Direction.DESCENDING).get().
                 addOnCompleteListener(listener);
     }
 
@@ -41,7 +43,7 @@ public class FirebaseWalkDao {
             return;
         }
 
-        db.collection("walks").whereEqualTo("routeName", routeName)
+        db.collection(WALK_COLLECTION_KEY).whereEqualTo("routeName", routeName)
                 .orderBy("time", Query.Direction.DESCENDING).get().addOnCompleteListener(listener);
     }
 }

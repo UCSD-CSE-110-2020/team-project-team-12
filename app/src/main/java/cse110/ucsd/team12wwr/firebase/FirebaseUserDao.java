@@ -7,6 +7,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import cse110.ucsd.team12wwr.MainActivity;
 
 public class FirebaseUserDao {
+    public static final String USER_COLLECTION_KEY = "users";
+    
     FirebaseFirestore db;
     public FirebaseUserDao() {
         if (!MainActivity.unitTestFlag) {
@@ -20,7 +22,7 @@ public class FirebaseUserDao {
         }
 
         for (User user : users) {
-            db.collection("users").document(user.userID).set(user);
+            db.collection(USER_COLLECTION_KEY).document(user.userID).set(user);
         }
     }
 
@@ -29,7 +31,7 @@ public class FirebaseUserDao {
             return;
         }
 
-        db.collection("users").document(userID).update("teamID", teamID);
+        db.collection(USER_COLLECTION_KEY).document(userID).update("teamID", teamID);
     }
 
     public void delete(String userID) {
@@ -37,7 +39,7 @@ public class FirebaseUserDao {
             return;
         }
 
-        db.collection("users").document(userID).delete();
+        db.collection(USER_COLLECTION_KEY).document(userID).delete();
     }
 
     //    @Query("SELECT * FROM User u WHERE u.userID=:userID")
@@ -46,7 +48,7 @@ public class FirebaseUserDao {
             return;
         }
 
-        db.collection("users").whereEqualTo("userID", userID).get()
+        db.collection(USER_COLLECTION_KEY).whereEqualTo("userID", userID).get()
                 .addOnCompleteListener(listener);
     }
 
@@ -56,7 +58,7 @@ public class FirebaseUserDao {
             return;
         }
 
-        db.collection("users").whereEqualTo("teamID", teamID).get()
+        db.collection(USER_COLLECTION_KEY).whereEqualTo("teamID", teamID).get()
                 .addOnCompleteListener(listener);
     }
 }

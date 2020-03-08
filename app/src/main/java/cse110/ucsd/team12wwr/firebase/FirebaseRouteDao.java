@@ -8,11 +8,11 @@ import com.google.firebase.firestore.QuerySnapshot;
 import cse110.ucsd.team12wwr.MainActivity;
 
 public class FirebaseRouteDao {
+    public static final String ROUTE_COLLECTION_KEY = "routes";
+
     FirebaseFirestore db;
     public FirebaseRouteDao() {
-        System.err.println("The testing flag is " + MainActivity.unitTestFlag);
         if (!MainActivity.unitTestFlag) {
-            System.err.println("Initializing actual Firestore database");
             db = FirebaseFirestore.getInstance();
         }
     }
@@ -23,7 +23,7 @@ public class FirebaseRouteDao {
         }
 
         for (Route route : r) {
-            db.collection("routes").document(route.name).set(route);
+            db.collection(ROUTE_COLLECTION_KEY).document(route.name).set(route);
         }
     }
 
@@ -32,7 +32,7 @@ public class FirebaseRouteDao {
             return;
         }
 
-        db.collection("routes").document(routeName).delete();
+        db.collection(ROUTE_COLLECTION_KEY).document(routeName).delete();
     }
 
 //    @Query("SELECT * FROM Route r ORDER BY name ASC")
@@ -41,7 +41,7 @@ public class FirebaseRouteDao {
             return;
         }
 
-        db.collection("routes").orderBy("name", Query.Direction.ASCENDING).get()
+        db.collection(ROUTE_COLLECTION_KEY).orderBy("name", Query.Direction.ASCENDING).get()
                 .addOnCompleteListener(listener);
     }
 
@@ -51,7 +51,7 @@ public class FirebaseRouteDao {
             return;
         }
 
-        db.collection("routes").whereEqualTo("name", routeName).get()
+        db.collection(ROUTE_COLLECTION_KEY).whereEqualTo("name", routeName).get()
                 .addOnCompleteListener(listener);
     }
 }

@@ -7,6 +7,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import cse110.ucsd.team12wwr.MainActivity;
 
 public class FirebaseInvitationDao {
+    public static final String INVITATION_COLLECTION_KEY = "invitations";
+
     FirebaseFirestore db;
     public FirebaseInvitationDao() {
         if (!MainActivity.unitTestFlag) {
@@ -20,7 +22,7 @@ public class FirebaseInvitationDao {
         }
 
         for (Invitation invitation : invitations) {
-            db.collection("invitations").document(invitation.inviteeID).set(invitation);
+            db.collection(INVITATION_COLLECTION_KEY).document(invitation.inviteeID).set(invitation);
         }
     }
 
@@ -28,7 +30,7 @@ public class FirebaseInvitationDao {
         if (db == null) {
             return;
         }
-            db.collection("invitations").document(invite.inviteeID).set(invite);
+            db.collection(INVITATION_COLLECTION_KEY).document(invite.inviteeID).set(invite);
     }
 
     public void delete(String inviteeID) {
@@ -36,7 +38,7 @@ public class FirebaseInvitationDao {
             return;
         }
 
-        db.collection("invitations").document(inviteeID).delete();
+        db.collection(INVITATION_COLLECTION_KEY).document(inviteeID).delete();
     }
 
     //    @Query("SELECT * FROM Invitation i WHERE i.inviteeID=:inviteeID")
@@ -45,7 +47,7 @@ public class FirebaseInvitationDao {
             return;
         }
 
-        db.collection("invitations").whereEqualTo("inviteeID", inviteeID).get()
+        db.collection(INVITATION_COLLECTION_KEY).whereEqualTo("inviteeID", inviteeID).get()
                 .addOnCompleteListener(listener);
     }
 
@@ -55,7 +57,7 @@ public class FirebaseInvitationDao {
             return;
         }
 
-        db.collection("invitations").whereEqualTo("teamID", teamID).get()
+        db.collection(INVITATION_COLLECTION_KEY).whereEqualTo("teamID", teamID).get()
                 .addOnCompleteListener(listener);
     }
 }
