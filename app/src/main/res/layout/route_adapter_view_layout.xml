@@ -5,13 +5,22 @@
     android:orientation="horizontal"
     android:weightSum="100">
 
+    <ImageView
+        android:id="@+id/route_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"/>
+
     <TextView
         android:id="@+id/route_name"
         android:layout_width="307dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@id/member_icon"
         android:text="Route Name"
-        android:textSize="25sp" />
+        android:paddingTop="15dp"
+        android:textSize="25sp"
+        android:textColor="@android:color/background_dark" />
 
     <TextView
         android:id="@+id/previously_walked"
@@ -20,5 +29,7 @@
         android:gravity="center"
         android:text="@string/true_tick"
         android:textSize="30sp" />
+
+
 
 </LinearLayout>

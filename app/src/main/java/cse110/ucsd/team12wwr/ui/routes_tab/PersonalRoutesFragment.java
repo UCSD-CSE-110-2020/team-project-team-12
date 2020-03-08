@@ -1,6 +1,7 @@
 package cse110.ucsd.team12wwr.ui.routes_tab;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +35,8 @@ import cse110.ucsd.team12wwr.TeamRouteListAdapter;
 import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
 import cse110.ucsd.team12wwr.firebase.Route;
 
+import static android.content.Context.MODE_PRIVATE;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -46,7 +49,8 @@ public class PersonalRoutesFragment extends Fragment {
     ArrayList<Route> routeListParam;
     ListView listView;
     String routeName;
-
+    SharedPreferences emailPref;
+    String userEmail;
 
     public static PersonalRoutesFragment newInstance(int index) {
         PersonalRoutesFragment fragment = new PersonalRoutesFragment();
@@ -60,6 +64,11 @@ public class PersonalRoutesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "Entered Personal Routes Tab!");
+
+        emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailPref.getString("EMAIL_ID", null);
+        userEmail = "jane@gmail.com";
+
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
@@ -116,6 +125,7 @@ public class PersonalRoutesFragment extends Fragment {
 
     private void renderRoutesList(View view) {
         FirebaseRouteDao routeDao = new FirebaseRouteDao();
+        Log.d(TAG, "renderRoutesList: Loading all routes from database");
         routeDao.retrieveAllRoutes().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Route> routeList = new ArrayList<>();
@@ -123,9 +133,20 @@ public class PersonalRoutesFragment extends Fragment {
                     routeList.add(document.toObject(Route.class));
                 }
 
-                listView = view.findViewById(R.id.individ_routes_list);
-                routeListParam = new ArrayList<>(routeList);
+                /**
+                 * HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY
+                 * PLEASE UNCOMMENT THIS WHEN EVERYTHING IS FUNCTIONING
+                 * THIS WILL MAKE SURE EACH ROUTE ADDED IS NOT SUPPOSED TO BE HERE
+                 */
+//                routeListParam = new ArrayList<>();
+//                for ( Route route : routeList ) {
+//                    if ( route.userID.equals(userEmail) ) {
+//                        routeListParam.add(route);
+//                    }
+//                }
+                Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
+                listView = view.findViewById(R.id.individ_routes_list);
                 TeamRouteListAdapter teamrouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout,
                         routeListParam);
 

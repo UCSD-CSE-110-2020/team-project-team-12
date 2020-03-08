@@ -100,7 +100,7 @@ public class TeamScreen extends FragmentActivity
         });
 
         if ( !MainActivity.unitTestFlag) {
-//            createUsers();
+            createUsers();
             initializeUpdateListener();
         }
 
@@ -151,7 +151,7 @@ public class TeamScreen extends FragmentActivity
                 dao.findUsersByTeam(u.teamID).addOnCompleteListener(task1 -> {
                     if (task1.isSuccessful()) {
                         List<User> userList = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task.getResult()) {
+                        for (QueryDocumentSnapshot document : task1.getResult()) {
                             userList.add(document.toObject(User.class));
                         }
 

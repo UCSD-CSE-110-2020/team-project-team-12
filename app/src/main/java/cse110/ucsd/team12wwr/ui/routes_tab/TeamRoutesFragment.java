@@ -1,11 +1,21 @@
 package cse110.ucsd.team12wwr.ui.routes_tab;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,6 +23,14 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import cse110.ucsd.team12wwr.R;
+import cse110.ucsd.team12wwr.RouteListAdapter;
+import cse110.ucsd.team12wwr.TeamRouteListAdapter;
+import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.User;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -21,6 +39,10 @@ public class TeamRoutesFragment extends Fragment {
 
     private static final String TAG = "TeamRoutesFragment";
     private static final String ARG_SECTION_NUMBER = "section_number";
+    SharedPreferences emailPref;
+    String userEmail;
+    List<Route> routeList;
+    ListView listView;
 
     private PageViewModel pageViewModel;
 
@@ -36,6 +58,16 @@ public class TeamRoutesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(TAG, "Entered Team Routes Tab!");
+
+        Log.i(TAG, "onCreate: Getting current user's email from SharedPreferences");
+        emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailPref.getString("EMAIL_ID", null);
+        userEmail = "jane@gmail.com";
+
+        Log.d(TAG, "onCreate: Email for current user: " + userEmail);
+
+        routeList = new ArrayList<>();
+
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
@@ -45,11 +77,121 @@ public class TeamRoutesFragment extends Fragment {
         pageViewModel.setIndex(index);
     }
 
+
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_team_routes, container, false);
         return root;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        createRoutes();
+        Log.i(TAG, "onViewCreated: Loading team routes...");
+        initializeUpdateListener(view);
+    }
+
+    private void initializeUpdateListener(View view) {
+        FirebaseFirestore.getInstance().collection("routes")
+                .orderBy("name", Query.Direction.ASCENDING)
+                .addSnapshotListener((newChatSnapshot, error) -> {
+                    if (error != null) {
+                        Log.e(TAG, error.getLocalizedMessage());
+                        return;
+                    }
+
+                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                        renderRoutesList(view);
+                    }
+                });
+    }
+
+    private void renderRoutesList(View view) {
+        Log.d(TAG, "renderRoutesList: Now rendering list of routes for the team");
+        FirebaseUserDao dao = new FirebaseUserDao();
+        dao.findUserByID(userEmail).addOnCompleteListener(task -> {
+           if (task.isSuccessful()) {
+               User u = null;
+               for (QueryDocumentSnapshot document : task.getResult()) {
+                   u = document.toObject(User.class);
+                   Log.i(TAG, "renderRoutesList: Found user");
+               }
+
+               dao.findUsersByTeam(u.teamID).addOnCompleteListener(task1 -> {
+                  if ( task1.isSuccessful() ) {
+                      Log.d(TAG, "renderRoutesList: Getting all the team members");
+                      List<User> userList = new ArrayList<>();
+                      for (QueryDocumentSnapshot document : task1.getResult()) {
+                          userList.add(document.toObject(User.class));
+                      }
+
+                      Log.i(TAG, "renderRoutesList: Now retrieving all routes");
+                      FirebaseRouteDao routeDao = new FirebaseRouteDao();
+                      routeDao.retrieveAllRoutes().addOnCompleteListener(task2 -> {
+                          if ( task2.isSuccessful()) {
+                              List<Route> allRoutes = new ArrayList<>();
+                              for (QueryDocumentSnapshot document : task2.getResult()) {
+                                  allRoutes.add(document.toObject(Route.class));
+                              }
+
+                              Log.i(TAG, "renderRoutesList: Looking through all the routes to locate team routes");
+                              for (User user : userList ) {
+                                  String userID = user.userID;
+                                  for ( Route route : allRoutes ) {
+                                      if ( route.userID != null ) {
+                                          if (route.userID.equals(userID) && !route.userID.equals(userEmail)) {
+                                              routeList.add(route);
+                                          }
+                                      }
+                                  }
+                              }
+
+                              listView = view.findViewById(R.id.teams_routes_list);
+                              RouteListAdapter teamRouteListAdapter = new RouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+
+                              Log.i(TAG, "renderRoutesList: Displaying all the team routes");
+                              listView.setAdapter(teamRouteListAdapter);
+                              listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                  @Override
+                                  public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                      String routeName = routeList.get(i).name;
+                                  }
+                              });
+
+
+                          }
+
+                      });
+
+                  }
+               });
+           }
+        });
+    }
+
+    public void createRoutes() {
+        FirebaseRouteDao routeDao = new FirebaseRouteDao();
+
+        Route newRoute = new Route();
+        newRoute.userID = "jane@gmail.com";
+        newRoute.name = "Route 1";
+        newRoute.startingPoint = "Techno World";
+        routeDao.insertAll(newRoute);
+
+        Route newRoute1 = new Route();
+        newRoute1.userID = "susan@gmail.com";
+        newRoute1.name = "Route 2";
+        newRoute1.startingPoint = "Torus";
+        routeDao.insertAll(newRoute1);
+
+        Route newRoute2 = new Route();
+        newRoute2.userID = "susan@gmail.com";
+        newRoute2.name = "Route 3";
+        newRoute2.startingPoint = "Donut";
+        routeDao.insertAll(newRoute2);
+
     }
 }

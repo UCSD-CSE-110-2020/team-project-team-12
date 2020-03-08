@@ -1,6 +1,7 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +43,7 @@ public class TeamRouteListAdapter extends ArrayAdapter<Route> {
         TextView textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
 
         textViewRouteName.setText(routeName);
+        Log.d(TAG, "getView: Setting list item name");
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
         dao.findByRouteName(routeName).addOnCompleteListener(task -> {
@@ -54,6 +56,8 @@ public class TeamRouteListAdapter extends ArrayAdapter<Route> {
                 if (!hasWalk) {
                     textViewPrevWalked.setVisibility(View.INVISIBLE);
                 }
+
+                Log.i(TAG, "getView: Walk for " + routeName + " has been walked on before: " + hasWalk);
             }
         });
 

@@ -73,6 +73,7 @@ public class TeamListAdapter extends BaseAdapter {
 
             TeamScreenRowItem item = rowItems.get(i);
 
+            Log.d(TAG, "getView: Retrieved row item and now setting icon and name into list");
             ColorGenerator generator = ColorGenerator.MATERIAL;
             int pendingColor = Color.LTGRAY;
             
@@ -83,7 +84,6 @@ public class TeamListAdapter extends BaseAdapter {
                     .beginConfig()
                         .bold()
                         .toUpperCase()
-//                        .withBorder(4)
                     .endConfig()
                     .round();
 
