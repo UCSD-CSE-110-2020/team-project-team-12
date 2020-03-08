@@ -9,13 +9,7 @@ import cse110.ucsd.team12wwr.MainActivity;
 
 public class FirebaseScheduleDao implements ScheduleDao {
     public static final String SCHEDULE_COLLECTION_KEY = "schedules";
-    FirebaseFirestore db;
-
-    public FirebaseScheduleDao() {
-        if (!MainActivity.unitTestFlag) {
-            db = FirebaseFirestore.getInstance();
-        }
-    }
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public void insertAll(Schedule... schedules) {
         if (db == null) {

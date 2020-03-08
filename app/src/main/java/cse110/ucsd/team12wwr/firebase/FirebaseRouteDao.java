@@ -11,12 +11,7 @@ import cse110.ucsd.team12wwr.MainActivity;
 public class FirebaseRouteDao implements RouteDao {
     public static final String ROUTE_COLLECTION_KEY = "routes";
 
-    FirebaseFirestore db;
-    public FirebaseRouteDao() {
-        if (!MainActivity.unitTestFlag) {
-            db = FirebaseFirestore.getInstance();
-        }
-    }
+    FirebaseFirestore db = FirebaseFirestore.getInstance();;
 
     public void insertAll(Route... r) {
         if (db == null) {

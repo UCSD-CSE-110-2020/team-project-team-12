@@ -10,12 +10,7 @@ import cse110.ucsd.team12wwr.MainActivity;
 public class FirebaseInvitationDao implements InvitationDao {
     public static final String INVITATION_COLLECTION_KEY = "invitations";
 
-    FirebaseFirestore db;
-    public FirebaseInvitationDao() {
-        if (!MainActivity.unitTestFlag) {
-            db = FirebaseFirestore.getInstance();
-        }
-    }
+    FirebaseFirestore db = FirebaseFirestore.getInstance();;
 
     public void insertAll(Invitation... invitations) {
         if (db == null) {

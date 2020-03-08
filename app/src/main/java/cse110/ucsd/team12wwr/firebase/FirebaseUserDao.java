@@ -10,12 +10,7 @@ import cse110.ucsd.team12wwr.MainActivity;
 public class FirebaseUserDao implements UserDao {
     public static final String USER_COLLECTION_KEY = "users";
     
-    FirebaseFirestore db;
-    public FirebaseUserDao() {
-        if (!MainActivity.unitTestFlag) {
-            db = FirebaseFirestore.getInstance();
-        }
-    }
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public void insertAll(User... users) {
         if (db == null) {
