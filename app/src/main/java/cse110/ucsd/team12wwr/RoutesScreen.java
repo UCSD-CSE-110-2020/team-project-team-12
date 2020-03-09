@@ -72,14 +72,10 @@ public class RoutesScreen extends AppCompatActivity {
                     case R.id.navigation_walk:
                         finish();
                         launchActivity();
-
-
                         break;
                     case R.id.navigation_teams:
                         finish();
                         launchTeamScreenActivity();
-
-
                         break;
                 }
                 return false;
