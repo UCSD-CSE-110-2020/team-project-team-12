@@ -96,11 +96,11 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
 
                         List<User> userList = new ArrayList<>();
                         FirebaseUserDao userDao = new FirebaseUserDao();
-                        Log.d(TAG, "getView: UserID for route [" + routeName + "] is: " + userList.get(0));
                         userDao.findUserByID(foundRoute.get(0).userID).addOnCompleteListener(task1 -> {
                             if ( task1.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task1.getResult()) {
                                     userList.add(document.toObject(User.class));
+                                    Log.d(TAG, "getView: UserID for route [" + routeName + "] is: " + userList.get(0));
                                 }
                                 String memberName = userList.get(0).firstName + " " + userList.get(0).lastName;
                                 Log.d(TAG, "getView: name of user is " + memberName);

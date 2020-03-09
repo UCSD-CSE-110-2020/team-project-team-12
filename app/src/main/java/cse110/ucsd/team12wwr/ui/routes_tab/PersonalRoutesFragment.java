@@ -113,6 +113,7 @@ public class PersonalRoutesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeUpdateListener(view);
+        createRoutes();
     }
 
     private void initializeUpdateListener(View view) {
@@ -151,9 +152,11 @@ public class PersonalRoutesFragment extends Fragment {
 //                        routeListParam.add(route);
 //                    }
 //                }
+
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
                 listView = view.findViewById(R.id.individ_routes_list);
+                routeListParam = new ArrayList<>(routeList);
                 TeamRouteListAdapter teamrouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout,
                         routeListParam);
 
@@ -167,5 +170,29 @@ public class PersonalRoutesFragment extends Fragment {
                 });
             }
         });
+    }
+
+
+    public void createRoutes() {
+        FirebaseRouteDao routeDao = new FirebaseRouteDao();
+
+        Route newRoute = new Route();
+        newRoute.userID = "jane@gmail.com";
+        newRoute.name = "Route Jane 243";
+        newRoute.startingPoint = "Techno World";
+        routeDao.insertAll(newRoute);
+
+        Route newRoute1 = new Route();
+        newRoute1.userID = "jane@gmail.com";
+        newRoute1.name = "Route Jane 3";
+        newRoute1.startingPoint = "Torus";
+        routeDao.insertAll(newRoute1);
+
+        Route newRoute2 = new Route();
+        newRoute2.userID = "jane@gmail.com";
+        newRoute2.name = "Route Jane 1";
+        newRoute2.startingPoint = "Donut";
+        routeDao.insertAll(newRoute2);
+
     }
 }
