@@ -7,4 +7,14 @@
         android:orderInCategory="100"
         android:title="@string/debug_walk"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/team_screen"
+        android:orderInCategory="150"
+        android:title="Team Screen"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/invites"
+        android:orderInCategory="200"
+        android:title="Pending Invitations"
+        app:showAsAction="never" />
 </menu>

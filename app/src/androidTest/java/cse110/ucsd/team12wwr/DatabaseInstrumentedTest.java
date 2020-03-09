@@ -15,9 +15,9 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-import cse110.ucsd.team12wwr.roomdb.Route;
-import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
-import cse110.ucsd.team12wwr.roomdb.Walk;
+import cse110.ucsd.team12wwr.roomdb.RoomDatabase;
+import cse110.ucsd.team12wwr.roomdb.RoomRoute;
+import cse110.ucsd.team12wwr.roomdb.RoomWalk;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -25,12 +25,12 @@ import static org.junit.Assert.fail;
 
 @RunWith(AndroidJUnit4.class)
 public class DatabaseInstrumentedTest {
-    private WWRDatabase db;
+    private RoomDatabase db;
 
     @Before
     public void setUp() {
         Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        db = Room.inMemoryDatabaseBuilder(context, WWRDatabase.class).build();
+        db = Room.inMemoryDatabaseBuilder(context, RoomDatabase.class).build();
     }
 
     @After
@@ -40,12 +40,12 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testInsertSingleWalk() {
-        Route missionHills = new Route();
+        RoomRoute missionHills = new RoomRoute();
         missionHills.name = "Mission Hills Tour";
         missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
         db.routeDao().insertAll(missionHills);
 
-        Walk newEntry = new Walk();
+        RoomWalk newEntry = new RoomWalk();
         newEntry.time = System.currentTimeMillis();
         newEntry.routeName = "Mission Hills Tour";
         newEntry.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
@@ -53,7 +53,7 @@ public class DatabaseInstrumentedTest {
         newEntry.distance = String.format("%.2f mi", 13.09);
         db.walkDao().insertAll(newEntry);
 
-        Walk newestWalk = db.walkDao().findNewestEntry();
+        RoomWalk newestWalk = db.walkDao().findNewestEntry();
         assertEquals("1337", newestWalk.steps);
         assertEquals("13.09 mi", newestWalk.distance);
         assertEquals("12:34:56", newestWalk.duration);
@@ -62,15 +62,15 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testNewestMultipleWalks() {
-        Route missionHills = new Route();
+        RoomRoute missionHills = new RoomRoute();
         missionHills.name = "Mission Hills Tour";
         missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
         db.routeDao().insertAll(missionHills);
         
         int NUM_OF_ENTRIES = 3;
-        Walk[] walkArr = new Walk[NUM_OF_ENTRIES];
+        RoomWalk[] walkArr = new RoomWalk[NUM_OF_ENTRIES];
         for (int i = 0; i < NUM_OF_ENTRIES; i++) {
-            walkArr[i] = new Walk();
+            walkArr[i] = new RoomWalk();
         }
 
         walkArr[0].time = System.currentTimeMillis();
@@ -92,7 +92,7 @@ public class DatabaseInstrumentedTest {
         walkArr[2].distance = String.format("%.2f mi", 11.11);
         db.walkDao().insertAll(walkArr[0], walkArr[1], walkArr[2]);
 
-        Walk newestWalk = db.walkDao().findNewestEntry();
+        RoomWalk newestWalk = db.walkDao().findNewestEntry();
         assertEquals("7331", newestWalk.steps);
         assertEquals("31.09 mi", newestWalk.distance);
         assertEquals("21:43:65", newestWalk.duration);
@@ -100,26 +100,26 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testFindWalksGivenRouteName() {
-        Route missionHills = new Route();
+        RoomRoute missionHills = new RoomRoute();
         missionHills.name = "Mission Hills Tour";
         missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
         db.routeDao().insertAll(missionHills);
 
-        Walk firstWalk = new Walk();
+        RoomWalk firstWalk = new RoomWalk();
         firstWalk.time = System.currentTimeMillis();
         firstWalk.routeName = "Mission Hills Tour";
         firstWalk.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
         firstWalk.steps = String.format("%d", 1337);
         firstWalk.distance = String.format("%.2f mi", 13.09);
 
-        Walk secondWalk = new Walk();
+        RoomWalk secondWalk = new RoomWalk();
         secondWalk.time = System.currentTimeMillis() + 100000;
         secondWalk.routeName = "Mission Hills Tour";
         secondWalk.duration = String.format("%02d:%02d:%02d", 21, 43, 65);
         secondWalk.steps = String.format("%d", 7331);
         secondWalk.distance = String.format("%.2f mi", 31.09);
 
-        Walk thirdWalk = new Walk();
+        RoomWalk thirdWalk = new RoomWalk();
         thirdWalk.time = System.currentTimeMillis() - 100000;
         thirdWalk.routeName = "Mission Hills Tour";
         thirdWalk.duration = String.format("%02d:%02d:%02d", 34, 56, 78);
@@ -128,7 +128,7 @@ public class DatabaseInstrumentedTest {
 
         db.walkDao().insertAll(firstWalk, secondWalk, thirdWalk);
 
-        List<Walk> walks = db.walkDao().findByRouteName("Mission Hills Tour");
+        List<RoomWalk> walks = db.walkDao().findByRouteName("Mission Hills Tour");
 
         assertEquals("7331", walks.get(0).steps);
         assertEquals("31.09 mi", walks.get(0).distance);
@@ -145,12 +145,12 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testFindWalksGivenNonexistentRouteName() {
-        Route missionHills = new Route();
+        RoomRoute missionHills = new RoomRoute();
         missionHills.name = "Mission Hills Tour";
         missionHills.startingPoint = "Kufuerstendamm & Friedrichstrasse";
         db.routeDao().insertAll(missionHills);
 
-        Walk firstWalk = new Walk();
+        RoomWalk firstWalk = new RoomWalk();
         firstWalk.time = System.currentTimeMillis();
         firstWalk.routeName = "Mission Hills Tour";
         firstWalk.duration = String.format("%02d:%02d:%02d", 12, 34, 56);
@@ -159,32 +159,32 @@ public class DatabaseInstrumentedTest {
 
         db.walkDao().insertAll(firstWalk);
 
-        List<Walk> walks = db.walkDao().findByRouteName("Ho Ho Ho!");
+        List<RoomWalk> walks = db.walkDao().findByRouteName("Ho Ho Ho!");
         assertEquals(0, walks.size());
     }
 
     @Test
     public void testInsertSingleRoute() {
-        Route newEntry = new Route();
+        RoomRoute newEntry = new RoomRoute();
         newEntry.name = "Mission Hills Tour";
         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
-        newEntry.routeType = Route.RouteType.LOOP;
-        newEntry.hilliness = Route.Hilliness.FLAT;
-        newEntry.surfaceType = Route.SurfaceType.STREETS;
-        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.EASY;
+        newEntry.routeType = RoomRoute.RouteType.LOOP;
+        newEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        newEntry.surfaceType = RoomRoute.SurfaceType.STREETS;
+        newEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = RoomRoute.Difficulty.EASY;
         newEntry.notes = "This is a pretty dope route wanna do it again";
         db.routeDao().insertAll(newEntry);
 
-        List<Route> routes = db.routeDao().retrieveAllRoutes();
-        Route r = routes.get(0);
+        List<RoomRoute> routes = db.routeDao().retrieveAllRoutes();
+        RoomRoute r = routes.get(0);
         assertEquals("Mission Hills Tour", r.name);
         assertEquals("Kufuerstendamm & Friedrichstrasse", r.startingPoint);
-        assertEquals(Route.RouteType.LOOP, r.routeType);
-        assertEquals(Route.Hilliness.FLAT, r.hilliness);
-        assertEquals(Route.SurfaceType.STREETS, r.surfaceType);
-        assertEquals(Route.Evenness.EVEN_SURFACE, r.evenness);
-        assertEquals(Route.Difficulty.EASY, r.difficulty);
+        assertEquals(RoomRoute.RouteType.LOOP, r.routeType);
+        assertEquals(RoomRoute.Hilliness.FLAT, r.hilliness);
+        assertEquals(RoomRoute.SurfaceType.STREETS, r.surfaceType);
+        assertEquals(RoomRoute.Evenness.EVEN_SURFACE, r.evenness);
+        assertEquals(RoomRoute.Difficulty.EASY, r.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", r.notes);
         assertNull("Favorite is not specified", r.favorite);
     }
@@ -192,19 +192,19 @@ public class DatabaseInstrumentedTest {
     @Test
     public void testAlphabeticalOrderRoutes() {
         int NUM_OF_ENTRIES = 3;
-        Route[] routeArr = new Route[NUM_OF_ENTRIES];
+        RoomRoute[] routeArr = new RoomRoute[NUM_OF_ENTRIES];
         for (int i = 0; i < NUM_OF_ENTRIES; i++) {
-            routeArr[i] = new Route();
+            routeArr[i] = new RoomRoute();
         }
 
-        Route newEntry = routeArr[0];
+        RoomRoute newEntry = routeArr[0];
         newEntry.name = "Mission Hills Tour";
         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
-        newEntry.routeType = Route.RouteType.LOOP;
-        newEntry.hilliness = Route.Hilliness.FLAT;
-        newEntry.surfaceType = Route.SurfaceType.STREETS;
-        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.routeType = RoomRoute.RouteType.LOOP;
+        newEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        newEntry.surfaceType = RoomRoute.SurfaceType.STREETS;
+        newEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = RoomRoute.Difficulty.MODERATE;
         newEntry.notes = "This is a pretty dope route wanna do it again";
 
         routeArr[1].name = "Hike to Mars";
@@ -215,7 +215,7 @@ public class DatabaseInstrumentedTest {
 
         db.routeDao().insertAll(routeArr[0], routeArr[1], routeArr[2]);
 
-        List<Route> routes = db.routeDao().retrieveAllRoutes();
+        List<RoomRoute> routes = db.routeDao().retrieveAllRoutes();
         assertEquals("Hike to Mars", routes.get(0).name);
         assertEquals("Mission Hills Tour", routes.get(1).name);
         assertEquals("Zamba!", routes.get(2).name);
@@ -223,17 +223,17 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testInsertDuplicateRoutes() {
-        Route newEntry = new Route();
+        RoomRoute newEntry = new RoomRoute();
         newEntry.name = "Mission Hills Tour";
         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
-        newEntry.routeType = Route.RouteType.LOOP;
-        newEntry.hilliness = Route.Hilliness.FLAT;
-        newEntry.surfaceType = Route.SurfaceType.STREETS;
-        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.routeType = RoomRoute.RouteType.LOOP;
+        newEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        newEntry.surfaceType = RoomRoute.SurfaceType.STREETS;
+        newEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = RoomRoute.Difficulty.MODERATE;
         newEntry.notes = "This is a pretty dope route wanna do it again";
 
-        Route duplicateEntry = new Route();
+        RoomRoute duplicateEntry = new RoomRoute();
         duplicateEntry.name = "Mission Hills Tour";
         db.routeDao().insertAll(newEntry);
         try {
@@ -241,20 +241,20 @@ public class DatabaseInstrumentedTest {
             Assert.fail("Duplicated primary key, should have thrown a SQLiteConstraintException here!");
         } catch (SQLiteConstraintException e) {}
 
-        List<Route> routes = db.routeDao().retrieveAllRoutes();
+        List<RoomRoute> routes = db.routeDao().retrieveAllRoutes();
         assertEquals(1, routes.size());
         assertEquals("Mission Hills Tour", routes.get(0).name);
     }
 
     @Test
     public void testInsertEmptyRouteName() {
-        Route emptyNameEntry = new Route();
+        RoomRoute emptyNameEntry = new RoomRoute();
         emptyNameEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
-        emptyNameEntry.routeType = Route.RouteType.LOOP;
-        emptyNameEntry.hilliness = Route.Hilliness.FLAT;
-        emptyNameEntry.surfaceType = Route.SurfaceType.STREETS;
-        emptyNameEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        emptyNameEntry.difficulty = Route.Difficulty.MODERATE;
+        emptyNameEntry.routeType = RoomRoute.RouteType.LOOP;
+        emptyNameEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        emptyNameEntry.surfaceType = RoomRoute.SurfaceType.STREETS;
+        emptyNameEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        emptyNameEntry.difficulty = RoomRoute.Difficulty.MODERATE;
         emptyNameEntry.notes = "This is a pretty dope route wanna do it again";
 
         try {
@@ -265,91 +265,91 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void testFindRouteGivenName() {
-        Route newEntry = new Route();
+        RoomRoute newEntry = new RoomRoute();
         newEntry.name = "Mission Hills Tour";
         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
-        newEntry.routeType = Route.RouteType.LOOP;
-        newEntry.hilliness = Route.Hilliness.FLAT;
-        newEntry.surfaceType = Route.SurfaceType.STREETS;
-        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.routeType = RoomRoute.RouteType.LOOP;
+        newEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        newEntry.surfaceType = RoomRoute.SurfaceType.STREETS;
+        newEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = RoomRoute.Difficulty.MODERATE;
         newEntry.notes = "This is a pretty dope route wanna do it again";
-        newEntry.favorite = Route.Favorite.FAVORITE;
+        newEntry.favorite = RoomRoute.Favorite.FAVORITE;
 
-        Route secondEntry = new Route();
+        RoomRoute secondEntry = new RoomRoute();
         secondEntry.name = "Hike Around The Moon";
         secondEntry.startingPoint = "Kennedy Space Center";
-        secondEntry.routeType = Route.RouteType.OUT_AND_BACK;
-        secondEntry.hilliness = Route.Hilliness.FLAT;
-        secondEntry.surfaceType = Route.SurfaceType.TRAIL;
-        secondEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        secondEntry.difficulty = Route.Difficulty.DIFFICULT;
+        secondEntry.routeType = RoomRoute.RouteType.OUT_AND_BACK;
+        secondEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        secondEntry.surfaceType = RoomRoute.SurfaceType.TRAIL;
+        secondEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        secondEntry.difficulty = RoomRoute.Difficulty.DIFFICULT;
         secondEntry.notes = "Ground Control to Major Tom";
-        secondEntry.favorite = Route.Favorite.NOT_FAVORITE;
+        secondEntry.favorite = RoomRoute.Favorite.NOT_FAVORITE;
 
         db.routeDao().insertAll(newEntry, secondEntry);
 
-        Route firstQuery = db.routeDao().findName("Mission Hills Tour");
+        RoomRoute firstQuery = db.routeDao().findName("Mission Hills Tour");
         assertEquals("Mission Hills Tour", firstQuery.name);
         assertEquals("Kufuerstendamm & Friedrichstrasse", firstQuery.startingPoint);
-        assertEquals(Route.RouteType.LOOP, firstQuery.routeType);
-        assertEquals(Route.Hilliness.FLAT, firstQuery.hilliness);
-        assertEquals(Route.SurfaceType.STREETS, firstQuery.surfaceType);
-        assertEquals(Route.Evenness.EVEN_SURFACE, firstQuery.evenness);
-        assertEquals(Route.Difficulty.MODERATE, firstQuery.difficulty);
+        assertEquals(RoomRoute.RouteType.LOOP, firstQuery.routeType);
+        assertEquals(RoomRoute.Hilliness.FLAT, firstQuery.hilliness);
+        assertEquals(RoomRoute.SurfaceType.STREETS, firstQuery.surfaceType);
+        assertEquals(RoomRoute.Evenness.EVEN_SURFACE, firstQuery.evenness);
+        assertEquals(RoomRoute.Difficulty.MODERATE, firstQuery.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", firstQuery.notes);
-        assertEquals(Route.Favorite.FAVORITE, firstQuery.favorite);
+        assertEquals(RoomRoute.Favorite.FAVORITE, firstQuery.favorite);
 
-        Route secondQuery = db.routeDao().findName("Hike Around The Moon");
+        RoomRoute secondQuery = db.routeDao().findName("Hike Around The Moon");
         assertEquals("Hike Around The Moon", secondQuery.name);
         assertEquals("Kennedy Space Center", secondQuery.startingPoint);
-        assertEquals(Route.RouteType.OUT_AND_BACK, secondQuery.routeType);
-        assertEquals(Route.Hilliness.FLAT, secondQuery.hilliness);
-        assertEquals(Route.SurfaceType.TRAIL, secondQuery.surfaceType);
-        assertEquals(Route.Evenness.EVEN_SURFACE, secondQuery.evenness);
-        assertEquals(Route.Difficulty.DIFFICULT, secondQuery.difficulty);
+        assertEquals(RoomRoute.RouteType.OUT_AND_BACK, secondQuery.routeType);
+        assertEquals(RoomRoute.Hilliness.FLAT, secondQuery.hilliness);
+        assertEquals(RoomRoute.SurfaceType.TRAIL, secondQuery.surfaceType);
+        assertEquals(RoomRoute.Evenness.EVEN_SURFACE, secondQuery.evenness);
+        assertEquals(RoomRoute.Difficulty.DIFFICULT, secondQuery.difficulty);
         assertEquals("Ground Control to Major Tom", secondQuery.notes);
-        assertEquals(Route.Favorite.NOT_FAVORITE, secondQuery.favorite);
+        assertEquals(RoomRoute.Favorite.NOT_FAVORITE, secondQuery.favorite);
     }
 
     @Test
     public void testFindRouteGivenNonexistentName() {
-        Route newEntry = new Route();
+        RoomRoute newEntry = new RoomRoute();
         newEntry.name = "Mission Hills Tour";
         newEntry.startingPoint = "A";
 
-        Route secondEntry = new Route();
+        RoomRoute secondEntry = new RoomRoute();
         secondEntry.name = "Hike Around The Moon";
         secondEntry.startingPoint = "B";
 
         db.routeDao().insertAll(newEntry, secondEntry);
 
-        Route nonexistentQuery = db.routeDao().findName("Andromeda Galaxy");
+        RoomRoute nonexistentQuery = db.routeDao().findName("Andromeda Galaxy");
         assertNull("Queried object doesn't actually exist", nonexistentQuery);
     }
 
     @Test
     public void testFindRouteGivenNameCaseInsensitive() {
-        Route newEntry = new Route();
+        RoomRoute newEntry = new RoomRoute();
         newEntry.name = "Mission Hills Tour";
         newEntry.startingPoint = "Kufuerstendamm & Friedrichstrasse";
-        newEntry.routeType = Route.RouteType.LOOP;
-        newEntry.hilliness = Route.Hilliness.FLAT;
-        newEntry.surfaceType = Route.SurfaceType.STREETS;
-        newEntry.evenness = Route.Evenness.EVEN_SURFACE;
-        newEntry.difficulty = Route.Difficulty.MODERATE;
+        newEntry.routeType = RoomRoute.RouteType.LOOP;
+        newEntry.hilliness = RoomRoute.Hilliness.FLAT;
+        newEntry.surfaceType = RoomRoute.SurfaceType.STREETS;
+        newEntry.evenness = RoomRoute.Evenness.EVEN_SURFACE;
+        newEntry.difficulty = RoomRoute.Difficulty.MODERATE;
         newEntry.notes = "This is a pretty dope route wanna do it again";
 
         db.routeDao().insertAll(newEntry);
 
-        Route inverseCaseQuery = db.routeDao().findName("mISSION hILLS tOUR");
+        RoomRoute inverseCaseQuery = db.routeDao().findName("mISSION hILLS tOUR");
         assertEquals("Mission Hills Tour", inverseCaseQuery.name);
         assertEquals("Kufuerstendamm & Friedrichstrasse", inverseCaseQuery.startingPoint);
-        assertEquals(Route.RouteType.LOOP, inverseCaseQuery.routeType);
-        assertEquals(Route.Hilliness.FLAT, inverseCaseQuery.hilliness);
-        assertEquals(Route.SurfaceType.STREETS, inverseCaseQuery.surfaceType);
-        assertEquals(Route.Evenness.EVEN_SURFACE, inverseCaseQuery.evenness);
-        assertEquals(Route.Difficulty.MODERATE, inverseCaseQuery.difficulty);
+        assertEquals(RoomRoute.RouteType.LOOP, inverseCaseQuery.routeType);
+        assertEquals(RoomRoute.Hilliness.FLAT, inverseCaseQuery.hilliness);
+        assertEquals(RoomRoute.SurfaceType.STREETS, inverseCaseQuery.surfaceType);
+        assertEquals(RoomRoute.Evenness.EVEN_SURFACE, inverseCaseQuery.evenness);
+        assertEquals(RoomRoute.Difficulty.MODERATE, inverseCaseQuery.difficulty);
         assertEquals("This is a pretty dope route wanna do it again", inverseCaseQuery.notes);
 
     }
