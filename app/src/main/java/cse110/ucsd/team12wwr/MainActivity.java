@@ -33,7 +33,6 @@ import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,17 +74,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean googleSubscribedStatus = false;
     public boolean gFitUtilLifecycleFlag;
 
-
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("MainActivity.onCreate", "onCreate() called");
-
-
 
         /* START GOOGLE LOGIN */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -215,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
     }
 
 
@@ -449,5 +439,4 @@ public class MainActivity extends AppCompatActivity {
         });
         Log.i("CHECK", " METHEND");
     }
-
 }

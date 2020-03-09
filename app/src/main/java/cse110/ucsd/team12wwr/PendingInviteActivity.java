@@ -19,8 +19,6 @@ import cse110.ucsd.team12wwr.firebase.InvitationDao;
 import cse110.ucsd.team12wwr.firebase.UserDao;
 
 public class PendingInviteActivity extends AppCompatActivity {
-
-
     Invitation inv;
     String userEmail;
     String originTeam;

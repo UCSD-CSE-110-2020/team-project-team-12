@@ -5,8 +5,6 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import cse110.ucsd.team12wwr.MainActivity;
-
 public class FirebaseUserDao implements UserDao {
     public static final String USER_COLLECTION_KEY = "users";
     
