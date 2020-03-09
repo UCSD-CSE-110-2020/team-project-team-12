@@ -133,6 +133,8 @@ public class PersonalRoutesFragment extends Fragment {
                 listView = view.findViewById(R.id.individ_routes_list);
                 routeListParam = new ArrayList<>(routeList);
 
+                System.err.println("Is this null: " + getActivity());
+
                 TeamRouteListAdapter teamrouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout,
                         routeListParam);
 

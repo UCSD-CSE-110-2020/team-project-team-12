@@ -188,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case R.id.navigation_walk:
-//                        launchActivity();
+                        launchSuggestedWalkActivity();
 
                         break;
                     case R.id.navigation_teams:
@@ -207,10 +207,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void launchRoutesScreenActivity() {
-        Intent intent = new Intent(this, RoutesScreen.class);
-        startActivity(intent);
-    }
+//    public void launchRoutesScreenActivity() {
+//        Intent intent = new Intent(this, RoutesScreen.class);
+//        startActivity(intent);
+//    }
 
     public void launchTeamScreenActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
@@ -222,11 +222,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void launchSuggestedWalkActivity() {
+        Intent intent = new Intent(this, ScheduledWalkActivity.class);
+        startActivity(intent);
+    }
+
     public void launchTeamRouteActivity() {
         Intent intent = new Intent(this, TeamIndividRoutes.class);
         startActivity(intent);
     }
-
 
     @Override
     protected void onPause() {
