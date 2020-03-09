@@ -5,11 +5,11 @@ import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.PrimaryKey;
 
-@Entity(foreignKeys = @ForeignKey(entity = Route.class,
+@Entity(foreignKeys = @ForeignKey(entity = RoomRoute.class,
         parentColumns = "name",
         childColumns = "routeName",
         onDelete = ForeignKey.CASCADE))
-public class Walk {
+public class RoomWalk {
     @PrimaryKey @NonNull
     public long time;
 

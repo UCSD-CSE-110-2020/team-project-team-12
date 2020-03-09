@@ -1,25 +1,28 @@
 package cse110.ucsd.team12wwr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 
 public class RoutesScreen extends AppCompatActivity {
 
@@ -53,6 +56,33 @@ public class RoutesScreen extends AppCompatActivity {
                 launchRouteInfoActivity();
             }
         });
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.getItem(1);
+        menuItem.setChecked(true);
+
+        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        finish();
+                        break;
+                    case R.id.navigation_routes:
+                        break;
+                    case R.id.navigation_walk:
+                        finish();
+                        launchActivity();
+                        break;
+                    case R.id.navigation_teams:
+                        finish();
+                        launchTeamScreenActivity();
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
 //     @Override
@@ -72,24 +102,23 @@ public class RoutesScreen extends AppCompatActivity {
     
 
     private void initializeUpdateListener() {
-        FirebaseFirestore.getInstance().collection("routes")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((newChatSnapshot, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                        return;
-                    }
+        RouteDao dao = DaoFactory.getRouteDao();
+        dao.listenForChanges((newChatSnapshot, error) -> {
+            if (error != null) {
+                Log.e(TAG, error.getLocalizedMessage());
+                return;
+            }
 
-                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        renderRoutesList();
-                    }
-                });
+            if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                renderRoutesList();
+            }
+        });
     }
     
 
     private void renderRoutesList() {
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
-        routeDao.retrieveAllRoutes().addOnCompleteListener(task -> {
+        RouteDao routeDao = DaoFactory.getRouteDao();
+        routeDao.retrieveAllRoutes(task -> {
             if (task.isSuccessful()) {
                 List<Route> routeList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -127,6 +156,16 @@ public class RoutesScreen extends AppCompatActivity {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
 
+        startActivity(intent);
+    }
+
+    public void launchActivity() {
+        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        startActivity(intent);
+    }
+
+    public void launchTeamScreenActivity() {
+        Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
     }
 }

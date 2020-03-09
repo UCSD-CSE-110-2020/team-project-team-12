@@ -15,8 +15,9 @@ import android.widget.TextView;
 
 import cse110.ucsd.team12wwr.clock.DeviceClock;
 import cse110.ucsd.team12wwr.clock.IClock;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 
 public class IntentionalWalkActivity extends AppCompatActivity {
     private static final String TAG = "IntentionalWalkActivity";
@@ -180,9 +181,10 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
-                FirebaseWalkDao walkDao = new FirebaseWalkDao();
+                WalkDao walkDao = DaoFactory.getWalkDao();
 
                 String routeName = data.getExtras().getString("routeTitle");
                 Walk newEntry = new Walk();
