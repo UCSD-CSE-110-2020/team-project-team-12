@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr.ui.routes_tab;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import cse110.ucsd.team12wwr.R;
+import cse110.ucsd.team12wwr.RouteDetailsPage;
 import cse110.ucsd.team12wwr.RouteListAdapter;
 import cse110.ucsd.team12wwr.TeamRouteListAdapter;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
@@ -107,6 +109,13 @@ public class TeamRoutesFragment extends Fragment {
         });
     }
 
+    public void launchRoutesDetailsPage(String routeName) {
+        Log.d(TAG, "launchRouteDetailsPage: launching the route details page");
+        Intent intent = new Intent(getActivity(), RouteDetailsPage.class);
+        intent.putExtra("name", routeName);
+        startActivity(intent);
+    }
+
     private void renderRoutesList(View view) {
         Log.d(TAG, "renderRoutesList: Now rendering list of routes for the team");
         UserDao dao = DaoFactory.getUserDao();
@@ -156,6 +165,7 @@ public class TeamRoutesFragment extends Fragment {
                                   @Override
                                   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                       String routeName = routeList.get(i).name;
+                                      launchRoutesDetailsPage(routeName);
                                   }
                               });
                           }
