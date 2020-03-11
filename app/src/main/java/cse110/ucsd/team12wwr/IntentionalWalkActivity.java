@@ -36,6 +36,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private int temporaryNumSteps;
 
     private IClock clock;
+    private String userEmail;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         int inches = spf.getInt("INCHES", 0);
         int totalHeight = inches + ( HEIGHT_FACTOR * feet );
         strideLength = totalHeight * STRIDE_CONVERSION;
+
+        SharedPreferences emailPref = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailPref.getString("EMAIL_ID", null);
 
         final Button pauseButton = findViewById(R.id.btn_pause_walk);
         final Button continueButton = findViewById(R.id.btn_continue_walk);
@@ -192,6 +196,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
                 newEntry.steps = stepsText.getText().toString();
                 newEntry.distance = distanceText.getText().toString();
                 newEntry.routeName = routeName;
+                newEntry.userID = userEmail;
                 walkDao.insertAll(newEntry);
 
                 finish();
