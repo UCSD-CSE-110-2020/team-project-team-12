@@ -25,6 +25,7 @@ import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.firebase.UserDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
 
@@ -43,9 +44,9 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
+
         emailPrefs = context.getSharedPreferences("USER_ID", MODE_PRIVATE);
         email = emailPrefs.getString("EMAIL_ID", null);
-//        email = "jane@gmail.com";
         Log.d(TAG, "RouteListAdapter: Now adapting each team route to list item format");
     }
 
@@ -78,7 +79,7 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
-                Log.d(TAG, "getView: Walk has been walked on: " + hasWalk);
+                Log.d(TAG, "getView: " + routeName + " has been walked on: " + hasWalk);
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     hasWalk = true;
                 }
@@ -87,30 +88,29 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                     textViewPrevWalked.setVisibility(View.INVISIBLE);
                 }
 
-                List<Route> foundRoute = new ArrayList<>();
                 RouteDao routeDao = DaoFactory.getRouteDao();
-
                 routeDao.findName(routeName, task3 -> {
                     Log.d(TAG, "getView: Loading the route under name: " + routeName);
                     if ( task3.isSuccessful() ) {
+                        Route route = null;
                         for ( QueryDocumentSnapshot document : task3.getResult() ) {
-                            foundRoute.add(document.toObject(Route.class));
+                            route = document.toObject(Route.class);
                         }
 
-                        List<User> userList = new ArrayList<>();
                         UserDao userDao = DaoFactory.getUserDao();
-                        userDao.findUserByID(foundRoute.get(0).userID, task1 -> {
+                        userDao.findUserByID(route.userID, task1 -> {
                             if ( task1.isSuccessful()) {
+                                User user = null;
                                 for (QueryDocumentSnapshot document : task1.getResult()) {
-                                    userList.add(document.toObject(User.class));
-                                    Log.d(TAG, "getView: UserID for route [" + routeName + "] is: " + userList.get(0));
+                                    user = document.toObject(User.class);
+                                    Log.d(TAG, "getView: UserID for route [" + routeName + "] is: " + user);
                                 }
-                                String memberName = userList.get(0).firstName + " " + userList.get(0).lastName;
+                                String memberName = user.firstName + " " + user.lastName;
                                 Log.d(TAG, "getView: name of user is " + memberName);
                                 int color = generator.getColor(memberName);
 
-                                String initials = String.valueOf(userList.get(0).firstName.charAt(0)) +
-                                        String.valueOf(userList.get(0).lastName.charAt(0));
+                                String initials = String.valueOf(user.firstName.charAt(0)) +
+                                        String.valueOf(user.lastName.charAt(0));
                                 Log.d(TAG, "getView: Initials are : " + initials);
 
                                 TextDrawable iconDrawable = builder.build(initials, color);
@@ -123,17 +123,9 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                         });
                     }
                 });
-                setCheck(hasWalk);
             }
         });
 
         return convertView;
     }
-
-    void setCheck(Boolean hasWalk) {
-        if (!hasWalk) {
-            textViewPrevWalked.setVisibility(View.INVISIBLE);
-        }
-    }
-
 }
