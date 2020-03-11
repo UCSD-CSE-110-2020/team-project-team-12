@@ -330,7 +330,7 @@
 
                 <LinearLayout
                     android:id="@+id/diff_col"
-                    android:layout_width="205dp"
+                    android:layout_width="130dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
@@ -338,7 +338,7 @@
                         android:id="@+id/diff_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="10dp"
                         android:text="Difficulty"
                         android:textAlignment="center"
                         android:textSize="20sp"
@@ -348,15 +348,42 @@
                         android:id="@+id/diff_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_marginTop="5dp"
                         android:text="Easy/Moderate/Hard"
                         android:textAlignment="center"
-                        android:textSize="20sp" />
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/prev_walked_col"
+                    android:layout_width="145dp"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/prev_walked_textview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Previously Walked"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/checkmark_detail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/true_tick"
+                        android:textAlignment="center"
+                        android:textSize="20sp"
+                        android:visibility="invisible"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/favorite_col"
-                    android:layout_width="208dp"
+                    android:layout_width="138dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
@@ -372,9 +399,9 @@
 
                     <CheckBox
                         android:id="@+id/favorited_details"
-                        android:layout_width="match_parent"
+                        android:layout_width="66dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="85dp"
+                        android:layout_marginStart="50dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="85dp"
                         android:button="@drawable/favorite"
