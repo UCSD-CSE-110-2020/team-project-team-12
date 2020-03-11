@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class FirebaseWalkDao implements WalkDao {
+public class FirestoreToWalkDaoAdapter implements WalkDao {
     public static final String WALK_COLLECTION_KEY = "walks";
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();

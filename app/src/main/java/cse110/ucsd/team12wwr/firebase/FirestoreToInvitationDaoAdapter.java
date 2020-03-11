@@ -5,7 +5,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class FirebaseInvitationDao implements InvitationDao {
+public class FirestoreToInvitationDaoAdapter implements InvitationDao {
     public static final String INVITATION_COLLECTION_KEY = "invitations";
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();;

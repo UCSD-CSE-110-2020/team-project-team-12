@@ -7,7 +7,7 @@ public class DaoFactory {
 
     public static InvitationDao getInvitationDao() {
         if (!unitTestFlag) {
-            return new FirebaseInvitationDao();
+            return new FirestoreToInvitationDaoAdapter();
         } else {
             return new MockInvitationDao();
         }
@@ -15,7 +15,7 @@ public class DaoFactory {
 
     public static RouteDao getRouteDao() {
         if (!unitTestFlag) {
-            return new FirebaseRouteDao();
+            return new FirestoreToRouteDaoAdapter();
         } else {
             return new MockRouteDao();
         }
@@ -23,7 +23,7 @@ public class DaoFactory {
 
     public static ScheduleDao getScheduleDao() {
         if (!unitTestFlag) {
-            return new FirebaseScheduleDao();
+            return new FirestoreToScheduleDaoAdapter();
         } else {
             return new MockScheduleDao();
         }
@@ -31,7 +31,7 @@ public class DaoFactory {
 
     public static UserDao getUserDao() {
         if (!unitTestFlag) {
-            return new FirebaseUserDao();
+            return new FirestoreToUserDaoAdapter();
         } else {
             return new MockUserDao();
         }
@@ -39,7 +39,7 @@ public class DaoFactory {
 
     public static WalkDao getWalkDao() {
         if (!unitTestFlag) {
-            return new FirebaseWalkDao();
+            return new FirestoreToWalkDaoAdapter();
         } else {
             return new MockWalkDao();
         }
