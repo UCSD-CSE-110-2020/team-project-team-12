@@ -156,7 +156,7 @@ public class PersonalRoutesFragment extends Fragment {
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        routeName = routeList.get(position).name;
+                        routeName = routeListParam.get(position).name;
                         launchRoutesDetailsPage();
                     }
                 });
