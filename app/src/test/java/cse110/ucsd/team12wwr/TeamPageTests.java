@@ -1,12 +1,8 @@
 package cse110.ucsd.team12wwr;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import org.junit.Before;
@@ -21,14 +17,10 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
-
 import static junit.framework.TestCase.assertEquals;
-
 
 @RunWith(AndroidJUnit4.class)
 public class TeamPageTests {
-
     private Intent mainIntent, teamPageIntent;
     private ActivityTestRule<MainActivity> mainActivityActivityTestRule;
     private ActivityTestRule<TeamScreen> teamScreenActivityTestRule;
@@ -60,32 +52,29 @@ public class TeamPageTests {
         assertEquals(teamScreenActivityTestRule.getActivity().rowItems.size(), 2);
     }
 
+    @Test
+    public void testInviteMember() {
+        teamScreenActivityTestRule.launchActivity(teamPageIntent);
 
+        FloatingActionButton fab = teamScreenActivityTestRule.getActivity().findViewById(R.id.floatingActionButton);
+        fab.performClick();
 
-//    @Test
-//    public void testInviteMember() {
-//        teamScreenActivityTestRule.launchActivity(teamPageIntent);
-////        FloatingActionButton fab = teamScreenActivityTestRule.getActivity().findViewById(R.id.floatingActionButton);
-////        fab.performClick();
-//        teamScreenActivityTestRule.finishActivity();
-//
-//        ActivityScenario<TeamScreen> scenario = ActivityScenario.launch(teamPageIntent);
-//        scenario.onActivity(activity -> {
-//            FloatingActionButton fab = teamScreenActivityTestRule.getActivity().findViewById(R.id.floatingActionButton);
-//            fab.performClick();
-//            TextView email = activity.findViewById(R.id.username);
-//            email.setText("gmail@gmail.com");
-//            TextView firstName = activity.findViewById(R.id.first_name);
-//            firstName.setText("Jane");
-//            TextView lastName = activity.findViewById(R.id.last_name);
-//            lastName.setText("Joe");
-//            assertEquals(firstName.getText(), "Jane");
-//            assertEquals(lastName.getText(), "Joe");
-//            assertEquals(email.getText(), "gmail@gmail.com");
-//        });
-//    }
+        DialogFragment frag = (DialogFragment) teamScreenActivityTestRule.getActivity().getSupportFragmentManager().findFragmentByTag("open");
+        LayoutInflater inflater = frag.requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_invitation,null);
 
+        TextView email = view.findViewById(R.id.username);
+        TextView firstName = view.findViewById(R.id.first_name);
+        TextView lastName = view.findViewById(R.id.last_name);
 
+        email.setText("gmail@gmail.com");
+        firstName.setText("Jane");
+        lastName.setText("Hartono");
 
+        assertEquals("Jane", firstName.getText().toString());
+        assertEquals("Hartono", lastName.getText().toString());
+        assertEquals("gmail@gmail.com", email.getText().toString());
 
+        teamScreenActivityTestRule.finishActivity();
+    }
 }
