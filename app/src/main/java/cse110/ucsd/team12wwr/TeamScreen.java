@@ -68,7 +68,6 @@ public class TeamScreen extends FragmentActivity
             }
         });
 
-
         Log.d(TAG, "onCreate: Navigation bar created");
 
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -92,28 +91,6 @@ public class TeamScreen extends FragmentActivity
                 return false;
             }
         });
-
-//        if ( !MainActivity.unitTestFlag) {
-//            createUsers();
-//            initializeUpdateListener();
-//        }
-
-//        for ( int i = 0; i < teamList.size(); i++ ) {
-//            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
-//            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
-//            rowItems.add(item);
-//        }
-//
-//        listView = findViewById(R.id.team_list);
-//        adapter = new TeamListAdapter(this, rowItems);
-//        listView.setAdapter(adapter);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//            }
-//        });
 
         initializeUpdateListener();
 
@@ -276,7 +253,6 @@ public class TeamScreen extends FragmentActivity
         TeamScreenRowItem item = new TeamScreenRowItem(invitedUser, initials,"");
         rowItems.add(item);
         adapter.updateItems(rowItems);
-//        updateList();
     }
 
     @Override
@@ -285,44 +261,29 @@ public class TeamScreen extends FragmentActivity
         toast.show();
     }
 
-//    public void updateList() {
-//        for ( int i = 0; i < teamList.size(); i++ ) {
-//            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
-//            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
-//            rowItems.add(item);
-//        }
-//
-//        listView = findViewById(R.id.team_list);
-//        adapter = new TeamListAdapter(this, rowItems, teamName);
-//        listView.setAdapter(adapter);
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//            }
-//        });
-//    }
+    public void createUsers() {
+        ListView listView = findViewById(R.id.team_list);
+        adapter = new TeamListAdapter(this, rowItems, "Team A");
+        listView.setAdapter(adapter);
 
-//    public void createUsers() {
-//        UserDao userDao = DaoFactory.getUserDao();
-//
-//        User firstUser = new User();
-//        firstUser.userID = "jane@gmail.com";
-//        firstUser.firstName = "Jane";
-//        firstUser.lastName = "Ease";
-//        firstUser.userIcon = "JE";
-//        firstUser.teamID = "Team A";
-//        userDao.insertAll(firstUser);
-//        teamList.add(firstUser);
-//
-//        User secondUser = new User();
-//        secondUser.userID = "susan@gmail.com";
-//        secondUser.firstName = "Susan";
-//        secondUser.lastName = "Sath";
-//        secondUser.userIcon = "SS";
-//        secondUser.teamID = "Team A";
-//        userDao.insertAll(secondUser);
-//        teamList.add(secondUser);
-//
-//    }
+        List<User> teamList = new ArrayList<>();
 
+        User firstUser = new User();
+        firstUser.userID = "jane@gmail.com";
+        firstUser.firstName = "Jane";
+        firstUser.lastName = "Ease";
+        firstUser.userIcon = "JE";
+        firstUser.teamID = "Team A";
+        teamList.add(firstUser);
+
+        User secondUser = new User();
+        secondUser.userID = "susan@gmail.com";
+        secondUser.firstName = "Susan";
+        secondUser.lastName = "Sath";
+        secondUser.userIcon = "SS";
+        secondUser.teamID = "Team A";
+        teamList.add(secondUser);
+
+        addItemsToAdapter(teamList);
+    }
 }
