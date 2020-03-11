@@ -14,17 +14,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 
 public class RoutesScreen extends AppCompatActivity {
 
@@ -74,14 +72,10 @@ public class RoutesScreen extends AppCompatActivity {
                     case R.id.navigation_walk:
                         finish();
                         launchActivity();
-
-
                         break;
                     case R.id.navigation_teams:
                         finish();
                         launchTeamScreenActivity();
-
-
                         break;
                 }
                 return false;
@@ -90,23 +84,22 @@ public class RoutesScreen extends AppCompatActivity {
     }
 
     private void initializeUpdateListener() {
-        FirebaseFirestore.getInstance().collection("routes")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((newChatSnapshot, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                        return;
-                    }
+        RouteDao dao = DaoFactory.getRouteDao();
+        dao.listenForChanges((newChatSnapshot, error) -> {
+            if (error != null) {
+                Log.e(TAG, error.getLocalizedMessage());
+                return;
+            }
 
-                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        renderRoutesList();
-                    }
-                });
+            if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                renderRoutesList();
+            }
+        });
     }
 
     private void renderRoutesList() {
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
-        routeDao.retrieveAllRoutes().addOnCompleteListener(task -> {
+        RouteDao routeDao = DaoFactory.getRouteDao();
+        routeDao.retrieveAllRoutes(task -> {
             if (task.isSuccessful()) {
                 List<Route> routeList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {

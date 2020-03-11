@@ -1,16 +1,11 @@
 package cse110.ucsd.team12wwr;
 
-import android.content.ComponentName;
-import android.content.Context;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.util.Log;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -26,18 +21,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.DecimalFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Random;
 
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
+import cse110.ucsd.team12wwr.firebase.Invitation;
+import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.fitness.GoogleFitUtility;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
-import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
-import cse110.ucsd.team12wwr.roomdb.WalkDao;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,13 +43,10 @@ public class MainActivity extends AppCompatActivity {
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
     final int MILE_FACTOR = 63360;
-    DecimalFormat DF = new DecimalFormat("#.##");
     final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
     final String INCHES_KEY = "INCHES";
-    final String STEP_SPF_NAME = "TOTAL_DIST_STEP";
-    final String TOTAL_STEPS_KEY = "totalSteps";
 
     /* height */
     SharedPreferences spf, spf2, prefs;
@@ -67,6 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
     /* Team Related Variables */
     String userEmail;
+    String teamName;
+    cse110.ucsd.team12wwr.firebase.User thisUser;
+    String firstName;
+    String lastName;
 
     /* distance */
     TextView textDist;
@@ -78,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     GoogleFitUtility gFitUtil;
     public boolean googleSubscribedStatus = false;
     public boolean gFitUtilLifecycleFlag;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,8 +90,23 @@ public class MainActivity extends AppCompatActivity {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        /* COMMENTED OUT FOR NOW 5:45PM 3/4/2020
+        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.btn_start_walk);
+        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity();
+            }
+        });
 
+        Button launchRoutesScreen = (Button) findViewById(R.id.routes_list_button);
+        launchRoutesScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRoutesScreenActivity();
+            }
+        }); */
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
@@ -103,9 +114,13 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         closeOptionsMenu();
 
+
+
+        //onDestroy();
+
         /* PEDOMETER START */
         gFitUtil = new GoogleFitUtility(this);
-        final Handler checkSubscription = new Handler();
+        final Handler checkSubscription = new Handler();/*
         checkSubscription.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -118,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     googleSubscribedStatus = true;
                 }
             }
-        }, 5000);
+        }, 5000);*/
     }
 
 
@@ -130,11 +145,16 @@ public class MainActivity extends AppCompatActivity {
         userEmail = "account not retrieved";
         try{
             userEmail = account.getEmail();
+            //getTeamIDFromDB(userEmail);
         }
         catch(NullPointerException e){
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
         }
         Log.i("GMAIL: ", userEmail);
+
+        /* FOR DEBUG ONLY */
+
+
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
@@ -182,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
     }
 
 
@@ -235,8 +254,8 @@ public class MainActivity extends AppCompatActivity {
         stepsUpdaterHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (gFitUtilLifecycleFlag) {
-                    Log.i("stepsUpdaterHandler", "Updating step value");
+                if (gFitUtilLifecycleFlag && gFitUtil.getSubscribed()) {
+                    //Log.i("stepsUpdaterHandler", "Updating step value");
                     gFitUtil.updateStepCount();
                     setStepCount(gFitUtil.getStepValue());
                     stepsUpdaterHandler.postDelayed(this, 4000);
@@ -251,8 +270,8 @@ public class MainActivity extends AppCompatActivity {
         }, 4000);
 
 
-        FirebaseWalkDao dao = new FirebaseWalkDao();
-        dao.findNewestEntries().addOnCompleteListener(task -> {
+        WalkDao dao = DaoFactory.getWalkDao();
+        dao.findNewestEntries(task -> {
             if (task.isSuccessful()) {
                 Walk newestWalk = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -273,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Log.i("MainActivity.onResume", "onResume() has been COMPLETED");
     }
 
     @Override
@@ -294,6 +314,22 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this, DebugWalkActivity.class);
             startActivity(intent);
         }
+        else if (id == R.id.team_screen){
+            Intent intent = new Intent(this, TeamScreen.class);
+            if(userEmail!=null)
+                intent.putExtra("user Email", userEmail);
+            else
+                intent.putExtra("user Email", "FAILED TO RETRIEVE USER INFO");
+            startActivity(intent);
+        }
+        else if (id == R.id.invites){
+            Intent intent = new Intent(this, PendingInviteActivity.class);
+            if(userEmail!=null)
+                intent.putExtra("user Email", userEmail);
+            else
+                intent.putExtra("user Email", "FAILED TO RETRIEVE USER INFO");
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -308,7 +344,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     protected void onDestroy() {
         Log.i("MainActivity.onDestroy", "onDestroy() has been called");
@@ -319,24 +354,31 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("onActivityResult ", requestCode + "");
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
+            Log.i("onActivityResult ", "confirm RC");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            //gFitUtil.init(); COMMENTED OUT 3/9/2020
             handleSignInResult(task);
-            gFitUtil.init();
         }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        Log.i("handleSignInResult ", "begin");
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            if (account.getEmail() != null) {
+            if(account.getEmail() != null) {
                 Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
                 userEmail = account.getEmail();
-            } else
+                firstName = account.getGivenName();
+                lastName = account.getFamilyName();
+                getTeamIDFromDB(userEmail);
+            }
+            else
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
             // Signed in successfully, show authenticated UI.
             //
@@ -347,4 +389,54 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public String generateTeamId(String userID){
+        long r1 = userID.hashCode();
+        Random rand = new Random(r1);
+        int r2 = rand.nextInt();
+        return Integer.toString(r2);
+    }
+
+    public void getTeamIDFromDB(String userName){
+        Log.i("getTeamIDFromDB", "  starting");
+        UserDao dao = DaoFactory.getUserDao();
+        dao.findUserByID(userName, task -> {
+            if (task.isSuccessful()) {
+                User u1 = null;
+                try {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        u1 = document.toObject(User.class);
+                        //Log.i("getTeamIDFromDB ", u1.toString());
+                    }
+                    if (u1==null){
+                        Log.i("getTeamIDFromDB ", "u1 is null");
+                        u1 = new User();
+                        u1.teamID = generateTeamId(userName);
+                        u1.userID = userName;
+                        u1.firstName = firstName;
+                        u1.lastName = lastName;
+                        u1.userIcon = firstName.charAt(0) + "" + lastName.charAt(0);
+                        dao.insertAll(u1);
+                        //dao.updateTeamID(userName, generateTeamId(userName));
+                    }
+                    if(u1.teamID == ""){
+                        Log.i("getTeamIDFromDB ", ":A team was NOT found");
+                        //dao.updateTeamID(userName, generateTeamId(userName));
+                    }
+                    else{
+                        Log.i("getTeamIDFromDB ", ":A team was found");
+                    }
+                    teamName = u1.teamID;
+                    thisUser = u1;
+                    Log.i("USER/TEAM: ", thisUser.userID + "/" + teamName);
+                }
+                catch(Exception e){
+                    e.printStackTrace();
+                    Log.i("TEAM IS: ", "NONSENSE DETECTED");
+                }
+            }
+            else{
+                Log.i("getTeamIDFromDB", " TASKUNSUCCESSFUL");
+            }
+        });
+    }
 }
