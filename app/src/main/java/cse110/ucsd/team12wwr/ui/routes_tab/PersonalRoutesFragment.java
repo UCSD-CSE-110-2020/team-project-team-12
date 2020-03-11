@@ -117,18 +117,17 @@ public class PersonalRoutesFragment extends Fragment {
     }
 
     private void initializeUpdateListener(View view) {
-        FirebaseFirestore.getInstance().collection("routes")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((newChatSnapshot, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                        return;
-                    }
+        RouteDao dao = DaoFactory.getRouteDao();
+        dao.listenForChanges((newChatSnapshot, error) -> {
+            if (error != null) {
+                Log.e(TAG, error.getLocalizedMessage());
+                return;
+            }
 
-                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        renderRoutesList(view);
-                    }
-                });
+            if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                renderRoutesList(view);
+            }
+        });
     }
 
     private void renderRoutesList(View view) {
@@ -171,5 +170,4 @@ public class PersonalRoutesFragment extends Fragment {
             }
         });
     }
-
 }

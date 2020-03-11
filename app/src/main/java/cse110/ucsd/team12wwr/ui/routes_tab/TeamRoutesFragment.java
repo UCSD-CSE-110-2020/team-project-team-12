@@ -63,7 +63,6 @@ public class TeamRoutesFragment extends Fragment {
         Log.i(TAG, "onCreate: Getting current user's email from SharedPreferences");
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
-//        userEmail = "jane@gmail.com";
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
 
@@ -95,18 +94,17 @@ public class TeamRoutesFragment extends Fragment {
     }
 
     private void initializeUpdateListener(View view) {
-        FirebaseFirestore.getInstance().collection("routes")
-                .orderBy("name", Query.Direction.ASCENDING)
-                .addSnapshotListener((newChatSnapshot, error) -> {
-                    if (error != null) {
-                        Log.e(TAG, error.getLocalizedMessage());
-                        return;
-                    }
+        RouteDao dao = DaoFactory.getRouteDao();
+        dao.listenForChanges((newChatSnapshot, error) -> {
+            if (error != null) {
+                Log.e(TAG, error.getLocalizedMessage());
+                return;
+            }
 
-                    if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
-                        renderRoutesList(view);
-                    }
-                });
+            if (newChatSnapshot != null && !newChatSnapshot.isEmpty()) {
+                renderRoutesList(view);
+            }
+        });
     }
 
     private void renderRoutesList(View view) {
@@ -160,16 +158,11 @@ public class TeamRoutesFragment extends Fragment {
                                       String routeName = routeList.get(i).name;
                                   }
                               });
-
-
                           }
-
                       });
-
                   }
                });
            }
         });
     }
-
 }
