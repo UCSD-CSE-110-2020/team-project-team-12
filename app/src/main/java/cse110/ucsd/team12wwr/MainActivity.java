@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* PEDOMETER START */
         gFitUtil = new GoogleFitUtility(this);
-        final Handler checkSubscription = new Handler();/*
+        final Handler checkSubscription = new Handler();
         checkSubscription.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     googleSubscribedStatus = true;
                 }
             }
-        }, 5000);*/
+        }, 5000);
     }
 
 
