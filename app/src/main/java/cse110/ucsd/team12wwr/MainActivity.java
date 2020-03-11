@@ -62,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     String userEmail;
     String teamName;
     cse110.ucsd.team12wwr.firebase.User thisUser;
+    String firstName;
+    String lastName;
 
     /* distance */
     TextView textDist;
@@ -86,8 +88,6 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-
-
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
         /* COMMENTED OUT FOR NOW 5:45PM 3/4/2020
@@ -153,12 +153,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i("GMAIL: ", userEmail);
 
         /* FOR DEBUG ONLY */
-        Intent intentX = new Intent(this, PendingInviteActivity.class);
-        intentX.putExtra("user Email", userEmail);
-        //startActivity(intentX);
-
-
-
 
 
 
@@ -253,8 +247,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onResume", "onResume() has been called");
 
 
-        //LOOKHERE for the place where you should get the user object from db and yank out team
-        //
 
         gFitUtilLifecycleFlag = true;
 
@@ -262,8 +254,8 @@ public class MainActivity extends AppCompatActivity {
         stepsUpdaterHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (gFitUtilLifecycleFlag) {
-                    Log.i("stepsUpdaterHandler", "Updating step value");
+                if (gFitUtilLifecycleFlag && gFitUtil.getSubscribed()) {
+                    //Log.i("stepsUpdaterHandler", "Updating step value");
                     gFitUtil.updateStepCount();
                     setStepCount(gFitUtil.getStepValue());
                     stepsUpdaterHandler.postDelayed(this, 4000);
@@ -300,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        Log.i("MainActivity.onResume", "onResume() has been COMPLETED");
     }
 
     @Override
@@ -361,23 +354,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Log.i("onActivityResult ", requestCode + "");
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             // The Task returned from this call is always completed, no need to attach
             // a listener.
+            Log.i("onActivityResult ", "confirm RC");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            //gFitUtil.init(); COMMENTED OUT 3/9/2020
             handleSignInResult(task);
-            gFitUtil.init();
         }
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        Log.i("handleSignInResult ", "begin");
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             if(account.getEmail() != null) {
                 Log.i("MainActivity.handleSignInResult() yields: ", account.getEmail());
                 userEmail = account.getEmail();
+                firstName = account.getGivenName();
+                lastName = account.getFamilyName();
                 getTeamIDFromDB(userEmail);
             }
             else
@@ -399,34 +397,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getTeamIDFromDB(String userName){
-        Log.i("CHECK", " METHSTART");
+        Log.i("getTeamIDFromDB", "  starting");
         UserDao dao = DaoFactory.getUserDao();
         dao.findUserByID(userName, task -> {
-            Log.i("CHECK", " COMPLETE");
             if (task.isSuccessful()) {
-                Log.i("CHECK", " TASKSUCC");
                 User u1 = null;
                 try {
-                    Log.i("CHECK", " TRYFETCHASFUCK");
                     for (QueryDocumentSnapshot document : task.getResult()) {
-                        Log.i("CHECK", "INSIDE THE FERRR LERP");
                         u1 = document.toObject(User.class);
-                        Log.i("TEAM IS: ", ""+u1.teamID);
+                        //Log.i("getTeamIDFromDB ", u1.toString());
                     }
-                    Log.i("TEAM IS: ", u1.teamID);
+                    if (u1==null){
+                        Log.i("getTeamIDFromDB ", "u1 is null");
+                        u1 = new User();
+                        u1.teamID = generateTeamId(userName);
+                        u1.userID = userName;
+                        u1.firstName = firstName;
+                        u1.lastName = lastName;
+                        u1.userIcon = firstName.charAt(0) + "" + lastName.charAt(0);
+                        dao.insertAll(u1);
+                        //dao.updateTeamID(userName, generateTeamId(userName));
+                    }
                     if(u1.teamID == ""){
-                        Log.i("CHECK ", "the object was null, no team");
-                        dao.updateTeamID(userName, generateTeamId(userName));
+                        Log.i("getTeamIDFromDB ", ":A team was NOT found");
+                        //dao.updateTeamID(userName, generateTeamId(userName));
                     }
                     else{
-                        Log.i("CHECK USER:  ", u1.userID);
-                        Log.i("CHECK TEAM: ", u1.teamID);
-                        Log.i("CHECK ", "the object WASNOT null");
+                        Log.i("getTeamIDFromDB ", ":A team was found");
                     }
                     teamName = u1.teamID;
                     thisUser = u1;
-                    Log.i("CHECK TEAM: ", u1.teamID);
-                    Log.i("CHECK", "END OF TRY");
+                    Log.i("USER/TEAM: ", thisUser.userID + "/" + teamName);
                 }
                 catch(Exception e){
                     e.printStackTrace();
@@ -434,9 +435,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             else{
-                Log.i("CHECK", " TASKUNSUCCESSFUL");
+                Log.i("getTeamIDFromDB", " TASKUNSUCCESSFUL");
             }
         });
-        Log.i("CHECK", " METHEND");
     }
 }

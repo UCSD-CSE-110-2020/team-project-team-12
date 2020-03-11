@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class FirebaseRouteDao implements RouteDao {
+public class FirestoreToRouteDaoAdapter implements RouteDao {
     public static final String ROUTE_COLLECTION_KEY = "routes";
 
     FirebaseFirestore db = FirebaseFirestore.getInstance();;

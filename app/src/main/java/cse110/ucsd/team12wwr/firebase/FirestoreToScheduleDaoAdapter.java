@@ -5,7 +5,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class FirebaseScheduleDao implements ScheduleDao {
+public class FirestoreToScheduleDaoAdapter implements ScheduleDao {
     public static final String SCHEDULE_COLLECTION_KEY = "schedules";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
