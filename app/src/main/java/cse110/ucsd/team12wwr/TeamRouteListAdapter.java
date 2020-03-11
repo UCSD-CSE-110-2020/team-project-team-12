@@ -55,8 +55,8 @@ public class TeamRouteListAdapter extends ArrayAdapter<Route> {
                     hasWalk = true;
                 }
 
-                if (!hasWalk) {
-                    textViewPrevWalked.setVisibility(View.INVISIBLE);
+                if (hasWalk) {
+                    textViewPrevWalked.setVisibility(View.VISIBLE);
                 }
 
                 Log.i(TAG, "getView: Walk for " + routeName + " has been walked on before: " + hasWalk);

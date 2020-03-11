@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/true_tick"
+        android:visibility="invisible"
         android:textSize="30sp" />
 
 

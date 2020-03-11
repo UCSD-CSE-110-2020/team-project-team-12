@@ -79,7 +79,6 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
-                Log.d(TAG, "getView: " + routeName + " has been walked on: " + hasWalk);
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     Walk walk = document.toObject(Walk.class);
                     if (walk.userID != null && walk.userID.equals(email)) {
@@ -87,8 +86,8 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                     }
                 }
 
-                if (!hasWalk) {
-                    textViewPrevWalked.setVisibility(View.INVISIBLE);
+                if (hasWalk) {
+                    textViewPrevWalked.setVisibility(View.VISIBLE);
                 }
 
                 RouteDao routeDao = DaoFactory.getRouteDao();
