@@ -56,14 +56,12 @@ public class TeamScreen extends FragmentActivity
         Menu menu = navView.getMenu();
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
-        Context context;
+
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailprefs.getString("EMAIL_ID", null);
-//        userEmail = "jane@gmail.com";
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
         FloatingActionButton fab = findViewById(R.id.add_fab);
-
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,7 +70,6 @@ public class TeamScreen extends FragmentActivity
         });
 
         Log.d(TAG, "onCreate: Navigation bar created");
-
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -95,26 +92,7 @@ public class TeamScreen extends FragmentActivity
             }
         });
 
-        if ( !MainActivity.unitTestFlag) {
-            initializeUpdateListener();
-        }
-
-//        for ( int i = 0; i < teamList.size(); i++ ) {
-//            String name = teamList.get(i).firstName + " " + teamList.get(i).lastName;
-//            TeamScreenRowItem item = new TeamScreenRowItem(name, teamList.get(i).userIcon, teamList.get(i).teamID );
-//            rowItems.add(item);
-//        }
-//
-//        listView = findViewById(R.id.team_list);
-//        adapter = new TeamListAdapter(this, rowItems);
-//        listView.setAdapter(adapter);
-//
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//            }
-//        });
+        initializeUpdateListener();
     }
 
     private void initializeUpdateListener() {
@@ -308,5 +286,4 @@ public class TeamScreen extends FragmentActivity
 
         addItemsToAdapter(teamList);
     }
-
 }
