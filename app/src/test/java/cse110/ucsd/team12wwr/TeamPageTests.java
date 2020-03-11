@@ -1,50 +1,43 @@
 package cse110.ucsd.team12wwr;
 
-import android.app.Activity;
-import android.app.Application;
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.apache.tools.ant.Main;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.annotation.ContentView;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
-import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
+
 import static junit.framework.TestCase.assertEquals;
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.assertTrue;
 
 
 @RunWith(AndroidJUnit4.class)
 public class TeamPageTests {
 
-    private Intent intent, mainIntent, teamPageIntent;
+    private Intent mainIntent, teamPageIntent;
     private ActivityTestRule<MainActivity> mainActivityActivityTestRule;
     private ActivityTestRule<TeamScreen> teamScreenActivityTestRule;
 
     @Before
     public void setUp() {
         MainActivity.unitTestFlag = true;
-        mainIntent =
-                new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
-        teamPageIntent =
-                new Intent(ApplicationProvider.getApplicationContext(), TeamScreen.class );
+        mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
+        teamPageIntent = new Intent(ApplicationProvider.getApplicationContext(), TeamScreen.class );
         mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
         teamScreenActivityTestRule = new ActivityTestRule<>(TeamScreen.class);
     }
@@ -54,7 +47,7 @@ public class TeamPageTests {
         ActivityScenario<MainActivity> scenario = ActivityScenario.launch(mainIntent);
         scenario.onActivity(activity -> {
             teamScreenActivityTestRule.launchActivity(teamPageIntent);
-            int numOfItems = teamScreenActivityTestRule.getActivity().teamList.size();
+            int numOfItems = teamScreenActivityTestRule.getActivity().rowItems.size();
             assertEquals(numOfItems, 0);
             teamScreenActivityTestRule.finishActivity();
         });
@@ -64,7 +57,6 @@ public class TeamPageTests {
     public void testAddMembers() {
         teamScreenActivityTestRule.launchActivity(teamPageIntent);
         teamScreenActivityTestRule.getActivity().createUsers();
-        teamScreenActivityTestRule.getActivity().updateList();
         assertEquals(teamScreenActivityTestRule.getActivity().rowItems.size(), 2);
     }
 
