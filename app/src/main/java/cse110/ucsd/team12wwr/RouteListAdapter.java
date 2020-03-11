@@ -26,6 +26,7 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
     private static final String TAG = "RouteListAdapter";
     private Context context;
     int resource;
+    TextView textViewPrevWalked;
 
     public RouteListAdapter(Context context, int resource, ArrayList<Route> objects) {
         super(context, resource, objects);
@@ -42,25 +43,28 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         convertView = inflater.inflate(this.resource, parent, false);
 
         TextView textViewRouteName = (TextView) convertView.findViewById(R.id.route_name);
-        TextView textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
+        textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
 
         textViewRouteName.setText(routeName);
 
         FirebaseWalkDao dao = new FirebaseWalkDao();
-        dao.findByRouteName(routeName).addOnCompleteListener(task -> {
+        dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     hasWalk = true;
                 }
-
-                if (!hasWalk) {
-                    textViewPrevWalked.setVisibility(View.INVISIBLE);
-                }
+                setCheck(hasWalk);
             }
         });
 
         return convertView;
+    }
+
+    void setCheck(Boolean hasWalk) {
+        if (!hasWalk) {
+            textViewPrevWalked.setVisibility(View.INVISIBLE);
+        }
     }
 
 }
