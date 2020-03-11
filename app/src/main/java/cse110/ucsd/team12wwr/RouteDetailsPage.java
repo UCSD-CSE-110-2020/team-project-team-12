@@ -174,21 +174,25 @@ public class RouteDetailsPage extends AppCompatActivity {
                     }
                 }
 
-                if (mostRecentWalk != null) {
-                    if (mostRecentWalk.duration != null) {
-                        TextView duration = findViewById(R.id.total_time_detail);
-                        duration.setText(mostRecentWalk.duration);
-                        TextView checkmark = findViewById(R.id.checkmark_detail);
-                        checkmark.setVisibility(View.VISIBLE);
-                    }
-
-                    if (mostRecentWalk.distance != null) {
-                        TextView distance = findViewById(R.id.dist_details);
-                        distance.setText(mostRecentWalk.distance);
-                    }
-                }
+                populateWalkInfo(mostRecentWalk);
             }
         });
+    }
+
+    void populateWalkInfo(Walk mostRecentWalk) {
+        if (mostRecentWalk != null) {
+            if (mostRecentWalk.duration != null) {
+                TextView duration = findViewById(R.id.total_time_detail);
+                duration.setText(mostRecentWalk.duration);
+                TextView checkmark = findViewById(R.id.checkmark_detail);
+                checkmark.setVisibility(View.VISIBLE);
+            }
+
+            if (mostRecentWalk.distance != null) {
+                TextView distance = findViewById(R.id.dist_details);
+                distance.setText(mostRecentWalk.distance);
+            }
+        }
     }
 
     public void launchRouteInfoActivity() {

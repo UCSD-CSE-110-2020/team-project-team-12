@@ -49,13 +49,10 @@
     <string name="title_route">Routes</string>
     <string name="title_walk">Walks</string>
     <string name="title_team">Team</string>
-
     <string name="title_activity_team_individ_routes">TeamIndividRoutes</string>
     <string name="tab_text_1">Your Routes</string>
     <string name="tab_text_2">Team Routes</string>
     <string name="title_activity_team_screen">My Team</string>
-
-    <string name="true_tick">\u2713</string>
 
     <string name="title_activity_view_invite">ViewInviteActivity</string>
     <!-- Strings used for fragments for navigation -->
@@ -63,9 +60,8 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="true_tick">\u2713</string>
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 
     </resources>

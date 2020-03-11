@@ -13,10 +13,9 @@ import android.widget.EditText;
 import androidx.fragment.app.DialogFragment;
 
 import cse110.ucsd.team12wwr.R;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import cse110.ucsd.team12wwr.TeamScreenActivity;
 
 public class TeamInvitationDialogFragment extends DialogFragment {
 
@@ -34,6 +33,7 @@ public class TeamInvitationDialogFragment extends DialogFragment {
     public String getInvitedName(){
         return invitedFirstName + " " + invitedLastName;
     }
+
     public String getInvitedFirstName() {
         return invitedFirstName;
     }

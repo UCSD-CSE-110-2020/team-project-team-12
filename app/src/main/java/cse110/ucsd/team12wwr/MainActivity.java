@@ -1,8 +1,5 @@
 package cse110.ucsd.team12wwr;
 
-import android.content.ComponentName;
-import android.content.Context;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -400,6 +397,7 @@ public class MainActivity extends AppCompatActivity {
                 getTeamIDFromDB(userEmail);
             }
             else {
+
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
                 // Signed in successfully, show authenticated UI.
                 //

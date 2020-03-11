@@ -37,6 +37,7 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
     int resource;
     SharedPreferences emailPrefs;
     String email;
+    TextView textViewPrevWalked;
 
     public RouteListAdapter(Context context, int resource, ArrayList<Route> objects) {
         super(context, resource, objects);
@@ -57,7 +58,7 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         convertView = inflater.inflate(this.resource, parent, false);
 
         TextView textViewRouteName = (TextView) convertView.findViewById(R.id.route_name);
-        TextView textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
+        textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
 
         textViewRouteName.setText(routeName);
         Log.d(TAG, "getView: Setting the route name to : " + routeName);
@@ -122,10 +123,17 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                         });
                     }
                 });
+                setCheck(hasWalk);
             }
         });
 
         return convertView;
+    }
+
+    void setCheck(Boolean hasWalk) {
+        if (!hasWalk) {
+            textViewPrevWalked.setVisibility(View.INVISIBLE);
+        }
     }
 
 }
