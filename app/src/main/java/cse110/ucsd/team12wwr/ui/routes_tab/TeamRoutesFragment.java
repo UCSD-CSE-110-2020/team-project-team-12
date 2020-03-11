@@ -44,7 +44,6 @@ public class TeamRoutesFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     SharedPreferences emailPref;
     String userEmail;
-    List<Route> routeList;
     ListView listView;
 
     private PageViewModel pageViewModel;
@@ -67,8 +66,6 @@ public class TeamRoutesFragment extends Fragment {
         userEmail = emailPref.getString("EMAIL_ID", null);
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
-
-        routeList = new ArrayList<>();
 
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
@@ -144,6 +141,7 @@ public class TeamRoutesFragment extends Fragment {
                                   allRoutes.add(document.toObject(Route.class));
                               }
 
+                              List<Route>routeList = new ArrayList<>();
                               Log.i(TAG, "renderRoutesList: Looking through all the routes to locate team routes");
                               for (User user : userList ) {
                                   String userID = user.userID;
@@ -158,6 +156,7 @@ public class TeamRoutesFragment extends Fragment {
 
                               listView = view.findViewById(R.id.teams_routes_list);
                               TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+                              Log.e("Limit", "routeList content: " + routeList);
 
                               Log.i(TAG, "renderRoutesList: Displaying all the team routes");
                               listView.setAdapter(teamRouteListAdapter);
