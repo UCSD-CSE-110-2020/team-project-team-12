@@ -140,11 +140,6 @@ public class PersonalRoutesFragment extends Fragment {
                     routeList.add(document.toObject(Route.class));
                 }
 
-                /**
-                 * HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY HEY
-                 * PLEASE UNCOMMENT THIS WHEN EVERYTHING IS FUNCTIONING
-                 * THIS WILL MAKE SURE EACH ROUTE ADDED IS NOT SUPPOSED TO BE HERE
-                 */
                 routeListParam = new ArrayList<>();
                 for ( Route route : routeList ) {
                     if ( route.userID != null  && route.userID.equals(userEmail) ) {
@@ -155,7 +150,6 @@ public class PersonalRoutesFragment extends Fragment {
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
                 listView = view.findViewById(R.id.individ_routes_list);
-                routeListParam = new ArrayList<>(routeList);
                 TeamRouteListAdapter teamrouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout,
                         routeListParam);
 
