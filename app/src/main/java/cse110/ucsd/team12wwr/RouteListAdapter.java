@@ -81,7 +81,10 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                 boolean hasWalk = false;
                 Log.d(TAG, "getView: " + routeName + " has been walked on: " + hasWalk);
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    hasWalk = true;
+                    Walk walk = document.toObject(Walk.class);
+                    if (walk.userID != null && walk.userID.equals(email)) {
+                        hasWalk = true;
+                    }
                 }
 
                 if (!hasWalk) {
