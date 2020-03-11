@@ -68,11 +68,9 @@ public class TeamScreen extends FragmentActivity
 
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailprefs.getString("EMAIL_ID", null);
-//        userEmail = "jane@gmail.com";
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
 
-        userEmail = getIntent().getStringExtra("user Email");
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,13 +145,8 @@ public class TeamScreen extends FragmentActivity
 
     private void renderRoutesList(String email) {
         Log.d(TAG, "renderRoutesList: Now rendering the list of team members");
-//        FirebaseUserDao dao = new FirebaseUserDao();
-//        dao.findUserByID(email).addOnCompleteListener(task -> {
-//=======
-//    private void renderRoutesList(String email) {
         UserDao dao = DaoFactory.getUserDao();
         dao.findUserByID(email, task -> {
-//>>>>>>> origin/master
             if (task.isSuccessful()) {
                 User u = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
