@@ -183,9 +183,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
+
             if(resultCode == Activity.RESULT_OK){
                 WalkDao walkDao = DaoFactory.getWalkDao();
-
                 String routeName = data.getExtras().getString("routeTitle");
                 Walk newEntry = new Walk();
                 newEntry.time = System.currentTimeMillis();
