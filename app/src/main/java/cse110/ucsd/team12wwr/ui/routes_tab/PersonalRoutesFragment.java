@@ -32,8 +32,9 @@ import cse110.ucsd.team12wwr.RouteInfoActivity;
 import cse110.ucsd.team12wwr.RouteListAdapter;
 import cse110.ucsd.team12wwr.TeamIndividRoutes;
 import cse110.ucsd.team12wwr.TeamRouteListAdapter;
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -67,7 +68,7 @@ public class PersonalRoutesFragment extends Fragment {
 
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
-        userEmail = "jane@gmail.com";
+//        userEmail = "jane@gmail.com";
 
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
@@ -113,7 +114,6 @@ public class PersonalRoutesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeUpdateListener(view);
-        createRoutes();
     }
 
     private void initializeUpdateListener(View view) {
@@ -132,9 +132,9 @@ public class PersonalRoutesFragment extends Fragment {
     }
 
     private void renderRoutesList(View view) {
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
+        RouteDao routeDao = DaoFactory.getRouteDao();
         Log.d(TAG, "renderRoutesList: Loading all routes from database");
-        routeDao.retrieveAllRoutes().addOnCompleteListener(task -> {
+        routeDao.retrieveAllRoutes(task -> {
             if (task.isSuccessful()) {
                 List<Route> routeList = new ArrayList<>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -146,12 +146,12 @@ public class PersonalRoutesFragment extends Fragment {
                  * PLEASE UNCOMMENT THIS WHEN EVERYTHING IS FUNCTIONING
                  * THIS WILL MAKE SURE EACH ROUTE ADDED IS NOT SUPPOSED TO BE HERE
                  */
-//                routeListParam = new ArrayList<>();
-//                for ( Route route : routeList ) {
-//                    if ( route.userID.equals(userEmail) ) {
-//                        routeListParam.add(route);
-//                    }
-//                }
+                routeListParam = new ArrayList<>();
+                for ( Route route : routeList ) {
+                    if ( route.userID != null  && route.userID.equals(userEmail) ) {
+                        routeListParam.add(route);
+                    }
+                }
 
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
@@ -172,27 +172,4 @@ public class PersonalRoutesFragment extends Fragment {
         });
     }
 
-
-    public void createRoutes() {
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
-
-        Route newRoute = new Route();
-        newRoute.userID = "jane@gmail.com";
-        newRoute.name = "Route Jane 243";
-        newRoute.startingPoint = "Techno World";
-        routeDao.insertAll(newRoute);
-
-        Route newRoute1 = new Route();
-        newRoute1.userID = "jane@gmail.com";
-        newRoute1.name = "Route Jane 3";
-        newRoute1.startingPoint = "Torus";
-        routeDao.insertAll(newRoute1);
-
-        Route newRoute2 = new Route();
-        newRoute2.userID = "jane@gmail.com";
-        newRoute2.name = "Route Jane 1";
-        newRoute2.startingPoint = "Donut";
-        routeDao.insertAll(newRoute2);
-
-    }
 }

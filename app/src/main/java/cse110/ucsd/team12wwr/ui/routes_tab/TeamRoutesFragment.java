@@ -25,10 +25,11 @@ import androidx.lifecycle.ViewModelProviders;
 import cse110.ucsd.team12wwr.R;
 import cse110.ucsd.team12wwr.RouteListAdapter;
 import cse110.ucsd.team12wwr.TeamRouteListAdapter;
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -62,7 +63,7 @@ public class TeamRoutesFragment extends Fragment {
         Log.i(TAG, "onCreate: Getting current user's email from SharedPreferences");
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
-        userEmail = "jane@gmail.com";
+//        userEmail = "jane@gmail.com";
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
 
@@ -89,7 +90,6 @@ public class TeamRoutesFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        createRoutes();
         Log.i(TAG, "onViewCreated: Loading team routes...");
         initializeUpdateListener(view);
     }
@@ -111,8 +111,8 @@ public class TeamRoutesFragment extends Fragment {
 
     private void renderRoutesList(View view) {
         Log.d(TAG, "renderRoutesList: Now rendering list of routes for the team");
-        FirebaseUserDao dao = new FirebaseUserDao();
-        dao.findUserByID(userEmail).addOnCompleteListener(task -> {
+        UserDao dao = DaoFactory.getUserDao();
+        dao.findUserByID(userEmail,task -> {
            if (task.isSuccessful()) {
                User u = null;
                for (QueryDocumentSnapshot document : task.getResult()) {
@@ -120,7 +120,7 @@ public class TeamRoutesFragment extends Fragment {
                    Log.i(TAG, "renderRoutesList: Found user");
                }
 
-               dao.findUsersByTeam(u.teamID).addOnCompleteListener(task1 -> {
+               dao.findUsersByTeam(u.teamID, task1 -> {
                   if ( task1.isSuccessful() ) {
                       Log.d(TAG, "renderRoutesList: Getting all the team members");
                       List<User> userList = new ArrayList<>();
@@ -129,8 +129,8 @@ public class TeamRoutesFragment extends Fragment {
                       }
 
                       Log.i(TAG, "renderRoutesList: Now retrieving all routes");
-                      FirebaseRouteDao routeDao = new FirebaseRouteDao();
-                      routeDao.retrieveAllRoutes().addOnCompleteListener(task2 -> {
+                      RouteDao routeDao = DaoFactory.getRouteDao();
+                      routeDao.retrieveAllRoutes(task2 -> {
                           if ( task2.isSuccessful()) {
                               List<Route> allRoutes = new ArrayList<>();
                               for (QueryDocumentSnapshot document : task2.getResult()) {
@@ -172,26 +172,4 @@ public class TeamRoutesFragment extends Fragment {
         });
     }
 
-    public void createRoutes() {
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
-
-        Route newRoute = new Route();
-        newRoute.userID = "jane@gmail.com";
-        newRoute.name = "Route 1";
-        newRoute.startingPoint = "Techno World";
-        routeDao.insertAll(newRoute);
-
-        Route newRoute1 = new Route();
-        newRoute1.userID = "susan@gmail.com";
-        newRoute1.name = "Route 2";
-        newRoute1.startingPoint = "Torus";
-        routeDao.insertAll(newRoute1);
-
-        Route newRoute2 = new Route();
-        newRoute2.userID = "susan@gmail.com";
-        newRoute2.name = "Route 3";
-        newRoute2.startingPoint = "Donut";
-        routeDao.insertAll(newRoute2);
-
-    }
 }

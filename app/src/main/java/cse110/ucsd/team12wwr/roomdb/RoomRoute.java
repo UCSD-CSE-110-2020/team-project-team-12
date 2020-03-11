@@ -10,7 +10,7 @@ import androidx.room.TypeConverter;
 import androidx.room.TypeConverters;
 
 @Entity
-public class Route {
+public class RoomRoute {
     @PrimaryKey @NonNull @ColumnInfo(collate = ColumnInfo.NOCASE)
     public String name;
 

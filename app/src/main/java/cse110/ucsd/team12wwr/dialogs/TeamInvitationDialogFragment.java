@@ -29,11 +29,11 @@ public class TeamInvitationDialogFragment extends DialogFragment {
     private String invitedLastName = "";
     private String invitedFirstName = "";
     private String invitedName;
+    InviteDialogListener listener;
 
     public String getInvitedName(){
         return invitedFirstName + " " + invitedLastName;
     }
-
     public String getInvitedFirstName() {
         return invitedFirstName;
     }
@@ -46,17 +46,14 @@ public class TeamInvitationDialogFragment extends DialogFragment {
         return invitedEmail;
     }
 
-    InviteDialogListener listener;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        // Verify that the host activity implements the callback interface
         try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
             listener = (InviteDialogListener) context;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
+        }
+        catch (ClassCastException e) {
             Log.i("TeamInvitationDialogFragment.onAttach() ", "Activity doesn't implement interface");
         }
     }
@@ -65,55 +62,45 @@ public class TeamInvitationDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        // Get the layout inflater
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-
-
         View view = inflater.inflate(R.layout.dialog_invitation,null);
-
-        //AlertDialog dialog1 = (AlertDialog) getDialog();
-        //dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
         builder.setView(view)
-                // Add action buttons
                 .setPositiveButton("Invite!", new DialogInterface.OnClickListener() {
-
 
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.i("Dialog Input: ", "Invite sent!");
-
                         EditText invitedEmailField = view.findViewById(R.id.username);
                         invitedEmail = invitedEmailField.getText().toString();
 
-                        EditText invitedLastNameField = view.findViewById(R.id.first_name);
-                        invitedLastName = invitedLastNameField.getText().toString();
-
-                        EditText invitedFirstNameField = view.findViewById(R.id.last_name);
+                        EditText invitedFirstNameField = view.findViewById(R.id.first_name);
                         invitedFirstName = invitedFirstNameField.getText().toString();
 
-                        listener.onDialogPositiveClick(TeamInvitationDialogFragment.this);
+                        EditText invitedLastNameField = view.findViewById(R.id.last_name);
+                        invitedLastName = invitedLastNameField.getText().toString();
 
-                        // if(not valid gmail) cancel
+                        if(validInput(invitedEmail)){
+                            Log.i("Invited Email ", "was valid gmail");
+                        }
+                        else{
+                            invitedEmail = "ERROR";
+                            getDialog().cancel();
+                        }
+                        listener.onDialogPositiveClick(TeamInvitationDialogFragment.this);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.i("Dialog Input: ", "Cancelled");
                         listener.onDialogNegativeClick(TeamInvitationDialogFragment.this);
                         getDialog().cancel();
                     }
                 });
-
         return builder.create();
     }
-
     public static boolean validInput(String email) {
         String expression = "^[\\w.+\\-]+@gmail\\.com$";
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
+        //return matcher.matches(); COMMENTED 3/4/2020 8:17 TO ALLOW UCSD EMAIL CHECKS
+        return true;
     }
 }

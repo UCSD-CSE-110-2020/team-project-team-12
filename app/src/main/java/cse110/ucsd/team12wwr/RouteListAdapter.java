@@ -20,11 +20,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseUserDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -43,7 +44,7 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         this.resource = resource;
         emailPrefs = context.getSharedPreferences("USER_ID", MODE_PRIVATE);
         email = emailPrefs.getString("EMAIL_ID", null);
-        email = "jane@gmail.com";
+//        email = "jane@gmail.com";
         Log.d(TAG, "RouteListAdapter: Now adapting each team route to list item format");
     }
 
@@ -70,10 +71,10 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                                                     .endConfig()
                                                     .round();
 
-        FirebaseWalkDao dao = new FirebaseWalkDao();
+        WalkDao dao = DaoFactory.getWalkDao();
         View finalConvertView = convertView;
         Log.d(TAG, "getView: Finding the route by the name");
-        dao.findByRouteName(routeName).addOnCompleteListener(task -> {
+        dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
                 Log.d(TAG, "getView: Walk has been walked on: " + hasWalk);
@@ -86,8 +87,9 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                 }
 
                 List<Route> foundRoute = new ArrayList<>();
-                FirebaseRouteDao routeDao = new FirebaseRouteDao();
-                routeDao.findName(routeName).addOnCompleteListener(task3 -> {
+                RouteDao routeDao = DaoFactory.getRouteDao();
+
+                routeDao.findName(routeName, task3 -> {
                     Log.d(TAG, "getView: Loading the route under name: " + routeName);
                     if ( task3.isSuccessful() ) {
                         for ( QueryDocumentSnapshot document : task3.getResult() ) {
@@ -95,8 +97,8 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                         }
 
                         List<User> userList = new ArrayList<>();
-                        FirebaseUserDao userDao = new FirebaseUserDao();
-                        userDao.findUserByID(foundRoute.get(0).userID).addOnCompleteListener(task1 -> {
+                        UserDao userDao = DaoFactory.getUserDao();
+                        userDao.findUserByID(foundRoute.get(0).userID, task1 -> {
                             if ( task1.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task1.getResult()) {
                                     userList.add(document.toObject(User.class));

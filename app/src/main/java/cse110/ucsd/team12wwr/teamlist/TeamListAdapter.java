@@ -29,10 +29,12 @@ public class TeamListAdapter extends BaseAdapter {
     List<TeamScreenRowItem> rowItems;
     TextDrawable.IBuilder builder;
     TextDrawable iconDrawable;
+    String teamID;
 
-    public TeamListAdapter(Context c, List<TeamScreenRowItem> list) {
+    public TeamListAdapter(Context c, List<TeamScreenRowItem> list, String passedTeam) {
         this.context = c;
         this.rowItems = list;
+        this.teamID = passedTeam;
     }
 
     @Override
@@ -51,8 +53,7 @@ public class TeamListAdapter extends BaseAdapter {
     }
 
     public void updateItems(List<TeamScreenRowItem> newList) {
-        rowItems.clear();
-        rowItems.addAll(newList);
+        rowItems = newList;
         this.notifyDataSetChanged();
     }
 
@@ -99,8 +100,11 @@ public class TeamListAdapter extends BaseAdapter {
             holder.initials.setImageDrawable(iconDrawable);
             holder.member_name.setText(item.getMemberName());
 
-            if ( item.getTeamID().equals("") ) {
+
+
+            if (!item.getTeamID().equals(teamID) ) {
                 holder.member_name.setTypeface(holder.member_name.getTypeface(), Typeface.ITALIC);
+                holder.member_name.setTextColor(Color.parseColor("#808080"));
             }
 
             Log.d(TAG, "getView: Team List item is now set");

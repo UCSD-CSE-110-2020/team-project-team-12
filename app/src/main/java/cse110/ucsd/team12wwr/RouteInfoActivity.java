@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class RouteInfoActivity extends AppCompatActivity {
@@ -125,8 +125,8 @@ public class RouteInfoActivity extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Populating fields when isNewRoute: " + isNewRoute );
         if ( !isNewRoute ) {
-            FirebaseRouteDao routeDao = new FirebaseRouteDao();
-            routeDao.findName(currRouteName).addOnCompleteListener(task -> {
+            RouteDao routeDao = DaoFactory.getRouteDao();
+            routeDao.findName(currRouteName, task -> {
                 if (task.isSuccessful()) {
                     Route newRoute = null;
                     for (QueryDocumentSnapshot document : task.getResult()) {
@@ -282,8 +282,8 @@ public class RouteInfoActivity extends AppCompatActivity {
             final boolean[] dupeTitle = {false};
             Log.d(TAG, "onClick: isNewRoute:" + isNewRoute);
 
-            FirebaseRouteDao dao = new FirebaseRouteDao();
-            dao.findName(currRouteName).addOnCompleteListener(task -> {
+            RouteDao dao = DaoFactory.getRouteDao();
+            dao.findName(currRouteName, task -> {
                 if (task.isSuccessful()) {
                     Route newEntry = null;
                     for (QueryDocumentSnapshot document : task.getResult()) {

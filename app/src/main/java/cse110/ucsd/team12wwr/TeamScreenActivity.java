@@ -4,8 +4,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -16,16 +18,25 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
+import cse110.ucsd.team12wwr.firebase.Invitation;
+import cse110.ucsd.team12wwr.firebase.InvitationDao;
 
 public class TeamScreenActivity extends FragmentActivity
                                 implements TeamInvitationDialogFragment.InviteDialogListener{
 
     String validatedEmail;
+    InvitationDao db = DaoFactory.getInvitationDao();
+    Invitation inv = new Invitation();
+    String userEmail;
+
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
@@ -39,6 +50,7 @@ public class TeamScreenActivity extends FragmentActivity
             Log.i("onDialogPositiveClick ", "INVALID EMAIL INPUT");
             Toast toast = Toast.makeText(this, "Invalid Gmail address", Toast.LENGTH_LONG);
             toast.show();
+            return;
         }
         else {
             Log.i("onDialogPositiveClick ", "EMAIL is: " + invitedEmail
@@ -46,6 +58,10 @@ public class TeamScreenActivity extends FragmentActivity
             validatedEmail = invitedEmail;
             Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_LONG);
             toast.show();
+
+            inv.inviteeID = validatedEmail;
+            inv.teamID = "TEAM !yee";
+            db.insert(inv);
         }
 
     }
@@ -64,6 +80,9 @@ public class TeamScreenActivity extends FragmentActivity
         setContentView(R.layout.activity_team_screen);
         //Toolbar toolbar = findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+
+
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

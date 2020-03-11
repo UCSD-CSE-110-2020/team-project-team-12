@@ -14,9 +14,11 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 
+import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
 
 public class TeamRouteListAdapter extends ArrayAdapter<Route> {
@@ -45,8 +47,8 @@ public class TeamRouteListAdapter extends ArrayAdapter<Route> {
         textViewRouteName.setText(routeName);
         Log.d(TAG, "getView: Setting list item name");
 
-        FirebaseWalkDao dao = new FirebaseWalkDao();
-        dao.findByRouteName(routeName).addOnCompleteListener(task -> {
+        WalkDao dao = DaoFactory.getWalkDao();
+        dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
                 for (QueryDocumentSnapshot document : task.getResult()) {
