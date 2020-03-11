@@ -148,7 +148,7 @@ public class TeamRoutesFragment extends Fragment {
                               }
 
                               listView = view.findViewById(R.id.teams_routes_list);
-                              RouteListAdapter teamRouteListAdapter = new RouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+                              TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
 
                               Log.i(TAG, "renderRoutesList: Displaying all the team routes");
                               listView.setAdapter(teamRouteListAdapter);

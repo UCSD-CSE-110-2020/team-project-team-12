@@ -68,7 +68,6 @@ public class PersonalRoutesFragment extends Fragment {
 
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
-//        userEmail = "jane@gmail.com";
 
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
@@ -150,10 +149,10 @@ public class PersonalRoutesFragment extends Fragment {
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
                 listView = view.findViewById(R.id.individ_routes_list);
-                TeamRouteListAdapter teamrouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout,
-                        routeListParam);
+                RouteListAdapter routeListAdapter = new RouteListAdapter(getActivity(),
+                        R.layout.route_adapter_view_layout, routeListParam);
 
-                listView.setAdapter(teamrouteListAdapter);
+                listView.setAdapter(routeListAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
