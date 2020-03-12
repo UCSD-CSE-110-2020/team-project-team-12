@@ -13,15 +13,22 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
+//import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
+import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
+
+//import cse110.ucsd.team12wwr.database.Route;
+//import cse110.ucsd.team12wwr.database.WWRDatabase;
 
 public class RouteListAdapter extends ArrayAdapter<Route> {
 
     private static final String TAG = "RouteListAdapter";
     private Context context;
     int resource;
+    TextView textViewPrevWalked;
 
     public RouteListAdapter(RoutesScreen context, int resource, ArrayList<Route> objects) {
         super(context, resource, objects);
@@ -38,25 +45,29 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         convertView = inflater.inflate(this.resource, parent, false);
 
         TextView textViewRouteName = (TextView) convertView.findViewById(R.id.route_name);
-        TextView textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
+        textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
 
         textViewRouteName.setText(routeName);
 
-        FirebaseWalkDao dao = new FirebaseWalkDao();
-        dao.findByRouteName(routeName).addOnCompleteListener(task -> {
+        WalkDao dao = DaoFactory.getWalkDao();
+        dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     hasWalk = true;
                 }
 
-                if (!hasWalk) {
-                    textViewPrevWalked.setVisibility(View.INVISIBLE);
-                }
+                setCheck(hasWalk);
             }
         });
 
         return convertView;
+    }
+
+    void setCheck(Boolean hasWalk) {
+        if (!hasWalk) {
+            textViewPrevWalked.setVisibility(View.INVISIBLE);
+        }
     }
 
 }
