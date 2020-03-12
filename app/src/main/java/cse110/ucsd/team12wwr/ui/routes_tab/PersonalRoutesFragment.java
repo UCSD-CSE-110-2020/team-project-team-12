@@ -149,10 +149,10 @@ public class PersonalRoutesFragment extends Fragment {
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
                 listView = view.findViewById(R.id.individ_routes_list);
-                RouteListAdapter routeListAdapter = new RouteListAdapter(getActivity(),
+                TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(),
                         R.layout.route_adapter_view_layout, routeListParam);
 
-                listView.setAdapter(routeListAdapter);
+                listView.setAdapter(teamRouteListAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -155,11 +155,11 @@ public class TeamRoutesFragment extends Fragment {
                               }
 
                               listView = view.findViewById(R.id.teams_routes_list);
-                              TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+                              RouteListAdapter routeListAdapter = new RouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
                               Log.e("Limit", "routeList content: " + routeList);
 
                               Log.i(TAG, "renderRoutesList: Displaying all the team routes");
-                              listView.setAdapter(teamRouteListAdapter);
+                              listView.setAdapter(routeListAdapter);
                               listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                   @Override
                                   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
