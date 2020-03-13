@@ -186,17 +186,23 @@ public class RouteDetailsPage extends AppCompatActivity {
         walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 Walk mostRecentWalk = null;
+                Walk substituteWalk = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     if (mostRecentWalk == null) {
                         mostRecentWalk = document.toObject(Walk.class);
                         if (!mostRecentWalk.userID.equals(userEmail)) {
+                            substituteWalk = mostRecentWalk;
                             mostRecentWalk = null;
                         }
                         break;
                     }
                 }
 
-                populateWalkInfo(mostRecentWalk);
+                if (mostRecentWalk != null) {
+                    populateWalkInfo(mostRecentWalk);
+                } else {
+                    populateSubstitutedWalkInfo(substituteWalk);
+                }
             }
         });
     }
@@ -206,13 +212,28 @@ public class RouteDetailsPage extends AppCompatActivity {
             if (mostRecentWalk.duration != null) {
                 TextView duration = findViewById(R.id.total_time_detail);
                 duration.setText(mostRecentWalk.duration);
-                TextView checkmark = findViewById(R.id.checkmark_detail);
-                checkmark.setVisibility(View.VISIBLE);
             }
 
             if (mostRecentWalk.distance != null) {
                 TextView distance = findViewById(R.id.dist_details);
                 distance.setText(mostRecentWalk.distance);
+            }
+
+            TextView checkmark = findViewById(R.id.checkmark_detail);
+            checkmark.setVisibility(View.VISIBLE);
+        }
+    }
+
+    void populateSubstitutedWalkInfo(Walk substituteWalk) {
+        if (substituteWalk != null) {
+            if (substituteWalk.duration != null) {
+                TextView duration = findViewById(R.id.total_time_detail);
+                duration.setText(substituteWalk.duration);
+            }
+
+            if (substituteWalk.distance != null) {
+                TextView distance = findViewById(R.id.dist_details);
+                distance.setText(substituteWalk.distance);
             }
         }
     }
