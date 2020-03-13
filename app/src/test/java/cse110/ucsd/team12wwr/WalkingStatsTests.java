@@ -79,6 +79,7 @@ public class WalkingStatsTests {
         walk2.time = System.currentTimeMillis();
         walks.add(walk2);
 
+        activity.populateRouteInfo(route);
         activity.determineWalk(walks);
 
         TextView duration = activity.findViewById(R.id.total_time_detail);
@@ -101,6 +102,7 @@ public class WalkingStatsTests {
         walk.time = System.currentTimeMillis();
         walks.add(walk);
 
+        activity.populateRouteInfo(route);
         activity.determineWalk(walks);
 
         TextView duration = activity.findViewById(R.id.total_time_detail);
@@ -123,6 +125,7 @@ public class WalkingStatsTests {
         walk.time = System.currentTimeMillis();
         walks.add(walk);
 
+        activity.populateRouteInfo(route);
         activity.determineWalk(walks);
 
         TextView duration = activity.findViewById(R.id.total_time_detail);
