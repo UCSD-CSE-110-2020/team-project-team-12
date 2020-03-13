@@ -72,6 +72,8 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:text="Starting Point"
+                        android:clickable="true"
+                        android:onClick="launchGoogleMaps"
                         android:textSize="18sp" />
 
                 </TableRow>
