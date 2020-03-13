@@ -451,6 +451,7 @@
                     android:scrollbars="vertical"
                     android:text="    Hello these are notes I wrote down about this trail. I don't know why I'm writing so much about this trail." />
             </LinearLayout>
+                
         </LinearLayout>
     </ScrollView>
 
