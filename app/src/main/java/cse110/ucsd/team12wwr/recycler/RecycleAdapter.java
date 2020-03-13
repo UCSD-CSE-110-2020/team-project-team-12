@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,33 +43,58 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
 
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        protected Button voteYes, voteNo;
+        protected Button voteYes, voteNo, voteNo1;
         private TextView tvName;
+        private View containerView;
 
         public MyViewHolder(final View itemView) {
             super(itemView);
 
+            containerView = itemView;
             tvName = (TextView) itemView.findViewById(R.id.vote_name);
             voteYes = itemView.findViewById(R.id.yes);
             voteNo = itemView.findViewById(R.id.bad_time);
+            voteNo1 = itemView.findViewById(R.id.dont_want);
 
             voteYes.setTag(R.integer.vote_yes_view, itemView);
             voteNo.setTag(R.integer.vote_no_view, itemView);
+            voteNo1.setTag(R.integer.vote_no1_view, itemView);
             voteYes.setOnClickListener(this);
             voteNo.setOnClickListener(this);
+            voteNo1.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
-            if ( view.getId() == voteYes.getId() ) {
-                voteYes.setBackground(view.getContext().getDrawable(R.drawable.button_yes_on));
-            } else if ( view.getId() == voteYes.getId() && view.getBackground().equals(view.getContext().getDrawable(R.drawable.button_yes_on)) ) {
-                voteYes.setBackgroundResource(R.drawable.button_yes_off);
-            } else if ( view.getId() == voteNo.getId() && view.getBackground().equals(view.getContext().getDrawable(R.drawable.button_no_off)) ) {
-                voteNo.setBackgroundResource(R.drawable.button_no_on);
-            } else if ( view.getId() == voteNo.getId() && view.getBackground().equals(view.getContext().getDrawable(R.drawable.button_no_on))) {
-                voteNo.setBackgroundResource(R.drawable.button_no_off);
-            }
+            RadioButton dontWant = containerView.findViewById(R.id.dont_want);
+            RadioButton badTime = containerView.findViewById(R.id.bad_time);
+            RadioButton yes = containerView.findViewById(R.id.yes);
+            boolean checked = ((RadioButton)view).isChecked();
+            int buttonId = view.getId();
+
+            switch(buttonId) {
+                case R.id.yes:
+                    if (checked) {
+                        yes.setButtonDrawable(R.drawable.button_yes_on);
+                        dontWant.setButtonDrawable(R.drawable.button_no_off);
+                        badTime.setButtonDrawable(R.drawable.button_no_off);
+                    }
+                    break;
+                case R.id.bad_time:
+                    if (checked) {
+                        yes.setButtonDrawable(R.drawable.button_yes_off);
+                        dontWant.setButtonDrawable(R.drawable.button_no_off);
+                        badTime.setButtonDrawable(R.drawable.button_no_on);
+                    }
+                    break;
+                case R.id.dont_want:
+                    if (checked) {
+                        yes.setButtonDrawable(R.drawable.button_yes_off);
+                        dontWant.setButtonDrawable(R.drawable.button_no_on);
+                        badTime.setButtonDrawable(R.drawable.button_no_off);
+                    }
+                    break;
+           }
         }
     }
 

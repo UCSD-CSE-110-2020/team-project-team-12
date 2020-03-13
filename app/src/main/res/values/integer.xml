@@ -4,4 +4,6 @@
     <integer name="vote_yes_pos">2</integer>
     <integer name="vote_no_view">3</integer>
     <integer name="vote_no_pos">4</integer>
+    <integer name="vote_no1_view">5</integer>
+    <integer name="vote_no1_pos">6</integer>
 </resources>
