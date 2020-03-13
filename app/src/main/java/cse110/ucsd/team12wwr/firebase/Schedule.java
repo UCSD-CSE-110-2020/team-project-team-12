@@ -8,7 +8,8 @@ public class Schedule {
     public String routeName;
     public String proposerUserID;
     public Map<String, Vote> userVoteMap;
-    public LocalDateTime time;
+    public String date;
+    public String time;
 
     public enum Vote {
         ABSTAINED,
