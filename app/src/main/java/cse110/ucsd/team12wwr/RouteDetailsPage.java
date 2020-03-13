@@ -50,7 +50,11 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     }
 
-    public void launchGoogleMaps(View v) {
+    public void startingPointClickListener(View v) {
+        launchGoogleMaps();
+    }
+
+    public Intent launchGoogleMaps() {
         TextView startPoint = findViewById(R.id.start_textview);
         String location = startPoint.getText().toString();
         if (location.length() > 16)  {
@@ -61,7 +65,9 @@ public class RouteDetailsPage extends AppCompatActivity {
             if (mapIntent.resolveActivity(getPackageManager()) != null) {
                 startActivity(mapIntent);
             }
+            return mapIntent;
         }
+        return null;
     }
 
     @Override
