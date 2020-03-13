@@ -208,6 +208,8 @@ public class RouteDetailsPage extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     walks.add(document.toObject(Walk.class));
                 }
+
+                determineWalk(walks);
             }
         });
     }
