@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Log.i("MainActivity.onCreate", "onCreate() called");
 
+        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+
         /* START GOOGLE LOGIN */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
@@ -357,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
     //Updates numSteps with pedometer data, sets textDist and textStep
     public void setStepCount(long stepCount) {
         // Collect the height from the height page
-        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+
         int feet = spf.getInt(FEET_KEY, 0);
         int inches = spf.getInt(INCHES_KEY, 0);
 
@@ -423,7 +426,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getHeightInfo(){
-        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
         if(!previouslyStarted) {
