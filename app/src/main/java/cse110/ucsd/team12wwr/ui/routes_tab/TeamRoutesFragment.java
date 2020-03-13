@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr.ui.routes_tab;
 
+import android.app.Person;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+
+import cse110.ucsd.team12wwr.PersonalRouteListAdapter;
 import cse110.ucsd.team12wwr.R;
 import cse110.ucsd.team12wwr.RouteDetailsPage;
 import cse110.ucsd.team12wwr.TeamRouteListAdapter;
@@ -143,6 +146,7 @@ public class TeamRoutesFragment extends Fragment {
                                    for (User user : userList ) {
                                        String userID = user.userID;
                                        for ( Route route : allRoutes ) {
+                                           Log.d(TAG, "renderRoutesList: Look through each user: " + userID + " for routes that belong to them");
                                            if ( route.userID != null ) {
                                                if (route.userID.equals(userID) && !route.userID.equals(userEmail)) {
                                                    routeList.add(route);
@@ -152,17 +156,19 @@ public class TeamRoutesFragment extends Fragment {
                                    }
 
                                    listView = view.findViewById(R.id.teams_routes_list);
-                                   TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
-
-                                   Log.i(TAG, "renderRoutesList: Displaying all the team routes");
-                                   listView.setAdapter(teamRouteListAdapter);
-                                   listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                       @Override
-                                       public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                           String routeName = routeList.get(i).name;
-                                           launchRoutesDetailsPage(routeName);
-                                       }
-                                   });
+                                   if ( getActivity() != null ) {
+                                       TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(),
+                                               R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+                                       Log.i(TAG, "renderRoutesList: Displaying all the team routes");
+                                       listView.setAdapter(teamRouteListAdapter);
+                                       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                           @Override
+                                           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                               String routeName = routeList.get(i).name;
+                                               launchRoutesDetailsPage(routeName);
+                                           }
+                                       });
+                                   }
                                }
                            });
                        }

@@ -86,7 +86,7 @@ public class SaveHeightTest {
         SharedPreferences spf = mainActivityTestRule.getActivity().spf;
         SharedPreferences.Editor editor = spf.edit();
 
-        assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), true);
+        assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), false);
 
         assertEquals(0 , spf.getInt("FEET", 0));
         assertEquals(0 , spf.getInt("INCHES", 0));
@@ -101,7 +101,7 @@ public class SaveHeightTest {
 
         prefs = mainActivityTestRule.getActivity().prefs;
 
-        assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), true);
+        assertEquals(prefs.getBoolean("HAVE_HEIGHT", false), false);
         assertEquals(5 , spf.getInt("FEET", 0));
         assertEquals(6 , spf.getInt("INCHES", 0));
 

@@ -27,7 +27,6 @@ import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class RouteInfoActivity extends AppCompatActivity {
-
     /* Constants */
     private static final String TAG = "RouteInfoActivity";
     final String LOOP = "Loop";
@@ -497,5 +496,4 @@ public class RouteInfoActivity extends AppCompatActivity {
         totalDistance = null;
         totalTime = null;
     }
-
 }

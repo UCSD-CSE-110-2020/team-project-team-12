@@ -24,7 +24,6 @@ import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
 
 public class RoutesScreen extends AppCompatActivity {
-
     private static final String TAG = "RoutesScreen";
 
     ListView listView;

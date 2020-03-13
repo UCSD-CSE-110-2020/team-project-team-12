@@ -10,6 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ProposedWalkScreen"></activity>
+        <activity android:name=".SuggestedWalkActivity"></activity>
         <activity
             android:name=".TeamIndividRoutes"
             android:label="@string/title_activity_team_individ_routes"
@@ -43,7 +44,7 @@
             android:name=".IntentionalWalkActivity"
             android:label="@string/title_activity_intentional_walk"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -4,15 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RouteDetailsPage">
+    tools:context=".SuggestedWalkActivity">
 
     <ScrollView
         android:id="@+id/scrollable"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/button_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/scroll_layout"
@@ -35,7 +32,7 @@
                     android:paddingStart="5sp"
                     android:paddingEnd="15dp"
                     android:scrollHorizontally="true"
-                    android:text="Route Title"
+                    android:text="Scheduled Walk"
                     android:textAlignment="center"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -72,8 +69,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:text="Starting Point"
-                        android:clickable="true"
-                        android:onClick="launchGoogleMaps"
                         android:textSize="18sp" />
 
                 </TableRow>
@@ -383,7 +378,7 @@
                         android:text="@string/true_tick"
                         android:textAlignment="center"
                         android:textSize="20sp"
-                        android:visibility="invisible" />
+                        android:visibility="invisible"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -418,7 +413,7 @@
             <LinearLayout
                 android:id="@+id/notes_details_layout"
                 android:layout_width="409dp"
-                android:layout_height="wrap_content"
+                android:layout_height="118dp"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical">
 

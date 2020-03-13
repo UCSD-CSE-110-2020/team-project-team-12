@@ -1,5 +1,8 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.ComponentName;
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +13,8 @@ import android.util.Log;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -45,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     final int HEIGHT_FACTOR = 12;
     final double STRIDE_CONVERSION = 0.413;
-    final int MILE_FACTOR = 63360;
+    final double MILE_FACTOR = 63360;
     final String FIRST_LAUNCH_KEY = "HAVE_HEIGHT";
     final String HEIGHT_SPF_NAME = "HEIGHT";
     final String FEET_KEY = "FEET";
@@ -62,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean unitTestFlag = false;
 
     /* Team Related Variables */
-    String userEmail;
+    public static String userEmail;
     String teamName;
     cse110.ucsd.team12wwr.firebase.User thisUser;
     String firstName;
@@ -84,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.i("MainActivity.onCreate", "onCreate() called");
+
+        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
         /* START GOOGLE LOGIN */
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -137,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (!gFitUtil.getSubscribed()) {
-                    Log.i("checkSubscription", "Not yet subscribed, checking again in 5 seconds");
+                    Log.i("checkSubscription", " Not yet subscribed, checking again in 5 seconds");
                     checkSubscription.postDelayed(this, 5000);
                 }
                 else{
-                    Log.i("checkSubscription", "Ending handler.run");
+                    Log.i("checkSubscription", " Ending handler.run");
                     googleSubscribedStatus = true;
                 }
             }
@@ -157,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         userEmail = "account not retrieved";
         try {
             userEmail = account.getEmail();
+
             SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("EMAIL_ID", userEmail);
@@ -172,28 +181,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
-        if (!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
-            edit.commit();
-            launchHeightActivity();
-        }
-
-        // Collect the height from the height page
-        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
-        int feet = spf.getInt(FEET_KEY, 0);
-        int inches = spf.getInt(INCHES_KEY, 0);
-
-        totalHeight = inches + (HEIGHT_FACTOR * feet);
-        strideLength = totalHeight * STRIDE_CONVERSION;
 
         BottomNavigationView navigation = findViewById(R.id.nav_view);
         Menu menu = navigation.getMenu();
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
+
+        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.start_walk_btn);
+        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity();
+            }
+        });
 
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -207,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_walk:
                         launchProposedWalksActivity();
+                        // launchSuggestedWalkActivity();
 
                         break;
                     case R.id.navigation_teams:
@@ -229,10 +231,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void launchRoutesScreenActivity() {
-        Intent intent = new Intent(this, RoutesScreen.class);
-        startActivity(intent);
-    }
+//    public void launchRoutesScreenActivity() {
+//        Intent intent = new Intent(this, RoutesScreen.class);
+//        startActivity(intent);
+//    }
 
     public void launchTeamScreenActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
@@ -244,11 +246,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void launchSuggestedWalkActivity() {
+        Intent intent = new Intent(this, ScheduledWalkActivity.class);
+        startActivity(intent);
+    }
+
     public void launchTeamRouteActivity() {
         Intent intent = new Intent(this, TeamIndividRoutes.class);
         startActivity(intent);
     }
-
 
     @Override
     protected void onPause() {
@@ -263,13 +269,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
-
-
 
         gFitUtilLifecycleFlag = true;
 
@@ -315,6 +318,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         Log.i("MainActivity.onResume", "onResume() has been COMPLETED");
     }
 
@@ -360,6 +365,17 @@ public class MainActivity extends AppCompatActivity {
 
     //Updates numSteps with pedometer data, sets textDist and textStep
     public void setStepCount(long stepCount) {
+        // Collect the height from the height page
+
+        int feet = spf.getInt(FEET_KEY, 0);
+        int inches = spf.getInt(INCHES_KEY, 0);
+
+        totalHeight = inches + ( HEIGHT_FACTOR * feet );
+        strideLength = totalHeight * STRIDE_CONVERSION;
+
+
+
+
         numSteps = stepCount;
         DecimalFormat df = new DecimalFormat("#.##");
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
@@ -385,7 +401,7 @@ public class MainActivity extends AppCompatActivity {
             // a listener.
             Log.i("onActivityResult ", "confirm RC");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            //gFitUtil.init(); COMMENTED OUT 3/9/2020
+            gFitUtil.init();
             handleSignInResult(task);
         }
     }
@@ -400,6 +416,7 @@ public class MainActivity extends AppCompatActivity {
                 firstName = account.getGivenName();
                 lastName = account.getFamilyName();
                 getTeamIDFromDB(userEmail);
+                getHeightInfo();
             }
             else {
 
@@ -411,6 +428,17 @@ public class MainActivity extends AppCompatActivity {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+        }
+    }
+
+    public void getHeightInfo(){
+        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
+
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
+            edit.commit();
+            launchHeightActivity();
         }
     }
 
@@ -441,10 +469,6 @@ public class MainActivity extends AppCompatActivity {
                         u1.lastName = lastName;
                         u1.userIcon = firstName.charAt(0) + "" + lastName.charAt(0);
                         dao.insertAll(u1);
-                        //dao.updateTeamID(userName, generateTeamId(userName));
-                    }
-                    if(u1.teamID == ""){
-                        Log.i("getTeamIDFromDB ", ":A team was NOT found");
                         //dao.updateTeamID(userName, generateTeamId(userName));
                     }
                     else{

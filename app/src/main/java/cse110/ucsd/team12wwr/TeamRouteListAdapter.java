@@ -73,22 +73,38 @@ public class TeamRouteListAdapter extends ArrayAdapter<Route> {
                                                     .endConfig()
                                                     .round();
 
+//        WalkDao dao = DaoFactory.getWalkDao();
+//        View finalConvertView = convertView;
+        Log.d(TAG, "getView: Finding the route by the name");
         WalkDao dao = DaoFactory.getWalkDao();
         View finalConvertView = convertView;
-        Log.d(TAG, "getView: Finding the route by the name");
         dao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Walk walk = document.toObject(Walk.class);
-                    if (walk.userID != null && walk.userID.equals(email)) {
-                        hasWalk = true;
-                    }
+                    hasWalk = true;
                 }
 
                 if (hasWalk) {
                     textViewPrevWalked.setVisibility(View.VISIBLE);
                 }
+
+                Log.i(TAG, "getView: Walk for " + routeName + " has been walked on before: " + hasWalk);
+
+//        dao.findByRouteName(routeName, task -> {
+//            if (task.isSuccessful()) {
+//                boolean hasWalk = false;
+//                for (QueryDocumentSnapshot document : task.getResult()) {
+//                    Walk walk = document.toObject(Walk.class);
+////                    if (walk.userID != null && walk.userID.equals(email)) {
+//                        hasWalk = true;
+////                    }
+//                }
+//                Log.e("Limit", "Rendering route " + routeName + ", hasWalk is " + hasWalk);
+//
+//                if (hasWalk) {
+//                    textViewPrevWalked.setVisibility(View.VISIBLE);
+//                }
 
                 RouteDao routeDao = DaoFactory.getRouteDao();
                 routeDao.findName(routeName, task3 -> {

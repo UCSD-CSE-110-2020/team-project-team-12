@@ -3,8 +3,6 @@ package cse110.ucsd.team12wwr;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -18,46 +16,25 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
-import cse110.ucsd.team12wwr.firebase.User;
-import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 
-public class RouteDetailsPage extends AppCompatActivity {
+public class ScheduledWalkActivity extends AppCompatActivity {
+
     // Public constants for string intents
     public static final String TITLE = "ROUTE_TITLE";
 
     private static final String TAG = "RouteDetailsPage";
 
     private String routeName;
-    private Boolean fromActivity;
-    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_route_details_page);
+        setContentView(R.layout.activity_scheduled_walk);
 
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
-        fromActivity = intent.getBooleanExtra("fromTeam", false);
-
-        SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
-        userEmail = emailprefs.getString("EMAIL_ID", null);
-
-    }
-
-    public void launchGoogleMaps(View v) {
-        TextView startPoint = findViewById(R.id.start_textview);
-        Log.e("Limit", "Starting point is being clicked");
-        String location = startPoint.getText().toString().substring(16).replaceAll(" ", "+");
-        Log.e("Limit", "Location is " + location);
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
-        }
     }
 
     @Override
@@ -72,14 +49,6 @@ public class RouteDetailsPage extends AppCompatActivity {
         Button edit = findViewById(R.id.edit_route);
         Button start = findViewById(R.id.add_button);
 
-        if ( fromActivity ) {
-            edit.setVisibility(View.GONE);
-//            edit.setTextColor(Color.GRAY);
-        } else {
-            edit.setVisibility(View.VISIBLE);
-//            edit.setTextColor(getColor(R.color.design_default_color_primary));
-        }
-
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,14 +56,12 @@ public class RouteDetailsPage extends AppCompatActivity {
             }
         });
 
-        if ( !fromActivity ) {
-            edit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    launchRouteInfoActivity();
-                }
-            });
-        }
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchRouteInfoActivity();
+            }
+        });
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -202,72 +169,27 @@ public class RouteDetailsPage extends AppCompatActivity {
         walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 Walk mostRecentWalk = null;
-                Walk substituteWalk = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     if (mostRecentWalk == null) {
                         mostRecentWalk = document.toObject(Walk.class);
-                        if (!mostRecentWalk.userID.equals(userEmail)) {
-                            substituteWalk = mostRecentWalk;
-                            mostRecentWalk = null;
-                        }
-                        break;
                     }
                 }
 
                 if (mostRecentWalk != null) {
-                    populateWalkInfo(mostRecentWalk);
-                } else {
-                    populateSubstitutedWalkInfo(substituteWalk);
+                    if (mostRecentWalk.duration != null) {
+                        TextView duration = findViewById(R.id.total_time_detail);
+                        duration.setText(mostRecentWalk.duration);
+                        TextView checkmark = findViewById(R.id.checkmark_detail);
+                        checkmark.setVisibility(View.VISIBLE);
+                    }
+
+                    if (mostRecentWalk.distance != null) {
+                        TextView distance = findViewById(R.id.dist_details);
+                        distance.setText(mostRecentWalk.distance);
+                    }
                 }
             }
         });
-    }
-
-    void populateWalkInfo(Walk mostRecentWalk) {
-        if (mostRecentWalk != null) {
-            if (mostRecentWalk.duration != null) {
-                TextView duration = findViewById(R.id.total_time_detail);
-                duration.setText(mostRecentWalk.duration);
-            }
-
-            if (mostRecentWalk.distance != null) {
-                TextView distance = findViewById(R.id.dist_details);
-                distance.setText(mostRecentWalk.distance);
-            }
-
-            TextView checkmark = findViewById(R.id.checkmark_detail);
-            checkmark.setVisibility(View.VISIBLE);
-        }
-    }
-
-    void populateSubstitutedWalkInfo(Walk substituteWalk) {
-        if (substituteWalk != null) {
-            if (substituteWalk.duration != null) {
-                TextView duration = findViewById(R.id.total_time_detail);
-                duration.setText(substituteWalk.duration);
-            }
-
-            if (substituteWalk.distance != null) {
-                TextView distance = findViewById(R.id.dist_details);
-                distance.setText(substituteWalk.distance);
-            }
-
-            if (substituteWalk.userID != null) {
-                UserDao dao = DaoFactory.getUserDao();
-                dao.findUserByID(substituteWalk.userID, task -> {
-                    if (task.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            User user = document.toObject(User.class);
-                            String fullName = user.firstName + " " + user.lastName;
-
-                            TextView notes = findViewById(R.id.notes_content);
-                            String oldNotes = notes.getText().toString();
-                            notes.setText(String.format("%s's stats – %s", fullName, oldNotes));
-                        }
-                    }
-                });
-            }
-        }
     }
 
     public void launchRouteInfoActivity() {
@@ -281,11 +203,12 @@ public class RouteDetailsPage extends AppCompatActivity {
         Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         intent.putExtra(TITLE, routeName);
-        intent.putExtra("fromTeam",fromActivity);
         startActivity(intent);
     }
 
     public String extractString (TextView textView) {
         return textView.getText().toString();
     }
+
+
 }

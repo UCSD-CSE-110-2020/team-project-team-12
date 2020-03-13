@@ -1,6 +1,7 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
-
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
@@ -52,7 +52,10 @@ public class PersonalRouteListAdapter extends ArrayAdapter<Route> {
             if (task.isSuccessful()) {
                 boolean hasWalk = false;
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    hasWalk = true;
+                    Walk walk = document.toObject(Walk.class);
+                    if (walk.userID.equals(MainActivity.userEmail)) {
+                        hasWalk = true;
+                    }
                 }
 
                 if (hasWalk) {
