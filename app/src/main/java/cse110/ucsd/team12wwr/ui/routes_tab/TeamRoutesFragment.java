@@ -62,6 +62,8 @@ public class TeamRoutesFragment extends Fragment {
         Log.i(TAG, "onCreate: Getting current user's email from SharedPreferences");
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
+        userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
+
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
 

@@ -61,6 +61,7 @@ public class PersonalRoutesFragment extends Fragment {
 
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
+        userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
 
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;

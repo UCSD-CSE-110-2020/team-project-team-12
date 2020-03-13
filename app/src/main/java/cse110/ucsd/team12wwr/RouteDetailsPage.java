@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.api.LogDescriptor;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
@@ -51,12 +52,15 @@ public class RouteDetailsPage extends AppCompatActivity {
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
         Button start = findViewById(R.id.add_button);
+        Button schedule = findViewById(R.id.sched_walk_btn);
 
         if ( fromActivity ) {
             edit.setVisibility(View.GONE);
+            schedule.setVisibility(View.VISIBLE);
 //            edit.setTextColor(Color.GRAY);
         } else {
             edit.setVisibility(View.VISIBLE);
+            schedule.setVisibility(View.GONE);
 //            edit.setTextColor(getColor(R.color.design_default_color_primary));
         }
 
@@ -73,6 +77,13 @@ public class RouteDetailsPage extends AppCompatActivity {
                 public void onClick(View view) {
                     launchRouteInfoActivity();
                 }
+            });
+        }
+
+        if ( fromActivity ) {
+            schedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { launchTeamInviteActivity(); }
             });
         }
 
@@ -209,6 +220,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         }
     }
 
+
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
@@ -219,6 +231,14 @@ public class RouteDetailsPage extends AppCompatActivity {
     public void launchIntentionalActivity() {
         Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        intent.putExtra(TITLE, routeName);
+        intent.putExtra("fromTeam",fromActivity);
+        startActivity(intent);
+    }
+
+    public void launchTeamInviteActivity() {
+        Log.d(TAG, "launchTeamInviteActivity: Launching team invitation page");
+        Intent intent = new Intent(this, InviteWalk.class);
         intent.putExtra(TITLE, routeName);
         intent.putExtra("fromTeam",fromActivity);
         startActivity(intent);

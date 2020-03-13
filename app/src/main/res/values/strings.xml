@@ -64,6 +64,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
     <string name="true_tick">\u2713</string>
+    <string name="title_activity_invite_walk">InviteWalk</string>
 
 </resources>
 
