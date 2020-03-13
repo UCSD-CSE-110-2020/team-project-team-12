@@ -52,14 +52,15 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     public void launchGoogleMaps(View v) {
         TextView startPoint = findViewById(R.id.start_textview);
-        Log.e("Limit", "Starting point is being clicked");
-        String location = startPoint.getText().toString().substring(16).replaceAll(" ", "+");
-        Log.e("Limit", "Location is " + location);
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
+        String location = startPoint.getText().toString();
+        if (location.length() > 16)  {
+            location = location.substring(16).replaceAll(" ", "+");
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            }
         }
     }
 
