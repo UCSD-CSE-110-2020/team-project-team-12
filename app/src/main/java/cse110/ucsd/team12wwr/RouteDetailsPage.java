@@ -15,6 +15,9 @@ import android.widget.Button;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
@@ -201,26 +204,33 @@ public class RouteDetailsPage extends AppCompatActivity {
         WalkDao walkDao = DaoFactory.getWalkDao();
         walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
-                Walk mostRecentWalk = null;
-                Walk substituteWalk = null;
+                List<Walk> walks = new ArrayList<Walk>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    if (mostRecentWalk == null) {
-                        mostRecentWalk = document.toObject(Walk.class);
-                        if (!mostRecentWalk.userID.equals(userEmail)) {
-                            substituteWalk = mostRecentWalk;
-                            mostRecentWalk = null;
-                        }
-                        break;
-                    }
-                }
-
-                if (mostRecentWalk != null) {
-                    populateWalkInfo(mostRecentWalk);
-                } else {
-                    populateSubstitutedWalkInfo(substituteWalk);
+                    walks.add(document.toObject(Walk.class));
                 }
             }
         });
+    }
+
+    public void determineWalk(List<Walk> walks) {
+        Walk mostRecentWalk = null;
+        Walk substituteWalk = null;
+        for (Walk walk : walks) {
+            if (mostRecentWalk == null) {
+                mostRecentWalk = walk;
+                if (!mostRecentWalk.userID.equals(userEmail)) {
+                    substituteWalk = mostRecentWalk;
+                    mostRecentWalk = null;
+                }
+                break;
+            }
+        }
+
+        if (mostRecentWalk != null) {
+            populateWalkInfo(mostRecentWalk);
+        } else {
+            populateSubstitutedWalkInfo(substituteWalk);
+        }
     }
 
     void populateWalkInfo(Walk mostRecentWalk) {
