@@ -3,7 +3,6 @@ package cse110.ucsd.team12wwr;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -37,7 +36,6 @@ public class RouteDetailsPage extends AppCompatActivity {
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
         fromActivity = intent.getBooleanExtra("fromTeam", false);
-
     }
 
     @Override
@@ -227,6 +225,4 @@ public class RouteDetailsPage extends AppCompatActivity {
     public String extractString (TextView textView) {
         return textView.getText().toString();
     }
-
-
 }
