@@ -396,7 +396,7 @@ public class MainActivity extends AppCompatActivity {
             // a listener.
             Log.i("onActivityResult ", "confirm RC");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            //gFitUtil.init(); COMMENTED OUT 3/9/2020
+            gFitUtil.init();
             handleSignInResult(task);
         }
     }
