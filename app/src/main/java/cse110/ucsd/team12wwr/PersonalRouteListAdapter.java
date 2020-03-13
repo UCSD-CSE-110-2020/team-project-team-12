@@ -1,6 +1,7 @@
 package cse110.ucsd.team12wwr;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,25 +13,21 @@ import androidx.annotation.NonNull;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
-//import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
 import cse110.ucsd.team12wwr.firebase.Route;
+
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
+import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;
 
-//import cse110.ucsd.team12wwr.database.Route;
-//import cse110.ucsd.team12wwr.database.WWRDatabase;
-
-public class RouteListAdapter extends ArrayAdapter<Route> {
+public class PersonalRouteListAdapter extends ArrayAdapter<Route> {
 
     private static final String TAG = "RouteListAdapter";
     private Context context;
     int resource;
-    TextView textViewPrevWalked;
 
-    public RouteListAdapter(Context context, int resource, ArrayList<Route> objects) {
+    public PersonalRouteListAdapter(Context context, int resource, ArrayList<Route> objects) {
         super(context, resource, objects);
         this.context = context;
         this.resource = resource;
@@ -45,9 +42,10 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
         convertView = inflater.inflate(this.resource, parent, false);
 
         TextView textViewRouteName = (TextView) convertView.findViewById(R.id.route_name);
-        textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
+        TextView textViewPrevWalked = (TextView) convertView.findViewById(R.id.previously_walked);
 
         textViewRouteName.setText(routeName);
+        Log.d(TAG, "getView: Setting list item name");
 
         WalkDao dao = DaoFactory.getWalkDao();
         dao.findByRouteName(routeName, task -> {
@@ -57,17 +55,15 @@ public class RouteListAdapter extends ArrayAdapter<Route> {
                     hasWalk = true;
                 }
 
-                setCheck(hasWalk);
+                if (hasWalk) {
+                    textViewPrevWalked.setVisibility(View.VISIBLE);
+                }
+
+                Log.i(TAG, "getView: Walk for " + routeName + " has been walked on before: " + hasWalk);
             }
         });
 
         return convertView;
-    }
-
-    void setCheck(Boolean hasWalk) {
-        if (!hasWalk) {
-            textViewPrevWalked.setVisibility(View.INVISIBLE);
-        }
     }
 
 }

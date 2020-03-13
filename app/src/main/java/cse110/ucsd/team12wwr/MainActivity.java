@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+
+import android.os.IBinder;
 import android.util.Log;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -18,6 +20,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.DecimalFormat;
@@ -108,6 +111,15 @@ public class MainActivity extends AppCompatActivity {
         }); */
         Toolbar toolbar = findViewById(R.id.toolbar);
 
+//        // Create and adapt the FitnessService
+//        FitnessServiceFactory.put(fitnessServiceKey, new FitnessServiceFactory.BluePrint() {
+//            @Override
+//            public FitnessService create(MainActivity mainActivity) {
+//                return new GoogleFitAdapter(mainActivity);
+//            }
+//        });
+//        fitnessService = FitnessServiceFactory.create(fitnessServiceKey, this);
+
         textDist = findViewById(R.id.num_miles);
         textStep = findViewById(R.id.num_steps);
 
@@ -143,8 +155,12 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         userEmail = "account not retrieved";
-        try{
+        try {
             userEmail = account.getEmail();
+            SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("EMAIL_ID", userEmail);
+            editor.apply();
             //getTeamIDFromDB(userEmail);
         }
         catch(NullPointerException e){
@@ -159,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
         boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
-        if(!previouslyStarted) {
+        if (!previouslyStarted) {
             SharedPreferences.Editor edit = prefs.edit();
             edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
             edit.commit();
@@ -171,9 +187,8 @@ public class MainActivity extends AppCompatActivity {
         int feet = spf.getInt(FEET_KEY, 0);
         int inches = spf.getInt(INCHES_KEY, 0);
 
-        totalHeight = inches + ( HEIGHT_FACTOR * feet );
+        totalHeight = inches + (HEIGHT_FACTOR * feet);
         strideLength = totalHeight * STRIDE_CONVERSION;
-
 
         BottomNavigationView navigation = findViewById(R.id.nav_view);
         Menu menu = navigation.getMenu();
@@ -187,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.navigation_home:
                         break;
                     case R.id.navigation_routes:
-                        launchRoutesScreenActivity();
+                        launchTeamRouteActivity();
 
                         break;
                     case R.id.navigation_walk:
@@ -203,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
     public void launchActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
@@ -225,6 +239,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
+        startActivity(intent);
+    }
 
 
     @Override
@@ -378,10 +396,12 @@ public class MainActivity extends AppCompatActivity {
                 lastName = account.getFamilyName();
                 getTeamIDFromDB(userEmail);
             }
-            else
+            else {
+
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
-            // Signed in successfully, show authenticated UI.
-            //
+                // Signed in successfully, show authenticated UI.
+                //
+            }
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.

@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
@@ -59,8 +61,7 @@ public class TeamScreen extends FragmentActivity
         userEmail = emailprefs.getString("EMAIL_ID", null);
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
-
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        FloatingActionButton fab = findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -69,7 +70,6 @@ public class TeamScreen extends FragmentActivity
         });
 
         Log.d(TAG, "onCreate: Navigation bar created");
-
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -79,7 +79,7 @@ public class TeamScreen extends FragmentActivity
                         break;
                     case R.id.navigation_routes:
                         finish();
-                        launchRoutesScreenActivity();
+                        launchTeamRouteActivity();
                         break;
                     case R.id.navigation_walk:
                         finish();
@@ -93,7 +93,6 @@ public class TeamScreen extends FragmentActivity
         });
 
         initializeUpdateListener();
-
     }
 
     private void initializeUpdateListener() {
@@ -200,8 +199,8 @@ public class TeamScreen extends FragmentActivity
         startActivity(intent);
     }
 
-    public void launchRoutesScreenActivity() {
-        Intent intent = new Intent(this, RoutesScreen.class);
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
         startActivity(intent);
     }
 
@@ -260,6 +259,7 @@ public class TeamScreen extends FragmentActivity
         Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
         toast.show();
     }
+
 
     public void createUsers() {
         ListView listView = findViewById(R.id.team_list);

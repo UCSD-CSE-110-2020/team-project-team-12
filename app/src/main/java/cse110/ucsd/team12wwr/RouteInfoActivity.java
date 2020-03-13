@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -56,11 +57,15 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_info);
+
+        SharedPreferences emailPref = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailPref.getString("EMAIL_ID", null);
 
         getSupportActionBar().setTitle("Route Information");
 
@@ -307,6 +312,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     setEvenness(newEntry, textureSpinner);
                     setDifficulty(newEntry);
                     setNotes(newEntry, notesEntry.getText().toString());
+                    newEntry.userID = userEmail;
 
                     if (isNewRoute) {
                         try {

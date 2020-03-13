@@ -3,6 +3,7 @@ package cse110.ucsd.team12wwr;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ public class RouteDetailsPage extends AppCompatActivity {
     private static final String TAG = "RouteDetailsPage";
 
     private String routeName;
+    private Boolean fromActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
+        fromActivity = intent.getBooleanExtra("fromTeam", false);
+
     }
 
     @Override
@@ -48,6 +52,14 @@ public class RouteDetailsPage extends AppCompatActivity {
         Button edit = findViewById(R.id.edit_route);
         Button start = findViewById(R.id.add_button);
 
+        if ( fromActivity ) {
+            edit.setVisibility(View.GONE);
+//            edit.setTextColor(Color.GRAY);
+        } else {
+            edit.setVisibility(View.VISIBLE);
+//            edit.setTextColor(getColor(R.color.design_default_color_primary));
+        }
+
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -55,12 +67,14 @@ public class RouteDetailsPage extends AppCompatActivity {
             }
         });
 
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchRouteInfoActivity();
-            }
-        });
+        if ( !fromActivity ) {
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchRouteInfoActivity();
+                }
+            });
+        }
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -206,6 +220,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         intent.putExtra(TITLE, routeName);
+        intent.putExtra("fromTeam",fromActivity);
         startActivity(intent);
     }
 
