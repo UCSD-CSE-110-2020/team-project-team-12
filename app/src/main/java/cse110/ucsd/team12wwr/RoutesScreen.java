@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -110,10 +109,10 @@ public class RoutesScreen extends AppCompatActivity {
                 listView = findViewById(R.id.individ_routes_list);
                 routeListParam = new ArrayList<>(routeList);
 
-                RouteListAdapter routeListAdapter = new RouteListAdapter(this, R.layout.route_adapter_view_layout,
+                TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(this, R.layout.route_adapter_view_layout,
                         routeListParam);
 
-                listView.setAdapter(routeListAdapter);
+                listView.setAdapter(teamRouteListAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

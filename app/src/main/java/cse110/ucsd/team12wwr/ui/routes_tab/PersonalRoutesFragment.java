@@ -8,19 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import java.util.ArrayList;
@@ -29,9 +24,7 @@ import java.util.List;
 import cse110.ucsd.team12wwr.R;
 import cse110.ucsd.team12wwr.RouteDetailsPage;
 import cse110.ucsd.team12wwr.RouteInfoActivity;
-import cse110.ucsd.team12wwr.RouteListAdapter;
-import cse110.ucsd.team12wwr.TeamIndividRoutes;
-import cse110.ucsd.team12wwr.TeamRouteListAdapter;
+import cse110.ucsd.team12wwr.PersonalRouteListAdapter;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
@@ -149,10 +142,10 @@ public class PersonalRoutesFragment extends Fragment {
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
                 listView = view.findViewById(R.id.individ_routes_list);
-                TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(),
+                PersonalRouteListAdapter personalRouteListAdapter = new PersonalRouteListAdapter(getActivity(),
                         R.layout.route_adapter_view_layout, routeListParam);
 
-                listView.setAdapter(teamRouteListAdapter);
+                listView.setAdapter(personalRouteListAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

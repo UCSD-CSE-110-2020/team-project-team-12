@@ -9,10 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -21,11 +18,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import cse110.ucsd.team12wwr.R;
 import cse110.ucsd.team12wwr.RouteDetailsPage;
-import cse110.ucsd.team12wwr.RouteListAdapter;
 import cse110.ucsd.team12wwr.TeamRouteListAdapter;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
@@ -155,11 +150,11 @@ public class TeamRoutesFragment extends Fragment {
                               }
 
                               listView = view.findViewById(R.id.teams_routes_list);
-                              RouteListAdapter routeListAdapter = new RouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+                              TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
                               Log.e("Limit", "routeList content: " + routeList);
 
                               Log.i(TAG, "renderRoutesList: Displaying all the team routes");
-                              listView.setAdapter(routeListAdapter);
+                              listView.setAdapter(teamRouteListAdapter);
                               listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                   @Override
                                   public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
