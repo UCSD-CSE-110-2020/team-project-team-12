@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public static boolean unitTestFlag = false;
 
     /* Team Related Variables */
-    String userEmail;
+    public static String userEmail;
     String teamName;
     cse110.ucsd.team12wwr.firebase.User thisUser;
     String firstName;
