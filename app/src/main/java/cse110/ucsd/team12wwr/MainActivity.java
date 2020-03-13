@@ -1,5 +1,8 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.ComponentName;
+import android.content.Context;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +13,8 @@ import android.util.Log;
 import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -91,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
         /* COMMENTED OUT FOR NOW 5:45PM 3/4/2020
@@ -157,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
         userEmail = "account not retrieved";
         try {
             userEmail = account.getEmail();
+
             SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putString("EMAIL_ID", userEmail);
@@ -195,6 +202,14 @@ public class MainActivity extends AppCompatActivity {
         MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
+        Button launchIntentionalWalkActivity = (Button) findViewById(R.id.start_walk_btn);
+        launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchActivity();
+            }
+        });
+
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -206,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case R.id.navigation_walk:
-                        launchActivity();
+                        launchSuggestedWalkActivity();
 
                         break;
                     case R.id.navigation_teams:
@@ -224,10 +239,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void launchRoutesScreenActivity() {
-        Intent intent = new Intent(this, RoutesScreen.class);
-        startActivity(intent);
-    }
+//    public void launchRoutesScreenActivity() {
+//        Intent intent = new Intent(this, RoutesScreen.class);
+//        startActivity(intent);
+//    }
 
     public void launchTeamScreenActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
@@ -239,11 +254,15 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void launchSuggestedWalkActivity() {
+        Intent intent = new Intent(this, ScheduledWalkActivity.class);
+        startActivity(intent);
+    }
+
     public void launchTeamRouteActivity() {
         Intent intent = new Intent(this, TeamIndividRoutes.class);
         startActivity(intent);
     }
-
 
     @Override
     protected void onPause() {
@@ -258,13 +277,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         Log.i("MainActivity.onResume", "onResume() has been called");
-
-
 
         gFitUtilLifecycleFlag = true;
 

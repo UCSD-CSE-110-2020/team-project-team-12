@@ -156,17 +156,19 @@ public class TeamRoutesFragment extends Fragment {
                                    }
 
                                    listView = view.findViewById(R.id.teams_routes_list);
-                                   TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(),
-                                           R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
-                                   Log.i(TAG, "renderRoutesList: Displaying all the team routes");
-                                   listView.setAdapter(teamRouteListAdapter);
-                                   listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                       @Override
-                                       public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                           String routeName = routeList.get(i).name;
-                                           launchRoutesDetailsPage(routeName);
-                                       }
-                                   });
+                                   if ( getActivity() != null ) {
+                                       TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(),
+                                               R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
+                                       Log.i(TAG, "renderRoutesList: Displaying all the team routes");
+                                       listView.setAdapter(teamRouteListAdapter);
+                                       listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                           @Override
+                                           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                               String routeName = routeList.get(i).name;
+                                               launchRoutesDetailsPage(routeName);
+                                           }
+                                       });
+                                   }
                                }
                            });
                        }

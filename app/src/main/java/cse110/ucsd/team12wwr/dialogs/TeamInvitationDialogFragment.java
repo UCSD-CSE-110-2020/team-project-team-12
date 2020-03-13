@@ -17,6 +17,8 @@ import cse110.ucsd.team12wwr.R;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cse110.ucsd.team12wwr.TeamScreenActivity;
+
 public class TeamInvitationDialogFragment extends DialogFragment {
 
     public interface InviteDialogListener {
@@ -96,6 +98,7 @@ public class TeamInvitationDialogFragment extends DialogFragment {
                 });
         return builder.create();
     }
+
     public static boolean validInput(String email) {
         String expression = "^[\\w.+\\-]+@gmail\\.com$";
         Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);

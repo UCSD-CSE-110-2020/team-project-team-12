@@ -20,6 +20,7 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
@@ -80,6 +81,8 @@ public class TeamScreen extends FragmentActivity
                     case R.id.navigation_routes:
                         finish();
                         launchTeamRouteActivity();
+
+//                        launchRoutesScreenActivity();
                         break;
                     case R.id.navigation_walk:
                         finish();
@@ -93,6 +96,7 @@ public class TeamScreen extends FragmentActivity
         });
 
         initializeUpdateListener();
+
     }
 
     private void initializeUpdateListener() {
@@ -122,7 +126,7 @@ public class TeamScreen extends FragmentActivity
 
                     renderTeamMembers(currUser.teamID);
                     renderInvitees(currUser.teamID);
-
+                    
                     ListView listView = findViewById(R.id.team_list);
                     adapter = new TeamListAdapter(this, rowItems, teamName);
                     listView.setAdapter(adapter);

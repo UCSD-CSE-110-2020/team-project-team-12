@@ -16,7 +16,6 @@ import java.util.ArrayList;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
-
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.ui.routes_tab.PersonalRoutesFragment;

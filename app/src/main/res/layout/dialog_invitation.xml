@@ -51,5 +51,4 @@
         android:fontFamily="sans-serif"
         android:hint="Friend's Last Name"
         android:inputType="textPersonName" />
-
 </LinearLayout>
