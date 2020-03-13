@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -274,6 +273,4 @@ public class RouteDetailsPage extends AppCompatActivity {
     public String extractString (TextView textView) {
         return textView.getText().toString();
     }
-
-
 }
