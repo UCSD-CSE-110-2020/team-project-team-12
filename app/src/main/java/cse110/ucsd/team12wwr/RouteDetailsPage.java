@@ -18,6 +18,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
+import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 
@@ -234,6 +236,22 @@ public class RouteDetailsPage extends AppCompatActivity {
             if (substituteWalk.distance != null) {
                 TextView distance = findViewById(R.id.dist_details);
                 distance.setText(substituteWalk.distance);
+            }
+
+            if (substituteWalk.userID != null) {
+                UserDao dao = DaoFactory.getUserDao();
+                dao.findUserByID(substituteWalk.userID, task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            User user = document.toObject(User.class);
+                            String fullName = user.firstName + " " + user.lastName;
+
+                            TextView notes = findViewById(R.id.notes_content);
+                            String oldNotes = notes.getText().toString();
+                            notes.setText(String.format("%s's stats – %s", fullName, oldNotes));
+                        }
+                    }
+                });
             }
         }
     }
