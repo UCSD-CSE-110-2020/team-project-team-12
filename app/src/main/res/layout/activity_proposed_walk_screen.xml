@@ -4,32 +4,35 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RouteDetailsPage">
+    tools:context=".ProposedWalkScreen">
 
     <ScrollView
-        android:id="@+id/scrollable"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:id="@+id/scrollable_proposal"
+        android:layout_width="409dp"
+        android:layout_height="601dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/scroll_layout"
+            android:id="@+id/proposal_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/title_layout"
+                android:id="@+id/proposed_title_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/route_title_detail"
+                    android:id="@+id/proposed_route_title_detail"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:paddingStart="5sp"
+                    android:paddingTop="5dp"
                     android:paddingEnd="15dp"
                     android:scrollHorizontally="true"
                     android:text="Route Title"
@@ -40,14 +43,156 @@
             </LinearLayout>
 
             <TableLayout
-                android:id="@+id/tableLayout"
-                android:layout_width="417dp"
-                android:layout_height="79dp"
+                android:id="@+id/proposed_table_layout"
+                android:layout_width="match_parent"
+                android:layout_height="151dp"
                 android:layout_marginTop="15dp"
                 android:shrinkColumns="1">
 
                 <TableRow
-                    android:id="@+id/start_detail_row"
+                    android:id="@+id/proposed_date_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/date_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:alpha="2"
+                        android:tint="@android:color/darker_gray"
+                        app:srcCompat="@drawable/calendar" />
+
+                    <TextView
+                        android:id="@+id/proposed_date_textview"
+                        android:layout_width="354dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="Tentative Date:"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <LinearLayout
+                    android:id="@+id/proposed_details_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                </LinearLayout>
+
+                <TableRow
+                    android:id="@+id/proposed_date_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/date_img_invisible"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:alpha="2"
+                        android:tint="@android:color/darker_gray"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/calendar" />
+
+                    <TextView
+                        android:id="@+id/proposed_date_actual_textview"
+                        android:layout_width="354dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="The Tentative Date"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/proposed_time_row"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp">
+
+                    <ImageView
+                        android:id="@+id/time_img"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:alpha="2"
+                        android:tint="@android:color/darker_gray"
+                        app:srcCompat="@drawable/clock" />
+
+                    <TextView
+                        android:id="@+id/proposed_time_textview"
+                        android:layout_width="354dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="Tentative Time:"
+                        android:textSize="18sp" />
+
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/proposed_time_data"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/time_img_invisible"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="5dp"
+                        android:alpha="2"
+                        android:tint="@android:color/darker_gray"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/clock" />
+
+                    <TextView
+                        android:id="@+id/proposed_time_actual_textview"
+                        android:layout_width="354dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="35dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:text="The Tentative Time"
+                        android:textSize="18sp" />
+
+                </TableRow>
+            </TableLayout>
+
+            <TextView
+                android:id="@+id/proposed_route_detail_textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:paddingEnd="15dp"
+                android:scrollHorizontally="true"
+                android:text="Details"
+                android:textAlignment="textStart"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <TableLayout
+                android:id="@+id/proposed_points_layout"
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:layout_marginTop="15dp"
+                android:shrinkColumns="1">
+
+                <TableRow
+                    android:id="@+id/proposed_start_detail_row"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -63,7 +208,7 @@
                         app:srcCompat="@drawable/start" />
 
                     <TextView
-                        android:id="@+id/start_textview"
+                        android:id="@+id/proposed_start_textview"
                         android:layout_width="354dp"
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
@@ -74,7 +219,7 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/end_detail_row"
+                    android:id="@+id/proposed_end_detail_row"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -89,7 +234,7 @@
                         app:srcCompat="@drawable/finish" />
 
                     <TextView
-                        android:id="@+id/end_textview"
+                        android:id="@+id/proposed_end_textview"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_marginTop="5dp"
@@ -102,19 +247,19 @@
             </TableLayout>
 
             <LinearLayout
-                android:id="@+id/metrics_details_layout"
+                android:id="@+id/proposed_metrics_details_layout"
                 android:layout_width="413dp"
                 android:layout_height="49dp"
                 android:layout_marginTop="12dp">
 
                 <LinearLayout
-                    android:id="@+id/time_details_layout"
+                    android:id="@+id/proposed_time_details_layout"
                     android:layout_width="210dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/total_time_detail_title"
+                        android:id="@+id/proposed_total_time_detail_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="6dp"
@@ -124,7 +269,7 @@
                         android:textSize="18sp" />
 
                     <TextView
-                        android:id="@+id/total_time_detail"
+                        android:id="@+id/proposed_total_time_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="6dp"
@@ -135,13 +280,13 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/distance_detail_layout"
+                    android:id="@+id/proposed_distance_detail_layout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/totalDist_details"
+                        android:id="@+id/proposed_total_dist_details"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="6dp"
@@ -151,13 +296,13 @@
                         android:textSize="18sp" />
 
                     <LinearLayout
-                        android:id="@+id/mini_dist_detail_layout"
+                        android:id="@+id/proposed_mini_dist_detail_layout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/dist_details"
+                            android:id="@+id/proposed_dist_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="60dp"
@@ -174,7 +319,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/add_info_static_layout"
+                android:id="@+id/proposed_add_info_static_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -182,7 +327,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/add_info"
+                    android:id="@+id/proposed_add_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
@@ -197,7 +342,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/path_details_layout"
+                android:id="@+id/proposed_path_details_layout"
                 android:layout_width="413dp"
                 android:layout_height="34dp"
                 android:layout_marginTop="12dp"
@@ -212,7 +357,7 @@
                     app:srcCompat="@drawable/path" />
 
                 <TextView
-                    android:id="@+id/path_details"
+                    android:id="@+id/proposed_path_details"
                     android:layout_width="61dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
@@ -229,7 +374,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/incline_detail_layout"
+                android:id="@+id/proposed_incline_detail_layout"
                 android:layout_width="411dp"
                 android:layout_height="34dp"
                 android:layout_marginTop="12dp"
@@ -247,7 +392,7 @@
                     app:srcCompat="@drawable/incline" />
 
                 <TextView
-                    android:id="@+id/incline_deets"
+                    android:id="@+id/proposed_incline_deets"
                     android:layout_width="61dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
@@ -292,7 +437,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/texture_details_layout"
+                android:id="@+id/proposed_texture_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -307,7 +452,7 @@
                     app:srcCompat="@drawable/surface" />
 
                 <TextView
-                    android:id="@+id/texture_details"
+                    android:id="@+id/proposed_texture_details"
                     android:layout_width="61dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
@@ -322,7 +467,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/diff_fave_layout"
+                android:id="@+id/proposed_diff_fave_layout"
                 android:layout_width="412dp"
                 android:layout_height="92dp"
                 android:layout_marginTop="12dp"
@@ -335,7 +480,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/diff_textview"
+                        android:id="@+id/proposed_diff_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -345,7 +490,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/diff_detail"
+                        android:id="@+id/proposed_diff_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -355,13 +500,13 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/prev_walked_col"
+                    android:id="@+id/proposed_prev_walked_col"
                     android:layout_width="145dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/prev_walked_textview"
+                        android:id="@+id/proposed_prev_walked_textview"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -371,24 +516,24 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/checkmark_detail"
+                        android:id="@+id/proposed_checkmark_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:text="@string/true_tick"
                         android:textAlignment="center"
                         android:textSize="20sp"
-                        android:visibility="invisible"/>
+                        android:visibility="invisible" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/favorite_col"
+                    android:id="@+id/proposed_favorite_col"
                     android:layout_width="138dp"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/fave_detail"
+                        android:id="@+id/proposed_fave_detail"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="15dp"
@@ -398,7 +543,7 @@
                         android:textStyle="bold" />
 
                     <CheckBox
-                        android:id="@+id/favorited_details"
+                        android:id="@+id/proposed_favorited_details"
                         android:layout_width="66dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="50dp"
@@ -411,21 +556,21 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/notes_details_layout"
+                android:id="@+id/proposed_notes_details_layout"
                 android:layout_width="409dp"
-                android:layout_height="wrap_content"
+                android:layout_height="118dp"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/notes_layout"
+                    android:id="@+id/proposed_notes_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/notes"
+                        android:id="@+id/proposed_notes"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="15dp"
@@ -440,7 +585,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/notes_content"
+                    android:id="@+id/proposed_notes_content"
                     android:layout_width="363dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
@@ -451,49 +596,33 @@
                     android:scrollbars="vertical"
                     android:text="    Hello these are notes I wrote down about this trail. I don't know why I'm writing so much about this trail." />
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/proposed_route_votes_textView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:paddingStart="10dp"
+                android:paddingEnd="15dp"
+                android:scrollHorizontally="true"
+                android:text="Votes"
+                android:textAlignment="textStart"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/vote_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+
         </LinearLayout>
+
     </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/button_bar"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/back_button"
-            style="@android:style/Widget.Material.ButtonBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/white"
-            android:text="Back"
-            android:textColor="@android:color/holo_red_dark"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/edit_route"
-            style="@android:style/Widget.Material.ButtonBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/white"
-            android:text="Edit"
-            android:textColor="@color/design_default_color_primary"
-            android:textSize="18sp" />
-
-        <Button
-            android:id="@+id/add_button"
-            style="@android:style/Widget.Material.ButtonBar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@android:color/white"
-            android:text="Start"
-            android:textColor="@color/colorPrimary"
-            android:textSize="18sp" />
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
