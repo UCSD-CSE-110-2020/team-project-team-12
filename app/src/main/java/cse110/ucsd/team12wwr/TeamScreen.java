@@ -4,13 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -22,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
@@ -29,7 +27,6 @@ import cse110.ucsd.team12wwr.dialogs.TeamInvitationDialogFragment;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Invitation;
 import cse110.ucsd.team12wwr.firebase.InvitationDao;
-import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.teamlist.TeamListAdapter;
@@ -42,7 +39,6 @@ public class TeamScreen extends FragmentActivity
     private static final String TAG = "TeamScreen";
 
     List<TeamScreenRowItem> rowItems = new ArrayList<>();
-    ListView listView;
     TeamListAdapter adapter;
     String userEmail;
     String teamName;
@@ -51,8 +47,6 @@ public class TeamScreen extends FragmentActivity
 
     /* my code */
     String validatedEmail;
-    InvitationDao db = DaoFactory.getInvitationDao();
-    Invitation inv = new Invitation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +57,20 @@ public class TeamScreen extends FragmentActivity
         Menu menu = navView.getMenu();
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
-        Context context;
-        userEmail = getIntent().getStringExtra("user Email");
-        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+
+        SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailprefs.getString("EMAIL_ID", null);
+
+        Log.d(TAG, "onCreate: Email for current user: " + userEmail);
+        FloatingActionButton fab = findViewById(R.id.add_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openDialog();
             }
         });
+
+        Log.d(TAG, "onCreate: Navigation bar created");
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -81,7 +80,9 @@ public class TeamScreen extends FragmentActivity
                         break;
                     case R.id.navigation_routes:
                         finish();
-                        launchRoutesScreenActivity();
+                        launchTeamRouteActivity();
+
+//                        launchRoutesScreenActivity();
                         break;
                     case R.id.navigation_walk:
                         finish();
@@ -93,8 +94,11 @@ public class TeamScreen extends FragmentActivity
                 return false;
             }
         });
+
         initializeUpdateListener();
+
     }
+
     private void initializeUpdateListener() {
         UserDao dao = DaoFactory.getUserDao();
         dao.listenForChanges((newChatSnapshot, error) -> {
@@ -107,63 +111,91 @@ public class TeamScreen extends FragmentActivity
             }
         });
     }
+
     private void renderRoutesList(String email) {
+        Log.d(TAG, "renderRoutesList: Now rendering the list of team members");
         UserDao dao = DaoFactory.getUserDao();
         dao.findUserByID(email, task -> {
             if (task.isSuccessful()) {
-                User u = null;
+                User currUser = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    u = document.toObject(User.class);
+                    currUser = document.toObject(User.class);
                 }
-                teamName = u.teamID;
-                dao.findUsersByTeam(teamName, task1 -> {
-                    if (task1.isSuccessful()) {
-                        List<User> userList = new ArrayList<>();
-                        for (QueryDocumentSnapshot document : task1.getResult()) {
-                            userList.add(document.toObject(User.class));
-                        }
-                        InvitationDao dao2 = DaoFactory.getInvitationDao();
-                        dao2.findInviteByTeam(teamName, task3 -> {
-                            if (task3.isSuccessful()) {
-                                Invitation inv = null;
-                                for (QueryDocumentSnapshot document : task3.getResult()) {
-                                    inv = document.toObject(Invitation.class);
-                                    dao.findUserByID(inv.inviteeID, task4 -> {
-                                        if (task4.isSuccessful()){
-                                            User invitedItem = null;
-                                            for(QueryDocumentSnapshot document2 : task4.getResult()){
-                                                invitedItem = document2.toObject(User.class);
-                                                userList.add(invitedItem);
-                                            }
-                                            for ( int i = 0; i < userList.size(); i++ ) {
-                                                String name = userList.get(i).firstName + " " + userList.get(i).lastName;
-                                                TeamScreenRowItem item = new TeamScreenRowItem(name, userList.get(i).userIcon, userList.get(i).teamID );
-                                                boolean duplicateFlag = false;
-                                                for (TeamScreenRowItem itr : rowItems){
-                                                    if(item.getMemberName().equals(itr.getMemberName())){
-                                                        duplicateFlag = true;
-                                                    }
-                                                }
-                                                if(!duplicateFlag)
-                                                    rowItems.add(item);
-                                            }
-                                            listView = findViewById(R.id.team_list);
-                                            adapter = new TeamListAdapter(this, rowItems, teamName);
-                                            listView.setAdapter(adapter);
-                                            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                                @Override
-                                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                });
+                if (currUser != null) {
+                    teamName = currUser.teamID;
+
+                    renderTeamMembers(currUser.teamID);
+                    renderInvitees(currUser.teamID);
+                    
+                    ListView listView = findViewById(R.id.team_list);
+                    adapter = new TeamListAdapter(this, rowItems, teamName);
+                    listView.setAdapter(adapter);
+                }
             }
         });
+    }
+
+    private void renderTeamMembers(String teamID) {
+        List<User> userList = new ArrayList<>();
+
+        UserDao dao = DaoFactory.getUserDao();
+        dao.findUsersByTeam(teamID, task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    userList.add(document.toObject(User.class));
+                }
+
+                addItemsToAdapter(userList);
+            }
+        });
+    }
+
+    public void renderInvitees(String teamID) {
+        List<User> userList = new ArrayList<>();
+
+        InvitationDao invDao = DaoFactory.getInvitationDao();
+        invDao.findInviteByTeam(teamID, task3 -> {
+            if (task3.isSuccessful()) {
+                Invitation inv = null;
+                for (QueryDocumentSnapshot document : task3.getResult()) {
+                    inv = document.toObject(Invitation.class);
+                }
+
+                if (inv != null) {
+                    UserDao userDao = DaoFactory.getUserDao();
+                    userDao.findUserByID(inv.inviteeID, task4 -> {
+                        if (task4.isSuccessful()){
+                            User invitedItem = null;
+                            for(QueryDocumentSnapshot document2 : task4.getResult()){
+                                invitedItem = document2.toObject(User.class);
+                                userList.add(invitedItem);
+                            }
+
+                            addItemsToAdapter(userList);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void addItemsToAdapter(List<User> userList) {
+        for ( int i = 0; i < userList.size(); i++ ) {
+            String name = userList.get(i).firstName + " " + userList.get(i).lastName;
+            TeamScreenRowItem item = new TeamScreenRowItem(name, userList.get(i).userIcon, userList.get(i).teamID );
+            boolean duplicateFlag = false;
+
+            for (TeamScreenRowItem itr : rowItems){
+                if(item.getMemberName().equals(itr.getMemberName())){
+                    duplicateFlag = true;
+                }
+            }
+            if(!duplicateFlag) {
+                rowItems.add(item);
+            }
+        }
+
+        adapter.updateItems(rowItems);
     }
 
     public void launchActivity() {
@@ -171,8 +203,8 @@ public class TeamScreen extends FragmentActivity
         startActivity(intent);
     }
 
-    public void launchRoutesScreenActivity() {
-        Intent intent = new Intent(this, RoutesScreen.class);
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
         startActivity(intent);
     }
 
@@ -195,6 +227,9 @@ public class TeamScreen extends FragmentActivity
             validatedEmail = invitedEmail;
             Toast toast = Toast.makeText(this, "Invite sent to " + invitedUser, Toast.LENGTH_LONG);
             toast.show();
+
+            InvitationDao db = DaoFactory.getInvitationDao();
+            Invitation inv = new Invitation();
             inv.inviteeID = validatedEmail;
             inv.teamID = teamName;
             db.insert(inv);
@@ -221,7 +256,6 @@ public class TeamScreen extends FragmentActivity
         TeamScreenRowItem item = new TeamScreenRowItem(invitedUser, initials,"");
         rowItems.add(item);
         adapter.updateItems(rowItems);
-        updateList();
     }
 
     @Override
@@ -230,14 +264,30 @@ public class TeamScreen extends FragmentActivity
         toast.show();
     }
 
-    public void updateList() {
-        listView = findViewById(R.id.team_list);
-        adapter = new TeamListAdapter(this, rowItems, teamName);
+
+    public void createUsers() {
+        ListView listView = findViewById(R.id.team_list);
+        adapter = new TeamListAdapter(this, rowItems, "Team A");
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-            }
-        });
+
+        List<User> teamList = new ArrayList<>();
+
+        User firstUser = new User();
+        firstUser.userID = "jane@gmail.com";
+        firstUser.firstName = "Jane";
+        firstUser.lastName = "Ease";
+        firstUser.userIcon = "JE";
+        firstUser.teamID = "Team A";
+        teamList.add(firstUser);
+
+        User secondUser = new User();
+        secondUser.userID = "susan@gmail.com";
+        secondUser.firstName = "Susan";
+        secondUser.lastName = "Sath";
+        secondUser.userIcon = "SS";
+        secondUser.teamID = "Team A";
+        teamList.add(secondUser);
+
+        addItemsToAdapter(teamList);
     }
 }

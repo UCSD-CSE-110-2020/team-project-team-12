@@ -5,7 +5,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class FirebaseUserDao implements UserDao {
+public class FirestoreToUserDaoAdapter implements UserDao {
     public static final String USER_COLLECTION_KEY = "users";
     
     FirebaseFirestore db = FirebaseFirestore.getInstance();

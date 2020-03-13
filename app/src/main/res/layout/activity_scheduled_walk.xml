@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RouteDetailsPage">
+    tools:context=".SuggestedWalkActivity">
 
     <ScrollView
         android:id="@+id/scrollable"
@@ -32,7 +32,7 @@
                     android:paddingStart="5sp"
                     android:paddingEnd="15dp"
                     android:scrollHorizontally="true"
-                    android:text="Route Title"
+                    android:text="Scheduled Walk"
                     android:textAlignment="center"
                     android:textSize="32sp"
                     android:textStyle="bold" />
@@ -69,8 +69,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:text="Starting Point"
-                        android:clickable="true"
-                        android:onClick="launchGoogleMaps"
                         android:textSize="18sp" />
 
                 </TableRow>

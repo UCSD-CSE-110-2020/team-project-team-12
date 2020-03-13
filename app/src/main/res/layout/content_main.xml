@@ -24,11 +24,13 @@
     <TextView
         android:id="@+id/today"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="382dp"
         android:text="@string/today"
         android:textAlignment="center"
         android:textSize="45sp"
+        app:layout_constraintBottom_toTopOf="@+id/start_walk_btn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -184,12 +186,26 @@
             android:textSize="27sp"></TextView>
     </LinearLayout>
 
+    <Button
+        android:id="@+id/start_walk_btn"
+        android:layout_width="177dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="85dp"
+        android:text="Start Walk"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/today" />
+
     <View
-        android:layout_width="match_parent"
+        android:id="@+id/view"
+        android:layout_width="0dp"
         android:layout_height="4dp"
         android:layout_above="@id/nav_view"
         android:background="@drawable/shadow"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view" />
+        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"

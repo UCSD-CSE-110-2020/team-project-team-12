@@ -100,6 +100,4 @@ public class MockTask<X> extends Task {
     public Object getResult(@NonNull Class aClass) throws Throwable {
         return null;
     }
-
-
 }

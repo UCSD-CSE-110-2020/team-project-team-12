@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -25,11 +24,11 @@ import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
 
 public class RoutesScreen extends AppCompatActivity {
-
     private static final String TAG = "RoutesScreen";
 
-    private String routeName;
-    private ListView listView;
+    ListView listView;
+    ArrayList<Route> routeListParam;
+    String routeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +105,13 @@ public class RoutesScreen extends AppCompatActivity {
                     routeList.add(document.toObject(Route.class));
                 }
 
-                ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
+                listView = findViewById(R.id.individ_routes_list);
+                routeListParam = new ArrayList<>(routeList);
 
-                listView = findViewById(R.id.list_view);
-                listView.setAdapter(arrayAdapter);
+                TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(this, R.layout.route_adapter_view_layout,
+                        routeListParam);
+
+                listView.setAdapter(teamRouteListAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

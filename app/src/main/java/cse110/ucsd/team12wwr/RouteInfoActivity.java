@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteConstraintException;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -26,7 +27,6 @@ import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 
 public class RouteInfoActivity extends AppCompatActivity {
-
     /* Constants */
     private static final String TAG = "RouteInfoActivity";
     final String LOOP = "Loop";
@@ -56,11 +56,15 @@ public class RouteInfoActivity extends AppCompatActivity {
 
     Drawable defaultColor;
     String currRouteName;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_info);
+
+        SharedPreferences emailPref = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailPref.getString("EMAIL_ID", null);
 
         getSupportActionBar().setTitle("Route Information");
 
@@ -307,6 +311,7 @@ public class RouteInfoActivity extends AppCompatActivity {
                     setEvenness(newEntry, textureSpinner);
                     setDifficulty(newEntry);
                     setNotes(newEntry, notesEntry.getText().toString());
+                    newEntry.userID = userEmail;
 
                     if (isNewRoute) {
                         try {
@@ -491,5 +496,4 @@ public class RouteInfoActivity extends AppCompatActivity {
         totalDistance = null;
         totalTime = null;
     }
-
 }
