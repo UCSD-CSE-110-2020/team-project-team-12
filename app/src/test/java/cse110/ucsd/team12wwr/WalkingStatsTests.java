@@ -26,7 +26,7 @@ import static junit.framework.TestCase.assertEquals;
 public class WalkingStatsTests {
     private Intent routeDetailsPageIntent;
     private ActivityTestRule<RouteDetailsPage> routeDetailsPageTestRule;
-    private Route route;
+    private Route ownRoute, teamRoute;
     private RouteDetailsPage activity;
 
     @Before
@@ -38,18 +38,31 @@ public class WalkingStatsTests {
         routeDetailsPageTestRule.launchActivity(routeDetailsPageIntent);
         activity= routeDetailsPageTestRule.getActivity();
 
-        route = new Route();
-        route.userID = "nicholasalimit@gmail.com";
-        route.name = "Mission Hills Tour";
-        route.startingPoint = "Mission";
-        route.endingPoint = "Hills;";
-        route.routeType = Route.RouteType.LOOP;
-        route.hilliness = Route.Hilliness.HILLY;
-        route.surfaceType = Route.SurfaceType.TRAIL;
-        route.evenness = Route.Evenness.EVEN_SURFACE;
-        route.difficulty = Route.Difficulty.MODERATE;
-        route.notes = "This is a dope trail, me gusto";
-        route.favorite = Route.Favorite.FAVORITE;
+        ownRoute = new Route();
+        ownRoute.userID = "nicholasalimit@gmail.com";
+        ownRoute.name = "Mission Hills Tour";
+        ownRoute.startingPoint = "Mission";
+        ownRoute.endingPoint = "Hills;";
+        ownRoute.routeType = Route.RouteType.LOOP;
+        ownRoute.hilliness = Route.Hilliness.HILLY;
+        ownRoute.surfaceType = Route.SurfaceType.TRAIL;
+        ownRoute.evenness = Route.Evenness.EVEN_SURFACE;
+        ownRoute.difficulty = Route.Difficulty.MODERATE;
+        ownRoute.notes = "This is a dope trail, me gusto";
+        ownRoute.favorite = Route.Favorite.FAVORITE;
+
+        teamRoute = new Route();
+        teamRoute.userID = "nessikomar@gmail.com";
+        teamRoute.name = "Bay Area";
+        teamRoute.startingPoint = "San Francisco";
+        teamRoute.endingPoint = "San Jose;";
+        teamRoute.routeType = Route.RouteType.OUT_AND_BACK;
+        teamRoute.hilliness = Route.Hilliness.FLAT;
+        teamRoute.surfaceType = Route.SurfaceType.STREETS;
+        teamRoute.evenness = Route.Evenness.UNEVEN_SURFACE;
+        teamRoute.difficulty = Route.Difficulty.DIFFICULT;
+        teamRoute.notes = "Cars everywhere, don't like this";
+        teamRoute.favorite = Route.Favorite.NOT_FAVORITE;
 
         SharedPreferences sharedPreferences = activity.getSharedPreferences("USER_ID", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -79,7 +92,7 @@ public class WalkingStatsTests {
         walk2.time = System.currentTimeMillis();
         walks.add(walk2);
 
-        activity.populateRouteInfo(route);
+        activity.populateRouteInfo(ownRoute);
         activity.determineWalk(walks);
 
         TextView duration = activity.findViewById(R.id.total_time_detail);
@@ -102,7 +115,7 @@ public class WalkingStatsTests {
         walk.time = System.currentTimeMillis();
         walks.add(walk);
 
-        activity.populateRouteInfo(route);
+        activity.populateRouteInfo(ownRoute);
         activity.determineWalk(walks);
 
         TextView duration = activity.findViewById(R.id.total_time_detail);
@@ -125,7 +138,85 @@ public class WalkingStatsTests {
         walk.time = System.currentTimeMillis();
         walks.add(walk);
 
-        activity.populateRouteInfo(route);
+        activity.populateRouteInfo(ownRoute);
+        activity.determineWalk(walks);
+
+        TextView duration = activity.findViewById(R.id.total_time_detail);
+        assertEquals("11:13:15", duration.getText().toString());
+
+        TextView distance = activity.findViewById(R.id.dist_details);
+        assertEquals("5.21 mi", distance.getText().toString());
+    }
+
+    @Test
+    public void testBothWalksTeamRouteExist() {
+        List<Walk> walks = new ArrayList<>();
+
+        Walk walk1 = new Walk();
+        walk1.userID = "nicholasalimit@gmail.com";
+        walk1.routeName = "Mission Hills Tour";
+        walk1.duration = "11:13:15";
+        walk1.distance = "5.21 mi";
+        walk1.steps = "2350";
+        walk1.time = System.currentTimeMillis();
+        walks.add(walk1);
+
+        Walk walk2 = new Walk();
+        walk2.userID = "nessikomar@gmail.com";
+        walk2.routeName = "Mission Hills Tour";
+        walk2.duration = "01:03:05";
+        walk2.distance = "8.33 mi";
+        walk2.steps = "4221";
+        walk2.time = System.currentTimeMillis();
+        walks.add(walk2);
+
+        activity.populateRouteInfo(teamRoute);
+        activity.determineWalk(walks);
+
+        TextView duration = activity.findViewById(R.id.total_time_detail);
+        assertEquals("11:13:15", duration.getText().toString());
+
+        TextView distance = activity.findViewById(R.id.dist_details);
+        assertEquals("5.21 mi", distance.getText().toString());
+    }
+
+    @Test
+    public void testTeamWalkTeamRouteExists() {
+        List<Walk> walks = new ArrayList<>();
+
+        Walk walk = new Walk();
+        walk.userID = "nessikomar@gmail.com";
+        walk.routeName = "Mission Hills Tour";
+        walk.duration = "01:03:05";
+        walk.distance = "8.33 mi";
+        walk.steps = "4221";
+        walk.time = System.currentTimeMillis();
+        walks.add(walk);
+
+        activity.populateRouteInfo(teamRoute);
+        activity.determineWalk(walks);
+
+        TextView duration = activity.findViewById(R.id.total_time_detail);
+        assertEquals("01:03:05", duration.getText().toString());
+
+        TextView distance = activity.findViewById(R.id.dist_details);
+        assertEquals("8.33 mi", distance.getText().toString());
+    }
+
+    @Test
+    public void testOwnWalkTeamRouteExists() {
+        List<Walk> walks = new ArrayList<>();
+
+        Walk walk = new Walk();
+        walk.userID = "nicholasalimit@gmail.com";
+        walk.routeName = "Mission Hills Tour";
+        walk.duration = "11:13:15";
+        walk.distance = "5.21 mi";
+        walk.steps = "2350";
+        walk.time = System.currentTimeMillis();
+        walks.add(walk);
+
+        activity.populateRouteInfo(teamRoute);
         activity.determineWalk(walks);
 
         TextView duration = activity.findViewById(R.id.total_time_detail);
