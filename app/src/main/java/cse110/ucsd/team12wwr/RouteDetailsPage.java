@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -43,6 +44,20 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailprefs.getString("EMAIL_ID", null);
+
+    }
+
+    public void launchGoogleMaps(View v) {
+        TextView startPoint = findViewById(R.id.start_textview);
+        Log.e("Limit", "Starting point is being clicked");
+        String location = startPoint.getText().toString().substring(16).replaceAll(" ", "+");
+        Log.e("Limit", "Location is " + location);
+        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+            startActivity(mapIntent);
+        }
     }
 
     @Override
