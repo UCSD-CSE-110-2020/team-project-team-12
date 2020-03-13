@@ -2,7 +2,9 @@ package cse110.ucsd.team12wwr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.CheckBox;
@@ -15,9 +17,14 @@ import android.widget.Button;
 import com.google.api.LogDescriptor;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import androidx.room.Dao;
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
+import cse110.ucsd.team12wwr.firebase.Schedule;
+import cse110.ucsd.team12wwr.firebase.ScheduleDao;
+import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 
@@ -29,6 +36,8 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     private String routeName;
     private Boolean fromActivity;
+    SharedPreferences email;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +47,44 @@ public class RouteDetailsPage extends AppCompatActivity {
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
         fromActivity = intent.getBooleanExtra("fromTeam", false);
+        SharedPreferences email = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = email.getString("EMAIL_ID", null);
+        userEmail = "nicholasalimit@gmail.com";
 
+        Button back = findViewById(R.id.back_button);
+        Button edit = findViewById(R.id.edit_route);
+        Button start = findViewById(R.id.add_button);
+        Button schedule = findViewById(R.id.sched_walk_btn);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        if ( !fromActivity ) {
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchRouteInfoActivity();
+                }
+            });
+        }
+
+        if ( fromActivity ) { // && !hasScheduledWalk[0]) {
+            schedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { launchTeamInviteActivity(); }
+            });
+        }
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchIntentionalActivity();
+            }
+        });
     }
 
     @Override
@@ -57,11 +103,9 @@ public class RouteDetailsPage extends AppCompatActivity {
         if ( fromActivity ) {
             edit.setVisibility(View.GONE);
             schedule.setVisibility(View.VISIBLE);
-//            edit.setTextColor(Color.GRAY);
         } else {
             edit.setVisibility(View.VISIBLE);
             schedule.setVisibility(View.GONE);
-//            edit.setTextColor(getColor(R.color.design_default_color_primary));
         }
 
         back.setOnClickListener(new View.OnClickListener() {
