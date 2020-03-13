@@ -33,6 +33,10 @@ public class ProposedWalkScreen extends AppCompatActivity {
         item1.setName("Geoffrey");
         itemList.add(item1);
 
+        Item item2 = new Item();
+        item1.setName("Joffrey");
+        itemList.add(item2);
+
         recycleAdapter = new RecycleAdapter(this);
 
         recyclerView.setAdapter(recycleAdapter);

@@ -94,7 +94,7 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
                         badTime.setButtonDrawable(R.drawable.button_no_off);
                     }
                     break;
-           }
+            }
         }
     }
 
