@@ -127,7 +127,6 @@ public class StrideDistanceTests {
         SharedPreferences spf = mainActivityTestRule.getActivity().spf;
         SharedPreferences.Editor editor = spf.edit();
 
-        SharedPreferences spf2 = mainActivityTestRule.getActivity().spf2;
 
         editor.putInt("FEET", 6);
         editor.putInt("INCHES", 11);
