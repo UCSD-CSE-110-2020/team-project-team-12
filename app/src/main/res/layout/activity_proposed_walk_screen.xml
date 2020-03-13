@@ -8,8 +8,9 @@
 
     <ScrollView
         android:id="@+id/scrollable_proposal"
-        android:layout_width="409dp"
-        android:layout_height="601dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -179,7 +180,7 @@
                 android:paddingStart="10dp"
                 android:paddingEnd="15dp"
                 android:scrollHorizontally="true"
-                android:text="Details"
+                android:text="Details:"
                 android:textAlignment="textStart"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -557,8 +558,8 @@
 
             <LinearLayout
                 android:id="@+id/proposed_notes_details_layout"
-                android:layout_width="409dp"
-                android:layout_height="118dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:orientation="vertical">
 
@@ -601,8 +602,9 @@
                 android:id="@+id/proposed_route_votes_textView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:ellipsize="end"
-                android:maxLines="1"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:ellipsize="none"
                 android:paddingStart="10dp"
                 android:paddingEnd="15dp"
                 android:scrollHorizontally="true"
@@ -614,15 +616,65 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/vote_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+                android:layout_height="wrap_content"
+                tools:itemCount="1"
+                tools:listitem="@layout/vote_item">
 
 
             </androidx.recyclerview.widget.RecyclerView>
+
+            <LinearLayout
+                android:id="@+id/cancel_or_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/cancel_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#cc0c0c"
+                    android:text="@string/cancel_text"
+                    android:textColor="#FFFFFF" />
+
+                <Button
+                    android:id="@+id/schedule_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#0CCC6F"
+                    android:text="Schedule"
+                    android:textColor="#FFFFFF" />
+            </LinearLayout>
 
 
         </LinearLayout>
 
     </ScrollView>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_above="@id/nav_view"
+        android:background="@drawable/shadow"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/bottom_nav_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
