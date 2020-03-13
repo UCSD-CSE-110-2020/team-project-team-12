@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         GoogleSignInClient mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Log.i("LOOK HERE FOR INTENT ", signInIntent.toString());
         startActivityForResult(signInIntent, RC_SIGN_IN);
 
         /* COMMENTED OUT FOR NOW 5:45PM 3/4/2020
@@ -120,20 +121,20 @@ public class MainActivity extends AppCompatActivity {
 
         /* PEDOMETER START */
         gFitUtil = new GoogleFitUtility(this);
-        final Handler checkSubscription = new Handler();/*
+        final Handler checkSubscription = new Handler();
         checkSubscription.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (!gFitUtil.getSubscribed()) {
-                    Log.i("checkSubscription", "Not yet subscribed, checking again in 5 seconds");
+                    Log.i("checkSubscription", " Not yet subscribed, checking again in 5 seconds");
                     checkSubscription.postDelayed(this, 5000);
                 }
                 else{
-                    Log.i("checkSubscription", "Ending handler.run");
+                    Log.i("checkSubscription", " Ending handler.run");
                     googleSubscribedStatus = true;
                 }
             }
-        }, 5000);*/
+        }, 5000);
     }
 
 
@@ -156,23 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
 
-        if(!previouslyStarted) {
-            SharedPreferences.Editor edit = prefs.edit();
-            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
-            edit.commit();
-            launchHeightActivity();
-        }
-
-        // Collect the height from the height page
-        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
-        int feet = spf.getInt(FEET_KEY, 0);
-        int inches = spf.getInt(INCHES_KEY, 0);
-
-        totalHeight = inches + ( HEIGHT_FACTOR * feet );
-        strideLength = totalHeight * STRIDE_CONVERSION;
 
 
         BottomNavigationView navigation = findViewById(R.id.nav_view);
@@ -292,6 +277,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         Log.i("MainActivity.onResume", "onResume() has been COMPLETED");
     }
 
@@ -337,6 +324,15 @@ public class MainActivity extends AppCompatActivity {
 
     //Updates numSteps with pedometer data, sets textDist and textStep
     public void setStepCount(long stepCount) {
+        // Collect the height from the height page
+        spf = getSharedPreferences(HEIGHT_SPF_NAME, MODE_PRIVATE);
+        int feet = spf.getInt(FEET_KEY, 0);
+        int inches = spf.getInt(INCHES_KEY, 0);
+
+        totalHeight = inches + ( HEIGHT_FACTOR * feet );
+        strideLength = totalHeight * STRIDE_CONVERSION;
+
+
         numSteps = stepCount;
         DecimalFormat df = new DecimalFormat("#.##");
         textDist.setText(df.format((strideLength / MILE_FACTOR) * numSteps));
@@ -362,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
             // a listener.
             Log.i("onActivityResult ", "confirm RC");
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            //gFitUtil.init(); COMMENTED OUT 3/9/2020
+            gFitUtil.init();
             handleSignInResult(task);
         }
     }
@@ -377,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
                 firstName = account.getGivenName();
                 lastName = account.getFamilyName();
                 getTeamIDFromDB(userEmail);
+                getHeightInfo();
             }
             else
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
@@ -386,6 +383,18 @@ public class MainActivity extends AppCompatActivity {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+        }
+    }
+
+    public void getHeightInfo(){
+        prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean(FIRST_LAUNCH_KEY, false);
+
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(FIRST_LAUNCH_KEY, Boolean.TRUE);
+            edit.commit();
+            launchHeightActivity();
         }
     }
 
@@ -416,10 +425,6 @@ public class MainActivity extends AppCompatActivity {
                         u1.lastName = lastName;
                         u1.userIcon = firstName.charAt(0) + "" + lastName.charAt(0);
                         dao.insertAll(u1);
-                        //dao.updateTeamID(userName, generateTeamId(userName));
-                    }
-                    if(u1.teamID == ""){
-                        Log.i("getTeamIDFromDB ", ":A team was NOT found");
                         //dao.updateTeamID(userName, generateTeamId(userName));
                     }
                     else{
