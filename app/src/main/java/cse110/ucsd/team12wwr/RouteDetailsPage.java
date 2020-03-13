@@ -66,7 +66,7 @@ public class RouteDetailsPage extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        populateRouteDetails();
+        populateDetails();
 
         CheckBox star = findViewById(R.id.favorited_details);
         star.setEnabled(false);
@@ -107,7 +107,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         });
     }
 
-    private void populateRouteDetails() {
+    private void populateDetails() {
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
             TextView routeTitle = findViewById(R.id.route_title_detail);
@@ -126,78 +126,7 @@ public class RouteDetailsPage extends AppCompatActivity {
                     }
                 }
 
-                if (newRoute != null) {
-                    if (newRoute.startingPoint != null) {
-                        TextView startPoint = findViewById(R.id.start_textview);
-                        startPoint.setText("Starting Point: " + newRoute.startingPoint);
-                    }
-
-                    if (newRoute.endingPoint != null) {
-                        TextView endPoint = findViewById(R.id.end_textview);
-                        endPoint.setText("Ending Point: " + newRoute.endingPoint);
-                    }
-
-                    if (newRoute.difficulty != null) {
-                        TextView difficulty = findViewById(R.id.diff_detail);
-                        if (newRoute.difficulty == Route.Difficulty.EASY) {
-                            difficulty.setText("Easy");
-                        } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
-                            difficulty.setText("Moderate");
-                        } else {
-                            difficulty.setText("Hard");
-                        }
-                    }
-
-                    if (newRoute.evenness != null) {
-                        TextView surface = findViewById(R.id.texture_details);
-                        if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
-                            surface.setText("Surface: Even");
-                        } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
-                            surface.setText("Surface: Uneven");
-                        }
-                    }
-
-                    if (newRoute.hilliness != null) {
-                        TextView incline = findViewById(R.id.incline_deets);
-                        if (newRoute.hilliness == Route.Hilliness.FLAT) {
-                            incline.setText("Incline: Flat");
-                        } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
-                            incline.setText("Incline: Hilly");
-                        }
-                    }
-
-                    if (newRoute.routeType != null) {
-                        TextView path = findViewById(R.id.path_details);
-                        if (newRoute.routeType == Route.RouteType.LOOP) {
-                            path.setText("Path Type: Loop");
-                        } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
-                            path.setText("Path Type: Out and Back");
-                        }
-                    }
-
-                    if (newRoute.surfaceType != null) {
-                        TextView terrain = findViewById(R.id.terrain_deets);
-                        if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
-                            terrain.setText("Terrain Type: Streets");
-                        } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
-                            terrain.setText("Terrain Type: Trial");
-                        }
-                    }
-
-                    if (newRoute.favorite != null) {
-                        CheckBox star = findViewById(R.id.favorited_details);
-                        if (newRoute.favorite == Route.Favorite.FAVORITE) {
-                            star.setChecked(true);
-                        } else {
-                            star.setChecked(false);
-                        }
-                    }
-
-                    if (newRoute.notes != null && !newRoute.notes.equals("")) {
-                        TextView notes = findViewById(R.id.notes_content);
-                        notes.setText(newRoute.notes);
-                    }
-                }
+                populateRouteInfo(newRoute);
             }
         });
 
@@ -212,6 +141,81 @@ public class RouteDetailsPage extends AppCompatActivity {
                 determineWalk(walks);
             }
         });
+    }
+
+    public void populateRouteInfo(Route newRoute) {
+        if (newRoute != null) {
+            if (newRoute.startingPoint != null) {
+                TextView startPoint = findViewById(R.id.start_textview);
+                startPoint.setText("Starting Point: " + newRoute.startingPoint);
+            }
+
+            if (newRoute.endingPoint != null) {
+                TextView endPoint = findViewById(R.id.end_textview);
+                endPoint.setText("Ending Point: " + newRoute.endingPoint);
+            }
+
+            if (newRoute.difficulty != null) {
+                TextView difficulty = findViewById(R.id.diff_detail);
+                if (newRoute.difficulty == Route.Difficulty.EASY) {
+                    difficulty.setText("Easy");
+                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                    difficulty.setText("Moderate");
+                } else {
+                    difficulty.setText("Hard");
+                }
+            }
+
+            if (newRoute.evenness != null) {
+                TextView surface = findViewById(R.id.texture_details);
+                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                    surface.setText("Surface: Even");
+                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                    surface.setText("Surface: Uneven");
+                }
+            }
+
+            if (newRoute.hilliness != null) {
+                TextView incline = findViewById(R.id.incline_deets);
+                if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                    incline.setText("Incline: Flat");
+                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                    incline.setText("Incline: Hilly");
+                }
+            }
+
+            if (newRoute.routeType != null) {
+                TextView path = findViewById(R.id.path_details);
+                if (newRoute.routeType == Route.RouteType.LOOP) {
+                    path.setText("Path Type: Loop");
+                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                    path.setText("Path Type: Out and Back");
+                }
+            }
+
+            if (newRoute.surfaceType != null) {
+                TextView terrain = findViewById(R.id.terrain_deets);
+                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                    terrain.setText("Terrain Type: Streets");
+                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                    terrain.setText("Terrain Type: Trial");
+                }
+            }
+
+            if (newRoute.favorite != null) {
+                CheckBox star = findViewById(R.id.favorited_details);
+                if (newRoute.favorite == Route.Favorite.FAVORITE) {
+                    star.setChecked(true);
+                } else {
+                    star.setChecked(false);
+                }
+            }
+
+            if (newRoute.notes != null && !newRoute.notes.equals("")) {
+                TextView notes = findViewById(R.id.notes_content);
+                notes.setText(newRoute.notes);
+            }
+        }
     }
 
     public void determineWalk(List<Walk> walks) {
