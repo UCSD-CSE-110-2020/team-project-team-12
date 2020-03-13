@@ -3,6 +3,7 @@ package cse110.ucsd.team12wwr;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.CheckBox;
@@ -28,6 +29,7 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     private String routeName;
     private Boolean fromActivity;
+    private String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,8 @@ public class RouteDetailsPage extends AppCompatActivity {
         routeName = intent.getStringExtra("name");
         fromActivity = intent.getBooleanExtra("fromTeam", false);
 
+        SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = emailprefs.getString("EMAIL_ID", null);
     }
 
     @Override
@@ -185,6 +189,10 @@ public class RouteDetailsPage extends AppCompatActivity {
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     if (mostRecentWalk == null) {
                         mostRecentWalk = document.toObject(Walk.class);
+                        if (!mostRecentWalk.userID.equals(userEmail)) {
+                            mostRecentWalk = null;
+                        }
+                        break;
                     }
                 }
 
