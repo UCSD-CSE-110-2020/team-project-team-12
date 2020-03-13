@@ -43,9 +43,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import cse110.ucsd.team12wwr.firebase.Walk;
 
-import cse110.ucsd.team12wwr.roomdb.WWRDatabase;
-import cse110.ucsd.team12wwr.roomdb.WalkDao;
-
 public class MainActivity extends AppCompatActivity {
 
     /* constants */
@@ -166,6 +163,11 @@ public class MainActivity extends AppCompatActivity {
         userEmail = "account not retrieved";
         try {
             userEmail = account.getEmail();
+
+            SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("EMAIL_ID", userEmail);
+            editor.apply();
             //getTeamIDFromDB(userEmail);
         }
         catch(NullPointerException e){
@@ -411,6 +413,7 @@ public class MainActivity extends AppCompatActivity {
                 getTeamIDFromDB(userEmail);
             }
             else {
+
                 Log.i("MainActivity.handleSignInResult() yields: ", "NULL");
                 // Signed in successfully, show authenticated UI.
                 //

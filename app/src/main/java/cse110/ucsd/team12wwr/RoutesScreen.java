@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
@@ -29,7 +28,6 @@ public class RoutesScreen extends AppCompatActivity {
     private static final String TAG = "RoutesScreen";
 
     ListView listView;
-    List<Route> routeList;
     ArrayList<Route> routeListParam;
     String routeName;
 
@@ -85,22 +83,6 @@ public class RoutesScreen extends AppCompatActivity {
         });
     }
 
-//     @Override
-//     protected void onResume() {
-//         super.onResume();
-
-//         WWRDatabase db = WWRDatabase.getInstance(this);
-//         routeList = db.routeDao().retrieveAllRoutes();
-
-//         listView = findViewById(R.id.list_view);
-//         routeListParam = new ArrayList<>(routeList);
-
-// //        ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, routeList);
-//         RouteListAdapter routeListAdapter = new RouteListAdapter(this, R.layout.route_adapter_view_layout, routeListParam);
-
-//         listView.setAdapter(routeListAdapter);
-    
-
     private void initializeUpdateListener() {
         RouteDao dao = DaoFactory.getRouteDao();
         dao.listenForChanges((newChatSnapshot, error) -> {
@@ -114,7 +96,6 @@ public class RoutesScreen extends AppCompatActivity {
             }
         });
     }
-    
 
     private void renderRoutesList() {
         RouteDao routeDao = DaoFactory.getRouteDao();
@@ -128,11 +109,10 @@ public class RoutesScreen extends AppCompatActivity {
                 listView = findViewById(R.id.individ_routes_list);
                 routeListParam = new ArrayList<>(routeList);
 
-                RouteListAdapter routeListAdapter = new RouteListAdapter(this, R.layout.route_adapter_view_layout,
+                TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(this, R.layout.route_adapter_view_layout,
                         routeListParam);
 
-                listView.setAdapter(routeListAdapter);
-//                listView.setAdapter(arrayAdapter);
+                listView.setAdapter(teamRouteListAdapter);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

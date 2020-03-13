@@ -50,6 +50,11 @@
     <string name="title_walk">Walks</string>
     <string name="title_team">Team</string>
     <string name="title_activity_team_screen">My Team</string>
+    <string name="title_activity_team_individ_routes">TeamIndividRoutes</string>
+    <string name="tab_text_1">Your Routes</string>
+    <string name="tab_text_2">Team Routes</string>
+    <string name="title_activity_team_screen">My Team</string>
+
     <string name="title_activity_view_invite">ViewInviteActivity</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -64,6 +69,7 @@
     <string name="tab_text_1">Your Routes</string>
     <string name="tab_text_2">Team Routes</string>
     <string name="title_activity_team_screen">My Team</string>
+    <string name="true_tick">\u2713</string>
 
     <string name="true_tick">\u2713</string>
 

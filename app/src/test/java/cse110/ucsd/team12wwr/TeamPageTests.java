@@ -56,7 +56,7 @@ public class TeamPageTests {
     public void testInviteMember() {
         teamScreenActivityTestRule.launchActivity(teamPageIntent);
 
-        FloatingActionButton fab = teamScreenActivityTestRule.getActivity().findViewById(R.id.floatingActionButton);
+        FloatingActionButton fab = teamScreenActivityTestRule.getActivity().findViewById(R.id.add_fab);
         fab.performClick();
 
         DialogFragment frag = (DialogFragment) teamScreenActivityTestRule.getActivity().getSupportFragmentManager().findFragmentByTag("open");

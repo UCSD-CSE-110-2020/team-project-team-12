@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -70,7 +71,6 @@ public class TeamScreen extends FragmentActivity
         });
 
         Log.d(TAG, "onCreate: Navigation bar created");
-
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -268,6 +268,7 @@ public class TeamScreen extends FragmentActivity
         Toast toast = Toast.makeText(this, "Invite cancelled!", Toast.LENGTH_SHORT);
         toast.show();
     }
+
 
     public void createUsers() {
         ListView listView = findViewById(R.id.team_list);

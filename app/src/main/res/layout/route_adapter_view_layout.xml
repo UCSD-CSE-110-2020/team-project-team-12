@@ -5,20 +5,35 @@
     android:orientation="horizontal"
     android:weightSum="100">
 
+    <ImageView
+        android:id="@+id/route_icon"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:paddingStart="10dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="10dp" />
+
     <TextView
         android:id="@+id/route_name"
-        android:layout_width="307dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
+        android:layout_toRightOf="@id/member_icon"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:text="Route Name"
+        android:textColor="@android:color/background_dark"
         android:textSize="25sp" />
 
     <TextView
         android:id="@+id/previously_walked"
-        android:layout_width="52dp"
+        android:layout_width="46dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/true_tick"
+        android:visibility="invisible"
         android:textSize="30sp" />
+
+
 
 </LinearLayout>
