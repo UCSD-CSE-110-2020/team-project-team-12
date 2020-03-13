@@ -133,8 +133,8 @@ public class PersonalRoutesFragment extends Fragment {
                 }
 
                 routeListParam = new ArrayList<>();
-                for ( Route route : routeList ) {
-                    if ( route.userID != null  && route.userID.equals(userEmail) ) {
+                for (Route route : routeList) {
+                    if (route.userID != null && route.userID.equals(userEmail)) {
                         routeListParam.add(route);
                     }
                 }
@@ -142,17 +142,20 @@ public class PersonalRoutesFragment extends Fragment {
                 Log.i(TAG, "renderRoutesList: Extracting personal routes...");
 
                 listView = view.findViewById(R.id.individ_routes_list);
-                PersonalRouteListAdapter personalRouteListAdapter = new PersonalRouteListAdapter(getActivity(),
-                        R.layout.route_adapter_view_layout, routeListParam);
+                if (getActivity() != null) {
+                    PersonalRouteListAdapter personalRouteListAdapter = new PersonalRouteListAdapter(getActivity(),
+                            R.layout.route_adapter_view_layout, routeListParam);
 
-                listView.setAdapter(personalRouteListAdapter);
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        routeName = routeListParam.get(position).name;
-                        launchRoutesDetailsPage();
-                    }
-                });
+
+                    listView.setAdapter(personalRouteListAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            routeName = routeListParam.get(position).name;
+                            launchRoutesDetailsPage();
+                        }
+                    });
+                }
             }
         });
     }
