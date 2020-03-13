@@ -205,6 +205,9 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private void insertWalk(Intent data) {
         WalkDao walkDao = DaoFactory.getWalkDao();
         String routeName = routeTitle;
+        if (routeName == null) {
+            routeName = data.getExtras().getString("routeTitle");
+        }
         Walk newEntry = new Walk();
         newEntry.time = System.currentTimeMillis();
         newEntry.duration = stopwatchText.getText().toString();
