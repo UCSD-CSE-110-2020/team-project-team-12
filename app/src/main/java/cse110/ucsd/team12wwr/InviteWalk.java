@@ -193,7 +193,8 @@ public class InviteWalk extends AppCompatActivity {
                     Log.d(TAG, "onClick: scheduled walk's time is: " + timeText);
                     schedule.teamID = teamID;
                     Log.d(TAG, "onClick: scheduled walk's team ID is: " + teamID);
-                    
+                    schedule.isScheduled = false;
+                    Log.d(TAG, "onClick: isScheduled = false since it's proposed");
                     Map<String, Schedule.Vote> votes = new HashMap<>();
 
                     UserDao uDao = DaoFactory.getUserDao();

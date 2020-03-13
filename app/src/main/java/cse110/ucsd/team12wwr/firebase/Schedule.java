@@ -10,6 +10,7 @@ public class Schedule {
     public Map<String, Vote> userVoteMap;
     public String date;
     public String time;
+    public boolean isScheduled;
 
     public enum Vote {
         ABSTAINED,
