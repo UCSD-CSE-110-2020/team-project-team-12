@@ -13,10 +13,11 @@ import android.widget.Button;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import cse110.ucsd.team12wwr.firebase.FirebaseRouteDao;
-import cse110.ucsd.team12wwr.firebase.FirebaseWalkDao;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
 
 public class ScheduledWalkActivity extends AppCompatActivity {
 
@@ -77,8 +78,8 @@ public class ScheduledWalkActivity extends AppCompatActivity {
             routeTitle.setText(routeName);
         }
 
-        FirebaseRouteDao routeDao = new FirebaseRouteDao();
-        routeDao.findName(routeName).addOnCompleteListener(task -> {
+        RouteDao routeDao = DaoFactory.getRouteDao();
+        routeDao.findName(routeName, task -> {
             if (task.isSuccessful()) {
                 Route newRoute = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {
@@ -164,8 +165,8 @@ public class ScheduledWalkActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseWalkDao walkDao = new FirebaseWalkDao();
-        walkDao.findByRouteName(routeName).addOnCompleteListener(task -> {
+        WalkDao walkDao = DaoFactory.getWalkDao();
+        walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
                 Walk mostRecentWalk = null;
                 for (QueryDocumentSnapshot document : task.getResult()) {

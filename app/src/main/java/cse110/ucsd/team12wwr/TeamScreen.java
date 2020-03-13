@@ -126,12 +126,7 @@ public class TeamScreen extends FragmentActivity
 
                     renderTeamMembers(currUser.teamID);
                     renderInvitees(currUser.teamID);
-
-                        for ( int i = 0; i < userList.size(); i++ ) {
-                            String name = userList.get(i).firstName + " " + userList.get(i).lastName;
-                            TeamScreenRowItem item = new TeamScreenRowItem(name, userList.get(i).userIcon, userList.get(i).teamID );
-                            rowItems.add(item);
-                        }
+                    
                     ListView listView = findViewById(R.id.team_list);
                     adapter = new TeamListAdapter(this, rowItems, teamName);
                     listView.setAdapter(adapter);
