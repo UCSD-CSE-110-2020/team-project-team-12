@@ -74,7 +74,6 @@ public class PersonalRoutesFragment extends Fragment {
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(getActivity(), RouteInfoActivity.class);
-
         startActivity(intent);
     }
 
@@ -82,6 +81,7 @@ public class PersonalRoutesFragment extends Fragment {
         Log.d(TAG, "launchRouteDetailsPage: launching the route details page");
         Intent intent = new Intent(getActivity(), RouteDetailsPage.class);
         intent.putExtra("name", routeName);
+        intent.putExtra("fromTeam", false);
         startActivity(intent);
     }
 

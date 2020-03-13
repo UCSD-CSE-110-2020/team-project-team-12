@@ -32,6 +32,7 @@ public class IntentionalWalkActivity extends AppCompatActivity {
     private int timeWhenPaused, timeElapsed;
     private double strideLength;
     private String routeTitle;
+    private boolean fromActivity;
 
     private int temporaryNumSteps;
 
@@ -43,6 +44,8 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intentional_walk);
         clock = new DeviceClock();
+
+        fromActivity = getIntent().getBooleanExtra("fromTeam", false);
 
         SharedPreferences spf = getSharedPreferences("HEIGHT", MODE_PRIVATE);
         int feet = spf.getInt("FEET", 0);
@@ -111,7 +114,11 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         });
 
         stopButton.setOnClickListener((view) -> {
-            launchRouteInfoPage();
+            if ( !fromActivity ) {
+                launchRouteInfoPage();
+            } else {
+                insertWalk(getIntent());
+            }
         });
     }
 
@@ -153,7 +160,6 @@ public class IntentionalWalkActivity extends AppCompatActivity {
 
                 String timeString = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 
-                //TODO replace with Thuy's functionality
                 int numSteps = getNumSteps();
                 String stepsString = String.format("%d", numSteps);
 
@@ -188,22 +194,27 @@ public class IntentionalWalkActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LAUNCH_SECOND_ACTIVITY) {
             if(resultCode == Activity.RESULT_OK){
-                WalkDao walkDao = DaoFactory.getWalkDao();
-                String routeName = data.getExtras().getString("routeTitle");
-                Walk newEntry = new Walk();
-                newEntry.time = System.currentTimeMillis();
-                newEntry.duration = stopwatchText.getText().toString();
-                newEntry.steps = stepsText.getText().toString();
-                newEntry.distance = distanceText.getText().toString();
-                newEntry.routeName = routeName;
-                newEntry.userID = userEmail;
-                walkDao.insertAll(newEntry);
-
-                finish();
+                insertWalk(data);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 finish();
             }
         }
+    }
+
+    private void insertWalk(Intent data) {
+        WalkDao walkDao = DaoFactory.getWalkDao();
+        String routeName = data.getExtras().getString("routeTitle");
+        Walk newEntry = new Walk();
+        newEntry.time = System.currentTimeMillis();
+        newEntry.duration = stopwatchText.getText().toString();
+        newEntry.steps = stepsText.getText().toString();
+        newEntry.distance = distanceText.getText().toString();
+        newEntry.routeName = routeName;
+//        if ( !fromActivity ) {
+            newEntry.userID = userEmail;
+
+        walkDao.insertAll(newEntry);
+        finish();
     }
 }

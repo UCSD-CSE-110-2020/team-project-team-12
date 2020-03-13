@@ -105,6 +105,7 @@ public class TeamRoutesFragment extends Fragment {
         Log.d(TAG, "launchRouteDetailsPage: launching the route details page");
         Intent intent = new Intent(getActivity(), RouteDetailsPage.class);
         intent.putExtra("name", routeName);
+        intent.putExtra("fromTeam", true);
         startActivity(intent);
     }
 
@@ -119,53 +120,54 @@ public class TeamRoutesFragment extends Fragment {
                    Log.i(TAG, "renderRoutesList: Found user");
                }
 
-               dao.findUsersByTeam(u.teamID, task1 -> {
-                  if ( task1.isSuccessful() ) {
-                      Log.d(TAG, "renderRoutesList: Getting all the team members");
-                      List<User> userList = new ArrayList<>();
-                      for (QueryDocumentSnapshot document : task1.getResult()) {
-                          userList.add(document.toObject(User.class));
-                      }
+               if (u != null) {
+                   dao.findUsersByTeam(u.teamID, task1 -> {
+                       if ( task1.isSuccessful() ) {
+                           Log.d(TAG, "renderRoutesList: Getting all the team members");
+                           List<User> userList = new ArrayList<>();
+                           for (QueryDocumentSnapshot document : task1.getResult()) {
+                               userList.add(document.toObject(User.class));
+                           }
 
-                      Log.i(TAG, "renderRoutesList: Now retrieving all routes");
-                      RouteDao routeDao = DaoFactory.getRouteDao();
-                      routeDao.retrieveAllRoutes(task2 -> {
-                          if ( task2.isSuccessful()) {
-                              List<Route> allRoutes = new ArrayList<>();
-                              for (QueryDocumentSnapshot document : task2.getResult()) {
-                                  allRoutes.add(document.toObject(Route.class));
-                              }
+                           Log.i(TAG, "renderRoutesList: Now retrieving all routes");
+                           RouteDao routeDao = DaoFactory.getRouteDao();
+                           routeDao.retrieveAllRoutes(task2 -> {
+                               if ( task2.isSuccessful()) {
+                                   List<Route> allRoutes = new ArrayList<>();
+                                   for (QueryDocumentSnapshot document : task2.getResult()) {
+                                       allRoutes.add(document.toObject(Route.class));
+                                   }
 
-                              List<Route>routeList = new ArrayList<>();
-                              Log.i(TAG, "renderRoutesList: Looking through all the routes to locate team routes");
-                              for (User user : userList ) {
-                                  String userID = user.userID;
-                                  for ( Route route : allRoutes ) {
-                                      if ( route.userID != null ) {
-                                          if (route.userID.equals(userID) && !route.userID.equals(userEmail)) {
-                                              routeList.add(route);
-                                          }
-                                      }
-                                  }
-                              }
+                                   List<Route>routeList = new ArrayList<>();
+                                   Log.i(TAG, "renderRoutesList: Looking through all the routes to locate team routes");
+                                   for (User user : userList ) {
+                                       String userID = user.userID;
+                                       for ( Route route : allRoutes ) {
+                                           if ( route.userID != null ) {
+                                               if (route.userID.equals(userID) && !route.userID.equals(userEmail)) {
+                                                   routeList.add(route);
+                                               }
+                                           }
+                                       }
+                                   }
 
-                              listView = view.findViewById(R.id.teams_routes_list);
-                              TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
-                              Log.e("Limit", "routeList content: " + routeList);
+                                   listView = view.findViewById(R.id.teams_routes_list);
+                                   TeamRouteListAdapter teamRouteListAdapter = new TeamRouteListAdapter(getActivity(), R.layout.route_adapter_view_layout, (ArrayList<Route>) routeList);
 
-                              Log.i(TAG, "renderRoutesList: Displaying all the team routes");
-                              listView.setAdapter(teamRouteListAdapter);
-                              listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                  @Override
-                                  public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                      String routeName = routeList.get(i).name;
-                                      launchRoutesDetailsPage(routeName);
-                                  }
-                              });
-                          }
-                      });
-                  }
-               });
+                                   Log.i(TAG, "renderRoutesList: Displaying all the team routes");
+                                   listView.setAdapter(teamRouteListAdapter);
+                                   listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                       @Override
+                                       public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                           String routeName = routeList.get(i).name;
+                                           launchRoutesDetailsPage(routeName);
+                                       }
+                                   });
+                               }
+                           });
+                       }
+                   });
+               }
            }
         });
     }
