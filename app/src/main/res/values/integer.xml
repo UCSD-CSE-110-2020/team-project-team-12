@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <integer name="vote_yes_view">1</integer>
+    <integer name="vote_yes_pos">2</integer>
+    <integer name="vote_no_view">3</integer>
+    <integer name="vote_no_pos">4</integer>
+</resources>
