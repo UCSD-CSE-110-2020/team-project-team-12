@@ -43,8 +43,4 @@ public class USFourTest {
         assertEquals("Your Routes", tabLayout.getTabAt(0).getText().toString());
         assertEquals("Team Routes", tabLayout.getTabAt(1).getText().toString());
     }
-
-
-
-
 }
