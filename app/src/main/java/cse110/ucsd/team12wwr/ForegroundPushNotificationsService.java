@@ -20,6 +20,9 @@ public class ForegroundPushNotificationsService extends FirebaseMessagingService
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setSmallIcon(R.drawable.walk)
                 .build();
+
+        //gIntent resultIntent = new Intent(this, MainActivity.this);
+
         //NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
         //manager.notify(123, notification);
 
@@ -35,6 +38,7 @@ public class ForegroundPushNotificationsService extends FirebaseMessagingService
 
         //NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
         //builder.setContentIntent(contentIntent);
+        //NotificationCompat.Builder builder = new NotificationCompat.Builder()
 
     }
 }
