@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr.recycler;
 
+import cse110.ucsd.team12wwr.MainActivity;
 import cse110.ucsd.team12wwr.ProposedWalkScreen;
 
 import android.content.Context;
@@ -11,7 +12,13 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import cse110.ucsd.team12wwr.R;
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
+import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
 
 public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHolder> {
 
@@ -66,36 +73,54 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
 
         @Override
         public void onClick(View view) {
+            String userEmail = MainActivity.userEmail;
+            UserDao dao = DaoFactory.getUserDao();
+            dao.findUserByID(userEmail, task -> {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        User u = document.toObject(User.class);
+                        String currUserFullName = u.firstName + " " + u.lastName;
+                        votingButtonUpdater(view, currUserFullName);
+                    }
+                }
+            });
+        }
+
+        private void votingButtonUpdater(View view, String currUserFullName) {
             RadioButton dontWant = containerView.findViewById(R.id.dont_want);
             RadioButton badTime = containerView.findViewById(R.id.bad_time);
             RadioButton yes = containerView.findViewById(R.id.yes);
             boolean checked = ((RadioButton)view).isChecked();
             int buttonId = view.getId();
 
-            switch(buttonId) {
-                case R.id.yes:
-                    if (checked) {
-                        yes.setButtonDrawable(R.drawable.button_yes_on);
-                        dontWant.setButtonDrawable(R.drawable.button_no_off);
-                        badTime.setButtonDrawable(R.drawable.button_no_off);
-                    }
-                    break;
-                case R.id.bad_time:
-                    if (checked) {
-                        yes.setButtonDrawable(R.drawable.button_yes_off);
-                        dontWant.setButtonDrawable(R.drawable.button_no_off);
-                        badTime.setButtonDrawable(R.drawable.button_no_on);
-                    }
-                    break;
-                case R.id.dont_want:
-                    if (checked) {
-                        yes.setButtonDrawable(R.drawable.button_yes_off);
-                        dontWant.setButtonDrawable(R.drawable.button_no_on);
-                        badTime.setButtonDrawable(R.drawable.button_no_off);
-                    }
-                    break;
+            TextView name = containerView.findViewById(R.id.vote_name);
+            String displayedName = name.getText().toString();
+
+            if (displayedName.equals(currUserFullName)) {
+                switch(buttonId) {
+                    case R.id.yes:
+                        if (checked) {
+                            yes.setButtonDrawable(R.drawable.button_yes_on);
+                            dontWant.setButtonDrawable(R.drawable.button_no_off);
+                            badTime.setButtonDrawable(R.drawable.button_no_off);
+                        }
+                        break;
+                    case R.id.bad_time:
+                        if (checked) {
+                            yes.setButtonDrawable(R.drawable.button_yes_off);
+                            dontWant.setButtonDrawable(R.drawable.button_no_off);
+                            badTime.setButtonDrawable(R.drawable.button_no_on);
+                        }
+                        break;
+                    case R.id.dont_want:
+                        if (checked) {
+                            yes.setButtonDrawable(R.drawable.button_yes_off);
+                            dontWant.setButtonDrawable(R.drawable.button_no_on);
+                            badTime.setButtonDrawable(R.drawable.button_no_off);
+                        }
+                        break;
+                }
             }
         }
     }
-
 }
