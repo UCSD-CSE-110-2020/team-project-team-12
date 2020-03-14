@@ -2,6 +2,7 @@ package cse110.ucsd.team12wwr;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 
 import androidx.core.app.NotificationCompat;
@@ -19,11 +20,21 @@ public class ForegroundPushNotificationsService extends FirebaseMessagingService
                 .setContentText(remoteMessage.getNotification().getBody())
                 .setSmallIcon(R.drawable.walk)
                 .build();
-        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
-        manager.notify(123, notification);
+        //NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
+        //manager.notify(123, notification);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
-        builder.setContentIntent((PendingIntent)new Intent(this, ProposedWalkScreen.class));
+       // Intent resultIntent = new Intent(this, ProposedWalkScreen.class);
+// Create the TaskStackBuilder and add the intent, which inflates the back stack
+        //TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        //stackBuilder.addNextIntentWithParentStack(resultIntent);
+// Get the PendingIntent containing the entire back stack
+        //PendingIntent resultPendingIntent =
+          //      stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        //PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+               // new Intent(getApplicationContext(), ProposedWalkScreen.class), 0);
+
+        //NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "123");
+        //builder.setContentIntent(contentIntent);
 
     }
 }
