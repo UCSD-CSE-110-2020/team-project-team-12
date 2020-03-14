@@ -73,6 +73,11 @@ public class ProposedWalkScreen extends AppCompatActivity {
                                 routeName = s.routeName;
                                 Log.d(TAG, "onCreate: Route name is : " + routeName);
                                 populateDetails();
+                                TextView proposedDate = findViewById(R.id.proposed_date_actual_textview);
+                                TextView proposedTime = findViewById(R.id.proposed_time_actual_textview);
+
+                                proposedDate.setText(s.date);
+                                proposedTime.setText(s.time);
                                 noProposeText.setVisibility(View.GONE);
                                 allDetails.setVisibility(View.VISIBLE);
                                 if (s.proposerUserID.equals(userEmail)) {
