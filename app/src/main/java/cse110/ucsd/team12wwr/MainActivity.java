@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -27,6 +28,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.DecimalFormat;
 import java.util.Random;
@@ -175,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
         catch(NullPointerException e){
             Log.i("ACCOUNT NOT SIGNED IN PRIOR", " No prior sign in");
         }
-        Log.i("GMAIL: ", userEmail);
+        Log.i("GMAIL: ", ""+userEmail);
 
         /* FOR DEBUG ONLY */
 
@@ -409,6 +411,8 @@ public class MainActivity extends AppCompatActivity {
                 userEmail = account.getEmail();
                 firstName = account.getGivenName();
                 lastName = account.getFamilyName();
+                subscribeToInvitationNotificationsTopic();
+
                 getTeamIDFromDB(userEmail);
                 getHeightInfo();
             }
@@ -469,6 +473,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.i("getTeamIDFromDB ", ":A team was found");
                     }
                     teamName = u1.teamID;
+                    subscribeToScheduledUpdateNotificationsTopic();
+                    subscribeToScheduledCancelledNotificationsTopic();
                     thisUser = u1;
                     Log.i("USER/TEAM: ", thisUser.userID + "/" + teamName);
                 }
@@ -482,4 +488,53 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    private void subscribeToInvitationNotificationsTopic() {
+        String temp = userEmail.replace("@", "");
+        Log.i("subscribeToInvitationNotificationsTopic ", " subscribe method started");
+        FirebaseMessaging.getInstance().subscribeToTopic(temp)
+                .addOnCompleteListener(task -> {
+                            Log.i("subscribeToInvitationNotificationsTopic", " TASK COMPLETED");
+                            String msg = "Subscribed to notifications";
+                            if (!task.isSuccessful()) {
+                                msg = "Subscribe to notifications failed";
+                            }
+                            Log.d(TAG, msg);
+                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+                        }
+                );
+        Log.i("subscribeToInvitationNotificationsTopic ", " subscribe method ended");
+    }
+    private void subscribeToScheduledUpdateNotificationsTopic() {
+        Log.i("subscribeToScheduledUpdateNotificationsTopic ", " subscribe method started");
+        String temp = teamName.replace(" ", "");
+        FirebaseMessaging.getInstance().subscribeToTopic(temp)
+                .addOnCompleteListener(task -> {
+                            Log.i("subscribeToScheduledUpdateNotificationsTopic", " TASK COMPLETED");
+                            String msg = "2Subscribed to notifications";
+                            if (!task.isSuccessful()) {
+                                msg = "2Subscribe to notifications failed";
+                            }
+                            Log.d(TAG, msg);
+                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+                        }
+                );
+        Log.i("subscribeToScheduledUpdateNotificationsTopic ", " subscribe method ended");
+    }
+    private void subscribeToScheduledCancelledNotificationsTopic() {
+        Log.i("subscribeToScheduledCancelledNotificationsTopic ", " subscribe method started");
+        String temp = teamName.replace(" ", "");
+        FirebaseMessaging.getInstance().subscribeToTopic(temp)
+                .addOnCompleteListener(task -> {
+                            Log.i("subscribeToScheduledCancelledNotificationsTopic", " TASK COMPLETED");
+                            String msg = "3Subscribed to notifications";
+                            if (!task.isSuccessful()) {
+                                msg = "3Subscribe to notifications failed";
+                            }
+                            Log.d(TAG, msg);
+                            Toast.makeText(MainActivity.this, msg, Toast.LENGTH_LONG).show();
+                        }
+                );
+        Log.i("subscribeToScheduledCancelledNotificationsTopic ", " subscribe method ended");
+    }
+
 }

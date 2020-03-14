@@ -39,11 +39,13 @@ public class PendingInviteActivity extends AppCompatActivity {
     private void checkForInvites(String email) {
         InvitationDao dao = DaoFactory.getInvitationDao();
         dao.findInviteByEmail(email, task -> {
+            Log.i("checkForInvites ", email);
             if (task.isSuccessful()) {
                 inv = null;
                 try {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         inv = document.toObject(Invitation.class);
+                        Log.i("checkForInvites ", ""+inv.toString());
                     }
                     originTeam = inv.teamID;
                     displayInvite(inv.teamID);

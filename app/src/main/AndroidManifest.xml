@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SuggestedWalkActivity"></activity>
         <activity
             android:name=".TeamIndividRoutes"
             android:label="@string/title_activity_team_individ_routes"
@@ -39,11 +38,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- CHANGED THIS LINE HOPE IT WON'T MATTER OK android:screenOrientation="portrait" -->
+        <service android:name=".ForegroundPushNotificationsService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <activity
             android:name=".IntentionalWalkActivity"
             android:label="@string/title_activity_intentional_walk"
             android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="fullSensor"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
