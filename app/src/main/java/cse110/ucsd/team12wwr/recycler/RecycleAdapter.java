@@ -74,6 +74,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
             voteYes.setOnClickListener(this);
             voteNo.setOnClickListener(this);
             voteNo1.setOnClickListener(this);
+
+            populateVotingButtonStates(itemView);
         }
 
         @Override
@@ -86,6 +88,69 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
                         User u = document.toObject(User.class);
                         String currUserFullName = u.firstName + " " + u.lastName;
                         votingButtonUpdater(view, currUserFullName);
+                    }
+                }
+            });
+        }
+
+        private void populateVotingButtonStates(View view) {
+            DaoFactory.getUserDao().findUserByID(MainActivity.userEmail, task-> {
+                if (task.isSuccessful())  {
+                    User u = null;
+                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                        u = doc.toObject(User.class);
+                    }
+                    if (u != null) {
+                        String teamId = u.teamID;
+                        ScheduleDao scheduleDao = DaoFactory.getScheduleDao();
+                        scheduleDao.findScheduleByTeam(teamId, task2 -> {
+                            if (task2.isSuccessful()) {
+                                Schedule s = null;
+                                for (QueryDocumentSnapshot doc : task2.getResult()) {
+                                    s = doc.toObject(Schedule.class);
+                                }
+                                if (s != null) {
+                                    Map<String, Schedule.Vote> userVoteMap = s.userVoteMap;
+                                    userVoteMap.forEach((k, v) -> {
+                                        RadioButton dontWant = containerView.findViewById(R.id.dont_want);
+                                        RadioButton badTime = containerView.findViewById(R.id.bad_time);
+                                        RadioButton yes = containerView.findViewById(R.id.yes);
+
+                                        TextView name = containerView.findViewById(R.id.vote_name);
+                                        String displayedName = name.getText().toString();
+
+                                        DaoFactory.getUserDao().findUserByID(k, task1 -> {
+                                            if (task1.isSuccessful()) {
+                                                for (QueryDocumentSnapshot document : task1.getResult()) {
+                                                    User us = document.toObject(User.class);
+                                                    Log.e("Limit", "Email is " + us.userID + ", k is " + k);
+                                                    String uFullName = us.firstName + " " + us.lastName;
+
+                                                    Log.e("Limit", "Checking if " + displayedName + " equals " + uFullName);
+                                                    if (displayedName.equals(uFullName)) {
+
+                                                        Schedule.Vote vote = v;
+                                                        if (vote == Schedule.Vote.ACCEPTED) {
+                                                            yes.setButtonDrawable(R.drawable.button_yes_on);
+                                                            dontWant.setButtonDrawable(R.drawable.button_no_off);
+                                                            badTime.setButtonDrawable(R.drawable.button_no_off);
+                                                        } else if (vote == Schedule.Vote.DECLINED_CONFLICT) {
+                                                            yes.setButtonDrawable(R.drawable.button_yes_off);
+                                                            dontWant.setButtonDrawable(R.drawable.button_no_off);
+                                                            badTime.setButtonDrawable(R.drawable.button_no_on);
+                                                        } else { // Schedule.Vote.DECLINED_DIFFICULTY
+                                                            yes.setButtonDrawable(R.drawable.button_yes_off);
+                                                            dontWant.setButtonDrawable(R.drawable.button_no_on);
+                                                            badTime.setButtonDrawable(R.drawable.button_no_off);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    });
+                                }
+                            }
+                        });
                     }
                 }
             });
