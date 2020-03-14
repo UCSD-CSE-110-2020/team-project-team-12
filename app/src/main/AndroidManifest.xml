@@ -9,8 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ProposedWalkScreen"></activity>
-        <activity android:name=".SuggestedWalkActivity"></activity>
+        <activity android:name=".ProposedWalkScreen">
+            </activity>
         <activity
             android:name=".InviteWalk"
             android:label="@string/title_activity_invite_walk"
@@ -45,6 +45,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- CHANGED THIS LINE HOPE IT WON'T MATTER OK android:screenOrientation="portrait" -->
+        <service android:name=".ForegroundPushNotificationsService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <activity
             android:name=".IntentionalWalkActivity"
             android:label="@string/title_activity_intentional_walk"
