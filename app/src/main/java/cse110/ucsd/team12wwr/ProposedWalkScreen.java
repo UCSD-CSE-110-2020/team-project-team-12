@@ -89,11 +89,13 @@ public class ProposedWalkScreen extends AppCompatActivity {
                                     withdrawWalk.setVisibility(View.VISIBLE);
                                     withdrawWalk.setOnClickListener(v -> {
                                         DaoFactory.getScheduleDao().delete(teamID);
+                                        finish();
                                     });
 
                                     scheduleWalk.setVisibility(View.VISIBLE);
                                     scheduleWalk.setOnClickListener(v -> {
                                         DaoFactory.getScheduleDao().updateScheduledState(teamID, true);
+                                        finish();
                                     });
 
                                     if (s.isScheduled) {
