@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
+import cse110.ucsd.team12wwr.firebase.Schedule;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
@@ -18,6 +19,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -37,9 +40,41 @@ public class ProposedWalkScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proposed_walk_screen);
 
+        Button withdrawWalk = findViewById(R.id.cancel_btn);
+        Button scheduleWalk = findViewById(R.id.schedule_btn);
+
+        SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        String userEmail = emailprefs.getString("EMAIL_ID", null);
+
+        DaoFactory.getUserDao().findUserByID(userEmail, task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    User u = document.toObject(User.class);
+                    DaoFactory.getScheduleDao().findScheduleByTeam(u.teamID, scheduleTask -> {
+                        if (scheduleTask.isSuccessful()) {
+                            for (QueryDocumentSnapshot scheduleDocument : scheduleTask.getResult()) {
+                                Schedule s = scheduleDocument.toObject(Schedule.class);
+                                if (s.proposerUserID.equals(userEmail)) {
+                                    withdrawWalk.setVisibility(View.VISIBLE);
+                                    withdrawWalk.setOnClickListener(v -> {
+                                        DaoFactory.getScheduleDao().delete(s.teamID);
+                                    });
+
+                                    scheduleWalk.setVisibility(View.VISIBLE);
+                                    scheduleWalk.setOnClickListener(v -> {
+                                        DaoFactory.getScheduleDao().updateScheduledState(s.teamID, true);
+                                    });
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
         BottomNavigationView navView = findViewById(R.id.nav_view);
         Menu menu = navView.getMenu();
-        MenuItem menuItem = menu.getItem(1);
+        MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
