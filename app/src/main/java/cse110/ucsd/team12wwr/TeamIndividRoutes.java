@@ -45,7 +45,7 @@ public class TeamIndividRoutes extends FragmentActivity {
                     case R.id.navigation_walk:
                         Log.i(TAG, "Taking a walk.");
                         finish();
-                        launchActivity();
+                        launchProposedWalkActivity();
 
                         break;
                     case R.id.navigation_teams:
@@ -67,8 +67,8 @@ public class TeamIndividRoutes extends FragmentActivity {
 
     }
 
-    public void launchActivity() {
-        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+    public void launchProposedWalkActivity() {
+        Intent intent = new Intent(this, ProposedWalkScreen.class);
         startActivity(intent);
     }
 
@@ -76,5 +76,4 @@ public class TeamIndividRoutes extends FragmentActivity {
         Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
     }
-
 }

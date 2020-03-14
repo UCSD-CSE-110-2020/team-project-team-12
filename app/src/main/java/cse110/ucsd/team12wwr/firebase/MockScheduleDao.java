@@ -4,6 +4,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Map;
+
 public class MockScheduleDao implements ScheduleDao {
     @Override
     public void insertAll(Schedule... schedules) {
@@ -12,6 +14,16 @@ public class MockScheduleDao implements ScheduleDao {
 
     @Override
     public void delete(String teamID) {
+        return;
+    }
+
+    @Override
+    public void updateScheduledState(String teamID, boolean isScheduled) {
+        return;
+    }
+
+    @Override
+    public void updateVoteMap(String teamID, Map<String, Schedule.Vote> userVoteMap) {
         return;
     }
 

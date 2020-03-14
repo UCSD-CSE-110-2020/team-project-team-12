@@ -1,0 +1,111 @@
+package cse110.ucsd.team12wwr;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import cse110.ucsd.team12wwr.firebase.DaoFactory;
+import cse110.ucsd.team12wwr.firebase.User;
+import cse110.ucsd.team12wwr.firebase.UserDao;
+import cse110.ucsd.team12wwr.firebase.WalkDao;
+import cse110.ucsd.team12wwr.recycler.Item;
+import cse110.ucsd.team12wwr.recycler.RecycleAdapter;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProposedWalkScreen extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    public static List<Item> itemList;
+    private RecycleAdapter recycleAdapter;
+    List<User> userList;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_proposed_walk_screen);
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.getItem(1);
+        menuItem.setChecked(true);
+
+        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        finish();
+                        break;
+                    case R.id.navigation_routes:
+                        finish();
+                        launchTeamRouteActivity();
+                        break;
+                    case R.id.navigation_walk:
+                        break;
+                    case R.id.navigation_teams:
+                        finish();
+                        launchTeamScreenActivity();
+                        break;
+                }
+                return false;
+            }
+        });
+
+        recyclerView = (RecyclerView) findViewById(R.id.vote_view);
+        SharedPreferences emailPrefs  = this.getSharedPreferences("USER_ID", MODE_PRIVATE);
+        String email = emailPrefs.getString("EMAIL_ID", null);
+
+        UserDao userDao = DaoFactory.getUserDao();
+        userDao.findUserByID(email, task1 -> {
+            if ( task1.isSuccessful()) {
+                User user = null;
+                for (QueryDocumentSnapshot document : task1.getResult()) {
+                    user = document.toObject(User.class);
+                }
+                if ( user != null) {
+                    userDao.findUsersByTeam(user.teamID, task2 -> {
+                        userList = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task2.getResult()) {
+                            userList.add(document.toObject(User.class));
+                        }
+                        itemList = new ArrayList<>();
+
+                        for (User u : userList) {
+                            Item item = new Item();
+                            item.setName(u.firstName + " " + u.lastName);
+                            itemList.add(item);
+                        }
+
+                        recycleAdapter = new RecycleAdapter(this);
+
+                        recyclerView.setAdapter(recycleAdapter);
+                        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+                    });
+                }
+            }
+        });
+    }
+
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
+        startActivity(intent);
+    }
+
+    public void launchTeamScreenActivity() {
+        Intent intent = new Intent(this, TeamScreen.class);
+        startActivity(intent);
+    }
+}

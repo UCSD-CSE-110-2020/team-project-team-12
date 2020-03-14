@@ -163,11 +163,10 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         userEmail = "account not retrieved";
-        userEmail = "nicholasalimit@gmail.com";
+        userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
         try {
             userEmail = account.getEmail();
-            userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
-            Log.d(TAG, "onStart: Email put into spf is: " + userEmail);
+            userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
 
             SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -195,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchActivity();
+                launchProposedWalksActivity();
             }
         });
 
@@ -210,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case R.id.navigation_walk:
-                        launchSuggestedWalkActivity();
+                        launchProposedWalksActivity();
+                        // launchSuggestedWalkActivity();
 
                         break;
                     case R.id.navigation_teams:
@@ -223,7 +223,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void launchActivity() {
+    public void launchProposedWalksActivity() {
+        Intent intent = new Intent(this, ProposedWalkScreen.class);
+        startActivity(intent);
+    }
+
+    public void launchIntentionalActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
     }
@@ -238,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
         editor.putString("EMAIL_ID", userEmail);
+        userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
         editor.apply();
 
         Intent intent = new Intent(this, TeamScreen.class);
