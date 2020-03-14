@@ -1,12 +1,11 @@
 package cse110.ucsd.team12wwr;
 
-import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,17 +27,18 @@ import static junit.framework.TestCase.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
 public class TeamPageTests {
-    private Intent mainIntent, teamPageIntent;
-    private ActivityTestRule<MainActivity> mainActivityActivityTestRule;
+    private Intent mainIntent, teamPageIntent, pendingInviteIntent;
     private ActivityTestRule<TeamScreen> teamScreenActivityTestRule;
+    private ActivityTestRule<PendingInviteActivity> pendingInviteActivityTestRule;
 
     @Before
     public void setUp() {
         MainActivity.unitTestFlag = true;
         mainIntent = new Intent(ApplicationProvider.getApplicationContext(), MainActivity.class);
-        teamPageIntent = new Intent(ApplicationProvider.getApplicationContext(), TeamScreen.class );
-        mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+        teamPageIntent = new Intent(ApplicationProvider.getApplicationContext(), TeamScreen.class);
+        pendingInviteIntent = new Intent(ApplicationProvider.getApplicationContext(), PendingInviteActivity.class);
         teamScreenActivityTestRule = new ActivityTestRule<>(TeamScreen.class);
+        pendingInviteActivityTestRule = new ActivityTestRule<>(PendingInviteActivity.class);
     }
 
     @Test
@@ -127,6 +127,54 @@ public class TeamPageTests {
         assertEquals(false, containsUser);
 
         teamScreenActivityTestRule.finishActivity();
+    }
+
+    @Test
+    public void testDefaultStatePendingInvitation() {
+        pendingInviteActivityTestRule.launchActivity(pendingInviteIntent);
+        pendingInviteActivityTestRule.getActivity().displayInvite("Testing Team");
+
+
+        TextView teamName = pendingInviteActivityTestRule.getActivity().findViewById(R.id.textView);
+        Button accept = pendingInviteActivityTestRule.getActivity().findViewById(R.id.button);
+        Button decline = pendingInviteActivityTestRule.getActivity().findViewById(R.id.button2);
+
+        assertEquals(View.VISIBLE, teamName.getVisibility());
+        assertEquals(View.VISIBLE, accept.getVisibility());
+        assertEquals(View.VISIBLE, decline.getVisibility());
+        assertEquals("Testing Team", teamName.getText().toString());
+    }
+
+    @Test
+    public void testAcceptPendingInvitation() {
+        pendingInviteActivityTestRule.launchActivity(pendingInviteIntent);
+        pendingInviteActivityTestRule.getActivity().displayInvite("Testing Team");
+
+        TextView teamName = pendingInviteActivityTestRule.getActivity().findViewById(R.id.textView);
+        Button accept = pendingInviteActivityTestRule.getActivity().findViewById(R.id.button);
+        Button decline = pendingInviteActivityTestRule.getActivity().findViewById(R.id.button2);
+
+        accept.performClick();
+
+        assertEquals(View.INVISIBLE, teamName.getVisibility());
+        assertEquals(View.INVISIBLE, accept.getVisibility());
+        assertEquals(View.INVISIBLE, decline.getVisibility());
+    }
+
+    @Test
+    public void testDeclinePendingInvitation() {
+        pendingInviteActivityTestRule.launchActivity(pendingInviteIntent);
+        pendingInviteActivityTestRule.getActivity().displayInvite("Testing Team");
+
+        TextView teamName = pendingInviteActivityTestRule.getActivity().findViewById(R.id.textView);
+        Button accept = pendingInviteActivityTestRule.getActivity().findViewById(R.id.button);
+        Button decline = pendingInviteActivityTestRule.getActivity().findViewById(R.id.button2);
+
+        decline.performClick();
+
+        assertEquals(View.INVISIBLE, teamName.getVisibility());
+        assertEquals(View.INVISIBLE, accept.getVisibility());
+        assertEquals(View.INVISIBLE, decline.getVisibility());
     }
 }
 
