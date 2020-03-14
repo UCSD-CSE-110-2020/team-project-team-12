@@ -194,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchActivity();
+                launchProposedWalksActivity();
             }
         });
 
@@ -209,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case R.id.navigation_walk:
-                        launchSuggestedWalkActivity();
+                        launchProposedWalksActivity();
+                        // launchSuggestedWalkActivity();
 
                         break;
                     case R.id.navigation_teams:
@@ -222,7 +223,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void launchActivity() {
+    public void launchProposedWalksActivity() {
+        Intent intent = new Intent(this, ProposedWalkScreen.class);
+        startActivity(intent);
+    }
+
+    public void launchIntentionalActivity() {
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
         startActivity(intent);
     }

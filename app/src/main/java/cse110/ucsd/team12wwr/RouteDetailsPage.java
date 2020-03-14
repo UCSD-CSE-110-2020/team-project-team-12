@@ -2,9 +2,12 @@ package cse110.ucsd.team12wwr;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
+
 import android.os.Bundle;
 import android.widget.CheckBox;
 import android.widget.TextView;
@@ -15,9 +18,13 @@ import android.widget.Button;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
 import cse110.ucsd.team12wwr.firebase.Route;
 import cse110.ucsd.team12wwr.firebase.RouteDao;
+
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
@@ -31,6 +38,8 @@ public class RouteDetailsPage extends AppCompatActivity {
 
     private String routeName;
     private Boolean fromActivity;
+
+    SharedPreferences email;
     private String userEmail;
 
     @Override
@@ -41,29 +50,70 @@ public class RouteDetailsPage extends AppCompatActivity {
         Intent intent = getIntent();
         routeName = intent.getStringExtra("name");
         fromActivity = intent.getBooleanExtra("fromTeam", false);
+        email = getSharedPreferences("USER_ID", MODE_PRIVATE);
+        userEmail = email.getString("EMAIL_ID", null);
 
-        SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
-        userEmail = emailprefs.getString("EMAIL_ID", null);
+        Button back = findViewById(R.id.back_button);
+        Button edit = findViewById(R.id.edit_route);
+        Button start = findViewById(R.id.add_button);
+        Button schedule = findViewById(R.id.sched_walk_btn);
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        if ( !fromActivity ) {
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    launchRouteInfoActivity();
+                }
+            });
+        }
+
+        if ( fromActivity ) { // && !hasScheduledWalk[0]) {
+            schedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { launchTeamInviteActivity(); }
+            });
+        }
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                launchIntentionalActivity();
+            }
+        });
 
     }
 
-    public void launchGoogleMaps(View v) {
+    public void startingPointClickListener(View v) {
+        launchGoogleMaps();
+    }
+
+    public Intent launchGoogleMaps() {
         TextView startPoint = findViewById(R.id.start_textview);
-        Log.e("Limit", "Starting point is being clicked");
-        String location = startPoint.getText().toString().substring(16).replaceAll(" ", "+");
-        Log.e("Limit", "Location is " + location);
-        Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-        mapIntent.setPackage("com.google.android.apps.maps");
-        if (mapIntent.resolveActivity(getPackageManager()) != null) {
-            startActivity(mapIntent);
+        String location = startPoint.getText().toString();
+        if (location.length() > 16)  {
+            location = location.substring(16).replaceAll(" ", "+");
+            Uri gmmIntentUri = Uri.parse("geo:0,0?q=" + location);
+            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+            mapIntent.setPackage("com.google.android.apps.maps");
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            }
+            return mapIntent;
         }
+        return null;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        populateRouteDetails();
+        populateDetails();
 
         CheckBox star = findViewById(R.id.favorited_details);
         star.setEnabled(false);
@@ -71,13 +121,14 @@ public class RouteDetailsPage extends AppCompatActivity {
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
         Button start = findViewById(R.id.add_button);
+        Button schedule = findViewById(R.id.sched_walk_btn);
 
         if ( fromActivity ) {
             edit.setVisibility(View.GONE);
-//            edit.setTextColor(Color.GRAY);
+            schedule.setVisibility(View.VISIBLE);
         } else {
             edit.setVisibility(View.VISIBLE);
-//            edit.setTextColor(getColor(R.color.design_default_color_primary));
+            schedule.setVisibility(View.GONE);
         }
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +147,13 @@ public class RouteDetailsPage extends AppCompatActivity {
             });
         }
 
+        if ( fromActivity ) {
+            schedule.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) { launchTeamInviteActivity(); }
+            });
+        }
+
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +162,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         });
     }
 
-    private void populateRouteDetails() {
+    private void populateDetails() {
         setContentView(R.layout.activity_route_details_page);
         if (routeName != null) {
             TextView routeTitle = findViewById(R.id.route_title_detail);
@@ -123,104 +181,117 @@ public class RouteDetailsPage extends AppCompatActivity {
                     }
                 }
 
-                if (newRoute != null) {
-                    if (newRoute.startingPoint != null) {
-                        TextView startPoint = findViewById(R.id.start_textview);
-                        startPoint.setText("Starting Point: " + newRoute.startingPoint);
-                    }
-
-                    if (newRoute.endingPoint != null) {
-                        TextView endPoint = findViewById(R.id.end_textview);
-                        endPoint.setText("Ending Point: " + newRoute.endingPoint);
-                    }
-
-                    if (newRoute.difficulty != null) {
-                        TextView difficulty = findViewById(R.id.diff_detail);
-                        if (newRoute.difficulty == Route.Difficulty.EASY) {
-                            difficulty.setText("Easy");
-                        } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
-                            difficulty.setText("Moderate");
-                        } else {
-                            difficulty.setText("Hard");
-                        }
-                    }
-
-                    if (newRoute.evenness != null) {
-                        TextView surface = findViewById(R.id.texture_details);
-                        if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
-                            surface.setText("Surface: Even");
-                        } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
-                            surface.setText("Surface: Uneven");
-                        }
-                    }
-
-                    if (newRoute.hilliness != null) {
-                        TextView incline = findViewById(R.id.incline_deets);
-                        if (newRoute.hilliness == Route.Hilliness.FLAT) {
-                            incline.setText("Incline: Flat");
-                        } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
-                            incline.setText("Incline: Hilly");
-                        }
-                    }
-
-                    if (newRoute.routeType != null) {
-                        TextView path = findViewById(R.id.path_details);
-                        if (newRoute.routeType == Route.RouteType.LOOP) {
-                            path.setText("Path Type: Loop");
-                        } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
-                            path.setText("Path Type: Out and Back");
-                        }
-                    }
-
-                    if (newRoute.surfaceType != null) {
-                        TextView terrain = findViewById(R.id.terrain_deets);
-                        if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
-                            terrain.setText("Terrain Type: Streets");
-                        } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
-                            terrain.setText("Terrain Type: Trial");
-                        }
-                    }
-
-                    if (newRoute.favorite != null) {
-                        CheckBox star = findViewById(R.id.favorited_details);
-                        if (newRoute.favorite == Route.Favorite.FAVORITE) {
-                            star.setChecked(true);
-                        } else {
-                            star.setChecked(false);
-                        }
-                    }
-
-                    if (newRoute.notes != null && !newRoute.notes.equals("")) {
-                        TextView notes = findViewById(R.id.notes_content);
-                        notes.setText(newRoute.notes);
-                    }
-                }
+                populateRouteInfo(newRoute);
             }
         });
 
         WalkDao walkDao = DaoFactory.getWalkDao();
         walkDao.findByRouteName(routeName, task -> {
             if (task.isSuccessful()) {
-                Walk mostRecentWalk = null;
-                Walk substituteWalk = null;
+                List<Walk> walks = new ArrayList<Walk>();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    if (mostRecentWalk == null) {
-                        mostRecentWalk = document.toObject(Walk.class);
-                        if (!mostRecentWalk.userID.equals(userEmail)) {
-                            substituteWalk = mostRecentWalk;
-                            mostRecentWalk = null;
-                        }
-                        break;
-                    }
+                    walks.add(document.toObject(Walk.class));
                 }
 
-                if (mostRecentWalk != null) {
-                    populateWalkInfo(mostRecentWalk);
-                } else {
-                    populateSubstitutedWalkInfo(substituteWalk);
-                }
+                determineWalk(walks);
             }
         });
+    }
+
+    public void populateRouteInfo(Route newRoute) {
+        if (newRoute != null) {
+            if (newRoute.startingPoint != null) {
+                TextView startPoint = findViewById(R.id.start_textview);
+                startPoint.setText("Starting Point: " + newRoute.startingPoint);
+            }
+
+            if (newRoute.endingPoint != null) {
+                TextView endPoint = findViewById(R.id.end_textview);
+                endPoint.setText("Ending Point: " + newRoute.endingPoint);
+            }
+
+            if (newRoute.difficulty != null) {
+                TextView difficulty = findViewById(R.id.diff_detail);
+                if (newRoute.difficulty == Route.Difficulty.EASY) {
+                    difficulty.setText("Easy");
+                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                    difficulty.setText("Moderate");
+                } else {
+                    difficulty.setText("Hard");
+                }
+            }
+
+            if (newRoute.evenness != null) {
+                TextView surface = findViewById(R.id.texture_details);
+                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                    surface.setText("Surface: Even");
+                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                    surface.setText("Surface: Uneven");
+                }
+            }
+
+            if (newRoute.hilliness != null) {
+                TextView incline = findViewById(R.id.incline_deets);
+                if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                    incline.setText("Incline: Flat");
+                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                    incline.setText("Incline: Hilly");
+                }
+            }
+
+            if (newRoute.routeType != null) {
+                TextView path = findViewById(R.id.path_details);
+                if (newRoute.routeType == Route.RouteType.LOOP) {
+                    path.setText("Path Type: Loop");
+                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                    path.setText("Path Type: Out and Back");
+                }
+            }
+
+            if (newRoute.surfaceType != null) {
+                TextView terrain = findViewById(R.id.terrain_deets);
+                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                    terrain.setText("Terrain Type: Streets");
+                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                    terrain.setText("Terrain Type: Trial");
+                }
+            }
+
+            if (newRoute.favorite != null) {
+                CheckBox star = findViewById(R.id.favorited_details);
+                if (newRoute.favorite == Route.Favorite.FAVORITE) {
+                    star.setChecked(true);
+                } else {
+                    star.setChecked(false);
+                }
+            }
+
+            if (newRoute.notes != null && !newRoute.notes.equals("")) {
+                TextView notes = findViewById(R.id.notes_content);
+                notes.setText(newRoute.notes);
+            }
+        }
+    }
+
+    public void determineWalk(List<Walk> walks) {
+        Walk mostRecentWalk = null;
+        Walk substituteWalk = null;
+        for (Walk walk : walks) {
+            if (mostRecentWalk == null) {
+                mostRecentWalk = walk;
+                if (!mostRecentWalk.userID.equals(userEmail)) {
+                    substituteWalk = mostRecentWalk;
+                    mostRecentWalk = null;
+                }
+                break;
+            }
+        }
+
+        if (mostRecentWalk != null) {
+            populateWalkInfo(mostRecentWalk);
+        } else {
+            populateSubstitutedWalkInfo(substituteWalk);
+        }
     }
 
     void populateWalkInfo(Walk mostRecentWalk) {
@@ -270,6 +341,7 @@ public class RouteDetailsPage extends AppCompatActivity {
         }
     }
 
+
     public void launchRouteInfoActivity() {
         Log.d(TAG, "launchRouteInfoActivity: launching the route information page");
         Intent intent = new Intent(this, RouteInfoActivity.class);
@@ -280,6 +352,14 @@ public class RouteDetailsPage extends AppCompatActivity {
     public void launchIntentionalActivity() {
         Log.d(TAG, "launchActivity: launching the walking activity");
         Intent intent = new Intent(this, IntentionalWalkActivity.class);
+        intent.putExtra(TITLE, routeName);
+        intent.putExtra("fromTeam",fromActivity);
+        startActivity(intent);
+    }
+
+    public void launchTeamInviteActivity() {
+        Log.d(TAG, "launchTeamInviteActivity: Launching team invitation page");
+        Intent intent = new Intent(this, InviteWalk.class);
         intent.putExtra(TITLE, routeName);
         intent.putExtra("fromTeam",fromActivity);
         startActivity(intent);

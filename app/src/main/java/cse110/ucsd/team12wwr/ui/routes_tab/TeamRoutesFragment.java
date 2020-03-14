@@ -63,6 +63,7 @@ public class TeamRoutesFragment extends Fragment {
         emailPref = this.getActivity().getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailPref.getString("EMAIL_ID", null);
 
+
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
 
         pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);

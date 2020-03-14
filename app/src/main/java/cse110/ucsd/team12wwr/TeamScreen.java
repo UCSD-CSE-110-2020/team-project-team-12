@@ -86,7 +86,7 @@ public class TeamScreen extends FragmentActivity
                         break;
                     case R.id.navigation_walk:
                         finish();
-                        launchActivity();
+                        launchProposedWalkActivity();
                         break;
                     case R.id.navigation_teams:
                         break;
@@ -198,8 +198,8 @@ public class TeamScreen extends FragmentActivity
         adapter.updateItems(rowItems);
     }
 
-    public void launchActivity() {
-        Intent intent = new Intent(this, IntentionalWalkActivity.class);
+    public void launchProposedWalkActivity() {
+        Intent intent = new Intent(this, ProposedWalkScreen.class);
         startActivity(intent);
     }
 

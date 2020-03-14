@@ -5,6 +5,8 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.Map;
+
 public class FirestoreToScheduleDaoAdapter implements ScheduleDao {
     public static final String SCHEDULE_COLLECTION_KEY = "schedules";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -25,6 +27,14 @@ public class FirestoreToScheduleDaoAdapter implements ScheduleDao {
         }
 
         db.collection(SCHEDULE_COLLECTION_KEY).document(teamID).delete();
+    }
+
+    public void updateScheduledState(String teamID, boolean isScheduled) {
+        db.collection(SCHEDULE_COLLECTION_KEY).document(teamID).update("isScheduled", isScheduled);
+    }
+
+    public void updateVoteMap(String teamID, Map<String, Schedule.Vote> userVoteMap) {
+        db.collection(SCHEDULE_COLLECTION_KEY).document(teamID).update("userVoteMap", userVoteMap);
     }
 
     //    @Query("SELECT * FROM Schedule s WHERE s.teamID=:teamID")
