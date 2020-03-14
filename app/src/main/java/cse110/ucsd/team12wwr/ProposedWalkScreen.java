@@ -1,5 +1,6 @@
 package cse110.ucsd.team12wwr;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,10 +12,14 @@ import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.recycler.Item;
 import cse110.ucsd.team12wwr.recycler.RecycleAdapter;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -31,6 +36,33 @@ public class ProposedWalkScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proposed_walk_screen);
+
+        BottomNavigationView navView = findViewById(R.id.nav_view);
+        Menu menu = navView.getMenu();
+        MenuItem menuItem = menu.getItem(1);
+        menuItem.setChecked(true);
+
+        navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        finish();
+                        break;
+                    case R.id.navigation_routes:
+                        finish();
+                        launchTeamRouteActivity();
+                        break;
+                    case R.id.navigation_walk:
+                        break;
+                    case R.id.navigation_teams:
+                        finish();
+                        launchTeamScreenActivity();
+                        break;
+                }
+                return false;
+            }
+        });
 
         recyclerView = (RecyclerView) findViewById(R.id.vote_view);
         SharedPreferences emailPrefs  = this.getSharedPreferences("USER_ID", MODE_PRIVATE);
@@ -65,5 +97,15 @@ public class ProposedWalkScreen extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void launchTeamRouteActivity() {
+        Intent intent = new Intent(this, TeamIndividRoutes.class);
+        startActivity(intent);
+    }
+
+    public void launchTeamScreenActivity() {
+        Intent intent = new Intent(this, TeamScreen.class);
+        startActivity(intent);
     }
 }
