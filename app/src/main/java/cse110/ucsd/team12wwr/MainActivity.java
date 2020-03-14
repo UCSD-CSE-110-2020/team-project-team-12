@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchProposedWalksActivity();
+                launchIntentionalActivity();
             }
         });
 
