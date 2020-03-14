@@ -74,12 +74,11 @@ public class RouteDetailsPage extends AppCompatActivity {
             });
         }
 
-        if ( fromActivity ) { // && !hasScheduledWalk[0]) {
-            schedule.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) { launchTeamInviteActivity(); }
-            });
-        }
+        schedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { launchTeamInviteActivity(); }
+        });
+
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,10 +124,8 @@ public class RouteDetailsPage extends AppCompatActivity {
 
         if ( fromActivity ) {
             edit.setVisibility(View.GONE);
-            schedule.setVisibility(View.VISIBLE);
         } else {
             edit.setVisibility(View.VISIBLE);
-            schedule.setVisibility(View.GONE);
         }
 
         back.setOnClickListener(new View.OnClickListener() {
@@ -147,12 +144,10 @@ public class RouteDetailsPage extends AppCompatActivity {
             });
         }
 
-        if ( fromActivity ) {
-            schedule.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) { launchTeamInviteActivity(); }
-            });
-        }
+        schedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) { launchTeamInviteActivity(); }
+        });
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
