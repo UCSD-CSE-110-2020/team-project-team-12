@@ -55,7 +55,7 @@ public class PendingInviteActivity extends AppCompatActivity {
         });
     }
 
-    private void displayInvite(String teamID){
+    public void displayInvite(String teamID){
         TextView teamName = findViewById(R.id.textView);
         Button accept = findViewById(R.id.button);
         Button decline = findViewById(R.id.button2);

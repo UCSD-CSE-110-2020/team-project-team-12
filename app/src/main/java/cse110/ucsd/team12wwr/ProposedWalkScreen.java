@@ -51,6 +51,9 @@ public class ProposedWalkScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proposed_walk_screen);
 
+        CheckBox star = findViewById(R.id.proposed_favorited_details);
+        star.setEnabled(false);
+
         Button withdrawWalk = findViewById(R.id.cancel_btn);
         Button scheduleWalk = findViewById(R.id.schedule_btn);
         TextView noProposeText = findViewById(R.id.no_proposal);

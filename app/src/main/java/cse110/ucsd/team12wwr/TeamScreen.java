@@ -58,6 +58,8 @@ public class TeamScreen extends FragmentActivity
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
 
+        adapter = new TeamListAdapter(this, rowItems, teamName);
+
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailprefs.getString("EMAIL_ID", null);
 
