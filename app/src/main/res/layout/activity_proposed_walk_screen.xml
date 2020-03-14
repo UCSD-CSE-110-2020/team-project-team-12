@@ -6,10 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".ProposedWalkScreen">
 
+    <TextView
+        android:id="@+id/no_proposal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="40dp"
+        android:text="No Proposed Walks!"
+        android:textAlignment="center"
+        android:textColor="#A6A6A6"
+        android:textSize="28sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ScrollView
         android:id="@+id/scrollable_proposal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
