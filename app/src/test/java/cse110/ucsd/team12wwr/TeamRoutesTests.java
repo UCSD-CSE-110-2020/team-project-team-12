@@ -22,7 +22,7 @@ import androidx.test.rule.ActivityTestRule;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(AndroidJUnit4.class)
-public class USFourTest {
+public class TeamRoutesTests {
     private Intent intent, mainIntent;
     private ActivityTestRule<TeamIndividRoutes> teamIndividRoutesActivityTestRule;
 
