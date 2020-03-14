@@ -163,8 +163,11 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         userEmail = "account not retrieved";
+        userEmail = "nicholasalimit@gmail.com";
         try {
             userEmail = account.getEmail();
+            userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
+            Log.d(TAG, "onStart: Email put into spf is: " + userEmail);
 
             SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -233,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
     public void launchTeamScreenActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
         editor.putString("EMAIL_ID", userEmail);
         editor.apply();
 
