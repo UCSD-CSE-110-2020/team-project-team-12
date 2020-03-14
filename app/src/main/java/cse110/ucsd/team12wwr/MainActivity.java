@@ -163,10 +163,8 @@ public class MainActivity extends AppCompatActivity {
         Log.i("MainActivity.onStart", "onStart() has been called");
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         userEmail = "account not retrieved";
-        userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
         try {
             userEmail = account.getEmail();
-            userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
 
             SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -241,9 +239,7 @@ public class MainActivity extends AppCompatActivity {
     public void launchTeamScreenActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
         editor.putString("EMAIL_ID", userEmail);
-        userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
         editor.apply();
 
         Intent intent = new Intent(this, TeamScreen.class);

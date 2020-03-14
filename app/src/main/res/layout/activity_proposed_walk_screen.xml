@@ -677,6 +677,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="#cc0c0c"
                     android:text="@string/cancel_text"
+                    android:visibility="gone"
                     android:textColor="#FFFFFF" />
 
                 <Button
@@ -688,6 +689,7 @@
                     android:layout_weight="1"
                     android:backgroundTint="#0CCC6F"
                     android:text="Schedule"
+                    android:visibility="gone"
                     android:textColor="#FFFFFF" />
             </LinearLayout>
 

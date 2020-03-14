@@ -123,10 +123,8 @@ public class RecycleAdapter extends RecyclerView.Adapter<RecycleAdapter.MyViewHo
                                             if (task1.isSuccessful()) {
                                                 for (QueryDocumentSnapshot document : task1.getResult()) {
                                                     User us = document.toObject(User.class);
-                                                    Log.e("Limit", "Email is " + us.userID + ", k is " + k);
                                                     String uFullName = us.firstName + " " + us.lastName;
 
-                                                    Log.e("Limit", "Checking if " + displayedName + " equals " + uFullName);
                                                     if (displayedName.equals(uFullName)) {
 
                                                         Schedule.Vote vote = v;
