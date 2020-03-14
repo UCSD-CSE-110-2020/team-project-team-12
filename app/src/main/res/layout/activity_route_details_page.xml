@@ -73,7 +73,7 @@
                         android:layout_marginBottom="5dp"
                         android:text="Starting Point"
                         android:clickable="true"
-                        android:onClick="launchGoogleMaps"
+                        android:onClick="startingPointClickListener"
                         android:textSize="18sp" />
 
                 </TableRow>
@@ -446,7 +446,7 @@
 
                 <TextView
                     android:id="@+id/notes_content"
-                    android:layout_width="363dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
                     android:layout_marginTop="5dp"
@@ -456,6 +456,18 @@
                     android:scrollbars="vertical"
                     android:text="    Hello these are notes I wrote down about this trail. I don't know why I'm writing so much about this trail." />
             </LinearLayout>
+
+            <Button
+                android:id="@+id/sched_walk_btn"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="#EDB046"
+                android:text="Schedule Walk" />
+
         </LinearLayout>
     </ScrollView>
 

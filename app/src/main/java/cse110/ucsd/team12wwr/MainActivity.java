@@ -241,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
     public void launchTeamScreenActivity() {
         SharedPreferences sharedPreferences = getSharedPreferences("USER_ID", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
         editor.putString("EMAIL_ID", userEmail);
         userEmail = "vkomar@ucsd.edu"; //TODO MOCK EMAIL
         editor.apply();
