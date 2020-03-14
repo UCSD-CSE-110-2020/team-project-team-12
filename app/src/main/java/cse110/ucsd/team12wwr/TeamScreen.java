@@ -60,7 +60,6 @@ public class TeamScreen extends FragmentActivity
 
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = emailprefs.getString("EMAIL_ID", null);
-        userEmail = "nicholasalimit@gmail.com"; //TODO this is hardcoded
 
         Log.d(TAG, "onCreate: Email for current user: " + userEmail);
         FloatingActionButton fab = findViewById(R.id.add_fab);

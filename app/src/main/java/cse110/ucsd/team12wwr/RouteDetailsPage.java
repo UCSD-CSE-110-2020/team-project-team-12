@@ -52,7 +52,6 @@ public class RouteDetailsPage extends AppCompatActivity {
         fromActivity = intent.getBooleanExtra("fromTeam", false);
         email = getSharedPreferences("USER_ID", MODE_PRIVATE);
         userEmail = email.getString("EMAIL_ID", null);
-        userEmail = "nicholasalimit@gmail.com";
 
         Button back = findViewById(R.id.back_button);
         Button edit = findViewById(R.id.edit_route);
