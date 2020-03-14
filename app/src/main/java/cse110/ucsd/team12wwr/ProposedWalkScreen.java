@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
+import cse110.ucsd.team12wwr.firebase.Route;
+import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Schedule;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.firebase.UserDao;
+import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 import cse110.ucsd.team12wwr.recycler.Item;
 import cse110.ucsd.team12wwr.recycler.RecycleAdapter;
@@ -21,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -34,10 +38,12 @@ import java.util.List;
 
 public class ProposedWalkScreen extends AppCompatActivity {
 
+    private static final String TAG = "ProposedWalkScreen";
     private RecyclerView recyclerView;
     public static List<Item> itemList;
     private RecycleAdapter recycleAdapter;
     List<User> userList;
+    private String routeName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +70,9 @@ public class ProposedWalkScreen extends AppCompatActivity {
                             }
 
                             if (s != null) {
+                                routeName = s.routeName;
+                                Log.d(TAG, "onCreate: Route name is : " + routeName);
+                                populateDetails();
                                 noProposeText.setVisibility(View.GONE);
                                 allDetails.setVisibility(View.VISIBLE);
                                 if (s.proposerUserID.equals(userEmail)) {
@@ -167,5 +176,104 @@ public class ProposedWalkScreen extends AppCompatActivity {
     public void launchTeamScreenActivity() {
         Intent intent = new Intent(this, TeamScreen.class);
         startActivity(intent);
+    }
+
+
+    private void populateDetails() {
+        if (routeName != null) {
+            TextView routeTitle = findViewById(R.id.proposed_route_title_detail);
+            routeTitle.setText(routeName);
+        }
+
+        RouteDao routeDao = DaoFactory.getRouteDao();
+        routeDao.findName(routeName, task -> {
+            if (task.isSuccessful()) {
+                Route newRoute = null;
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    if (newRoute == null) {
+                        newRoute = document.toObject(Route.class);
+                    } else {
+                        Log.w(TAG, "There is a duplicate route entry in the database!");
+                    }
+                }
+
+                populateRouteInfo(newRoute);
+            }
+        });
+    }
+
+    public void populateRouteInfo(Route newRoute) {
+        if (newRoute != null) {
+            if (newRoute.startingPoint != null) {
+                TextView startPoint = findViewById(R.id.proposed_start_textview);
+                startPoint.setText("Starting Point: " + newRoute.startingPoint);
+            }
+
+            if (newRoute.endingPoint != null) {
+                TextView endPoint = findViewById(R.id.proposed_end_textview);
+                endPoint.setText("Ending Point: " + newRoute.endingPoint);
+            }
+
+            if (newRoute.difficulty != null) {
+                TextView difficulty = findViewById(R.id.proposed_diff_detail);
+                if (newRoute.difficulty == Route.Difficulty.EASY) {
+                    difficulty.setText("Easy");
+                } else if (newRoute.difficulty == Route.Difficulty.MODERATE) {
+                    difficulty.setText("Moderate");
+                } else {
+                    difficulty.setText("Hard");
+                }
+            }
+
+            if (newRoute.evenness != null) {
+                TextView surface = findViewById(R.id.proposed_texture_details);
+                if (newRoute.evenness == Route.Evenness.EVEN_SURFACE) {
+                    surface.setText("Surface: Even");
+                } else if (newRoute.evenness == Route.Evenness.UNEVEN_SURFACE) {
+                    surface.setText("Surface: Uneven");
+                }
+            }
+
+            if (newRoute.hilliness != null) {
+                TextView incline = findViewById(R.id.proposed_incline_deets);
+                if (newRoute.hilliness == Route.Hilliness.FLAT) {
+                    incline.setText("Incline: Flat");
+                } else if (newRoute.hilliness == Route.Hilliness.HILLY) {
+                    incline.setText("Incline: Hilly");
+                }
+            }
+
+            if (newRoute.routeType != null) {
+                TextView path = findViewById(R.id.proposed_path_details);
+                if (newRoute.routeType == Route.RouteType.LOOP) {
+                    path.setText("Path Type: Loop");
+                } else if (newRoute.routeType == Route.RouteType.OUT_AND_BACK) {
+                    path.setText("Path Type: Out and Back");
+                }
+            }
+
+            if (newRoute.surfaceType != null) {
+                TextView terrain = findViewById(R.id.proposed_terrain_deets);
+                if (newRoute.surfaceType == Route.SurfaceType.STREETS) {
+                    terrain.setText("Terrain Type: Streets");
+                } else if (newRoute.surfaceType == Route.SurfaceType.TRAIL) {
+                    terrain.setText("Terrain Type: Trial");
+                }
+            }
+
+            if (newRoute.favorite != null) {
+                CheckBox star = findViewById(R.id.proposed_favorited_details);
+                if (newRoute.favorite == Route.Favorite.FAVORITE) {
+                    star.setChecked(true);
+                } else {
+                    star.setChecked(false);
+                }
+            }
+
+            if (newRoute.notes != null && !newRoute.notes.equals("")) {
+                TextView notes = findViewById(R.id.proposed_notes_content);
+                notes.setText(newRoute.notes);
+            }
+        }
     }
 }

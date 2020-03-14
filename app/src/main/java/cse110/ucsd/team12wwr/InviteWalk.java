@@ -172,7 +172,7 @@ public class InviteWalk extends AppCompatActivity {
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if ( dateText.length() <= 0 && selectTime.length() <= 0 ) {
+                if ( selectDate.getText().equals("Select Date") && selectTime.getText().equals("Select Time")) {
                     Context context = getApplicationContext();
                     CharSequence text = "Please enter all the information above!!!!!";
                     int duration = Toast.LENGTH_SHORT;
