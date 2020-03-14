@@ -21,9 +21,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +46,8 @@ public class ProposedWalkScreen extends AppCompatActivity {
 
         Button withdrawWalk = findViewById(R.id.cancel_btn);
         Button scheduleWalk = findViewById(R.id.schedule_btn);
+        TextView noProposeText = findViewById(R.id.no_proposal);
+        ScrollView allDetails = findViewById(R.id.scrollable_proposal);
 
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
         String userEmail = emailprefs.getString("EMAIL_ID", null);
@@ -52,19 +58,38 @@ public class ProposedWalkScreen extends AppCompatActivity {
                     User u = document.toObject(User.class);
                     DaoFactory.getScheduleDao().findScheduleByTeam(u.teamID, scheduleTask -> {
                         if (scheduleTask.isSuccessful()) {
+                            Schedule s = null;
                             for (QueryDocumentSnapshot scheduleDocument : scheduleTask.getResult()) {
-                                Schedule s = scheduleDocument.toObject(Schedule.class);
+                                s = scheduleDocument.toObject(Schedule.class);
+                            }
+
+                            if (s != null) {
+                                noProposeText.setVisibility(View.GONE);
+                                allDetails.setVisibility(View.VISIBLE);
                                 if (s.proposerUserID.equals(userEmail)) {
+                                    final String teamID = s.teamID;
+
                                     withdrawWalk.setVisibility(View.VISIBLE);
                                     withdrawWalk.setOnClickListener(v -> {
-                                        DaoFactory.getScheduleDao().delete(s.teamID);
+                                        DaoFactory.getScheduleDao().delete(teamID);
                                     });
 
                                     scheduleWalk.setVisibility(View.VISIBLE);
                                     scheduleWalk.setOnClickListener(v -> {
-                                        DaoFactory.getScheduleDao().updateScheduledState(s.teamID, true);
+                                        DaoFactory.getScheduleDao().updateScheduledState(teamID, true);
                                     });
+
+                                    if (s.isScheduled) {
+                                        withdrawWalk.setText("Cancel");
+                                        scheduleWalk.setVisibility(View.GONE);
+                                    } else {
+                                        withdrawWalk.setText("Withdraw");
+                                        scheduleWalk.setVisibility(View.VISIBLE);
+                                    }
                                 }
+                            } else {
+                                noProposeText.setVisibility(View.VISIBLE);
+                                allDetails.setVisibility(View.GONE);
                             }
                         }
                     });
