@@ -19,7 +19,7 @@ import cse110.ucsd.team12wwr.firebase.RouteDao;
 import cse110.ucsd.team12wwr.firebase.Walk;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
 
-public class ScheduledWalkActivity extends AppCompatActivity {
+public class ProposedWalkActivity extends AppCompatActivity {
 
     // Public constants for string intents
     public static final String TITLE = "ROUTE_TITLE";
@@ -165,31 +165,31 @@ public class ScheduledWalkActivity extends AppCompatActivity {
             }
         });
 
-        WalkDao walkDao = DaoFactory.getWalkDao();
-        walkDao.findByRouteName(routeName, task -> {
-            if (task.isSuccessful()) {
-                Walk mostRecentWalk = null;
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    if (mostRecentWalk == null) {
-                        mostRecentWalk = document.toObject(Walk.class);
-                    }
-                }
-
-                if (mostRecentWalk != null) {
-                    if (mostRecentWalk.duration != null) {
-                        TextView duration = findViewById(R.id.total_time_detail);
-                        duration.setText(mostRecentWalk.duration);
-                        TextView checkmark = findViewById(R.id.checkmark_detail);
-                        checkmark.setVisibility(View.VISIBLE);
-                    }
-
-                    if (mostRecentWalk.distance != null) {
-                        TextView distance = findViewById(R.id.dist_details);
-                        distance.setText(mostRecentWalk.distance);
-                    }
-                }
-            }
-        });
+//        WalkDao walkDao = DaoFactory.getWalkDao();
+//        walkDao.findByRouteName(routeName, task -> {
+//            if (task.isSuccessful()) {
+//                Walk mostRecentWalk = null;
+//                for (QueryDocumentSnapshot document : task.getResult()) {
+//                    if (mostRecentWalk == null) {
+//                        mostRecentWalk = document.toObject(Walk.class);
+//                    }
+//                }
+//
+//                if (mostRecentWalk != null) {
+//                    if (mostRecentWalk.duration != null) {
+//                        TextView duration = findViewById(R.id.total_time_detail);
+//                        duration.setText(mostRecentWalk.duration);
+//                        TextView checkmark = findViewById(R.id.checkmark_detail);
+//                        checkmark.setVisibility(View.VISIBLE);
+//                    }
+//
+//                    if (mostRecentWalk.distance != null) {
+//                        TextView distance = findViewById(R.id.dist_details);
+//                        distance.setText(mostRecentWalk.distance);
+//                    }
+//                }
+//            }
+//        });
     }
 
     public void launchRouteInfoActivity() {

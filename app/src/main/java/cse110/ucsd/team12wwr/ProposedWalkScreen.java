@@ -44,6 +44,7 @@ public class ProposedWalkScreen extends AppCompatActivity {
     private RecycleAdapter recycleAdapter;
     List<User> userList;
     private String routeName;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class ProposedWalkScreen extends AppCompatActivity {
         ScrollView allDetails = findViewById(R.id.scrollable_proposal);
 
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
-        String userEmail = emailprefs.getString("EMAIL_ID", null);
+        userEmail = emailprefs.getString("EMAIL_ID", null);
 
         DaoFactory.getUserDao().findUserByID(userEmail, task -> {
             if (task.isSuccessful()) {
