@@ -1,13 +1,18 @@
 package cse110.ucsd.team12wwr;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.shadows.ShadowAlertDialog;
+import org.robolectric.shadows.ShadowToast;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.test.core.app.ActivityScenario;
@@ -16,6 +21,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.rule.ActivityTestRule;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import cse110.ucsd.team12wwr.teamlist.TeamScreenRowItem;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -63,18 +70,63 @@ public class TeamPageTests {
         LayoutInflater inflater = frag.requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_invitation,null);
 
-        TextView email = view.findViewById(R.id.username);
-        TextView firstName = view.findViewById(R.id.first_name);
-        TextView lastName = view.findViewById(R.id.last_name);
+        TextView email = ShadowAlertDialog.getLatestAlertDialog().findViewById(R.id.username);
+        TextView firstName = ShadowAlertDialog.getLatestAlertDialog().findViewById(R.id.first_name);
+        TextView lastName = ShadowAlertDialog.getLatestAlertDialog().findViewById(R.id.last_name);
 
         email.setText("gmail@gmail.com");
         firstName.setText("Jane");
         lastName.setText("Hartono");
 
-        assertEquals("Jane", firstName.getText().toString());
-        assertEquals("Hartono", lastName.getText().toString());
-        assertEquals("gmail@gmail.com", email.getText().toString());
+        ShadowAlertDialog.getLatestAlertDialog().getButton(DialogInterface.BUTTON_POSITIVE).performClick();
+
+        assertEquals("Invite sent to Jane Hartono" , ShadowToast.getTextOfLatestToast());
+
+        boolean containsUser = false;
+        for (TeamScreenRowItem rowItem : teamScreenActivityTestRule.getActivity().rowItems) {
+            if (rowItem.getMemberName().equals("Jane Hartono")) {
+                containsUser = true;
+            }
+        }
+
+        assertEquals(true, containsUser);
+
+        teamScreenActivityTestRule.finishActivity();
+    }
+
+    @Test
+    public void testCancelInvite() {
+        teamScreenActivityTestRule.launchActivity(teamPageIntent);
+
+        FloatingActionButton fab = teamScreenActivityTestRule.getActivity().findViewById(R.id.add_fab);
+        fab.performClick();
+
+        DialogFragment frag = (DialogFragment) teamScreenActivityTestRule.getActivity().getSupportFragmentManager().findFragmentByTag("open");
+        LayoutInflater inflater = frag.requireActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.dialog_invitation,null);
+
+        TextView email = ShadowAlertDialog.getLatestAlertDialog().findViewById(R.id.username);
+        TextView firstName = ShadowAlertDialog.getLatestAlertDialog().findViewById(R.id.first_name);
+        TextView lastName = ShadowAlertDialog.getLatestAlertDialog().findViewById(R.id.last_name);
+
+        email.setText("gmail@gmail.com");
+        firstName.setText("Jane");
+        lastName.setText("Hartono");
+
+        ShadowAlertDialog.getLatestAlertDialog().getButton(DialogInterface.BUTTON_NEGATIVE).performClick();
+
+        assertEquals("Invite cancelled!" , ShadowToast.getTextOfLatestToast());
+
+        boolean containsUser = false;
+        for (TeamScreenRowItem rowItem : teamScreenActivityTestRule.getActivity().rowItems) {
+            if (rowItem.getMemberName().equals("Jane Hartono")) {
+                containsUser = true;
+            }
+        }
+
+        assertEquals(false, containsUser);
 
         teamScreenActivityTestRule.finishActivity();
     }
 }
+
