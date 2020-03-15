@@ -44,11 +44,15 @@ public class ProposedWalkScreen extends AppCompatActivity {
     private RecycleAdapter recycleAdapter;
     List<User> userList;
     private String routeName;
+    String userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proposed_walk_screen);
+
+        CheckBox star = findViewById(R.id.proposed_favorited_details);
+        star.setEnabled(false);
 
         Button withdrawWalk = findViewById(R.id.cancel_btn);
         Button scheduleWalk = findViewById(R.id.schedule_btn);
@@ -56,7 +60,7 @@ public class ProposedWalkScreen extends AppCompatActivity {
         ScrollView allDetails = findViewById(R.id.scrollable_proposal);
 
         SharedPreferences emailprefs = getSharedPreferences("USER_ID", MODE_PRIVATE);
-        String userEmail = emailprefs.getString("EMAIL_ID", null);
+        userEmail = emailprefs.getString("EMAIL_ID", null);
 
         DaoFactory.getUserDao().findUserByID(userEmail, task -> {
             if (task.isSuccessful()) {
@@ -86,11 +90,13 @@ public class ProposedWalkScreen extends AppCompatActivity {
                                     withdrawWalk.setVisibility(View.VISIBLE);
                                     withdrawWalk.setOnClickListener(v -> {
                                         DaoFactory.getScheduleDao().delete(teamID);
+                                        finish();
                                     });
 
                                     scheduleWalk.setVisibility(View.VISIBLE);
                                     scheduleWalk.setOnClickListener(v -> {
                                         DaoFactory.getScheduleDao().updateScheduledState(teamID, true);
+                                        finish();
                                     });
 
                                     if (s.isScheduled) {

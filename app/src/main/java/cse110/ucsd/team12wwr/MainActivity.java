@@ -1,14 +1,10 @@
 package cse110.ucsd.team12wwr;
 
-import android.content.ComponentName;
-import android.content.Context;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
-import android.os.IBinder;
 import android.util.Log;
 import android.preference.PreferenceManager;
 import android.view.Menu;
@@ -34,7 +30,6 @@ import java.text.DecimalFormat;
 import java.util.Random;
 
 import cse110.ucsd.team12wwr.firebase.DaoFactory;
-import cse110.ucsd.team12wwr.firebase.Invitation;
 import cse110.ucsd.team12wwr.firebase.User;
 import cse110.ucsd.team12wwr.firebase.UserDao;
 import cse110.ucsd.team12wwr.firebase.WalkDao;
@@ -194,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
         launchIntentionalWalkActivity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                launchProposedWalksActivity();
+                launchIntentionalActivity();
             }
         });
 
@@ -249,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void launchSuggestedWalkActivity() {
-        Intent intent = new Intent(this, ScheduledWalkActivity.class);
+        Intent intent = new Intent(this, ProposedWalkActivity.class);
         startActivity(intent);
     }
 
